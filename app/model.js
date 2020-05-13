@@ -19,6 +19,7 @@
 'use strict';
 
 const LOGGER = require('../libs/log4'),
+    ASYNC = require('async'),
     DB = require('../config/db')(),
     TABLE = 'donorinformation';
 
@@ -28,76 +29,65 @@ const LOGGER = require('../libs/log4'),
  * @param callback
  */
 exports.create = function (req, callback) {
-    // let record = req.body;
     console.log(req.body);
 
-    /* original insert query
-    DB(TABLE)
-        .insert(record)
-        .then(function (data) {
-            callback({
-                status: 201,
-                message: 'Record created.'
-            });
-        })
-        .catch(function (error) {
-            LOGGER.module().error('FATAL: Unable to create record ' + error);
-            throw 'FATAL: Unable to create record ' + error;
-        });
-    */
-
-    /* returning doesn't work in MySQL, so I need another way to get the
-     * newly-created donorID
+    /**
+     * Donation Form submission actions
      */
-    DB(TABLE)
-        //.returning('donorID') <-- doesn't work in MySQL
-        .insert(req.body)
-        //.insert(req.body, 'donorID')
-        .then(function (data) {
-            // DB... or use async library (check backend app)
-            console.log("Added " + data);
-            var donorID = data;
-            callback({
-                status: 201,
-                message: 'Record created.'
-            });
-        })
-        .catch(function (error) {
-            LOGGER.module().error('FATAL: Unable to create record ' + error);
-            throw 'FATAL: Unable to create record ' + error;
-        });
 
-    /*
-    DB('notifydonorinformation')
-        .insert(record)
-        .then(function (data) {
-            callback({
-                status: 201,
-                message: 'Record created.'
-            });
-        })
-        .catch(function (error) {
-            LOGGER.module().error('FATAL: Unable to create record ' + error);
-            throw 'FATAL: Unable to create record ' + error;
-        });
-    */
+    // 1.)
+    function createDonor(callback) {
+        let obj = {};
 
-    /* Same as above, but might allow for inserting into multiple
-     * tables (still have the problem of needing the donorID of the
-     * newly-created donorinformation record)
-    DB
-        .insert(record).into(TABLE)
-        .then(function (data) {
-            callback({
-                status: 201,
-                message: 'Record created.'
+        DB(TABLE)
+            .insert(req.body)
+            .then(function (data) {
+                console.log("Added " + data);
+                obj.donorID = data;
+                callback(null, obj);
+                return false;
+            })
+            .catch(function (error) {
+                LOGGER.module().error('FATAL [/app/model module (create/createDonor)] Unable to create record ' + error);
+                throw 'FATAL [/app/model module (create/createDonor)] Unable to create record ' + error;
             });
-        })
-        .catch(function (error) {
-            LOGGER.module().error('FATAL: Unable to create record ' + error);
-            throw 'FATAL: Unable to create record ' + error;
+    }
+
+    // 2.)
+    function secondFunction(obj, callback) {
+        DB(TABLE)
+            .select('*')
+            .where({
+                donorID: obj.donorID
+            })
+            .then(function (data) {
+                console.log("Inside secondFunction");
+                obj.data = data;
+                callback(null, obj);
+                return false;
+            })
+            .catch(function (error) {
+                LOGGER.module().error('FATAL: [/app/model module (create/secondFunction)] Unable to create record ' + error);
+                throw 'FATAL: [/app/model module (create/secondFunction)] Unable to create record ' + error;
+            });
+    }
+
+    ASYNC.waterfall([
+       createDonor,
+       secondFunction
+    ], function (error, results) {
+        console.log("Inside waterfall function");
+
+        if (error) {
+            LOGGER.module().error('ERROR: [/app/model module (create/async.waterfall)]' + error);
+        }
+
+        callback({
+            status: 201,
+            message: 'Record created.',
+            data: results.data
         });
-    */
+    });
 };
 
 /**
