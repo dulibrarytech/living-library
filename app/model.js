@@ -79,7 +79,7 @@ exports.create = function (req, callback) {
         console.log("Inside waterfall function");
 
         if (error) {
-            LOGGER.module().error('ERROR: [/app/model module (create/async.waterfall)]' + error);
+            LOGGER.module().error('ERROR: [/app/model module (create/async.waterfall)] ' + error);
         }
 
         callback({
