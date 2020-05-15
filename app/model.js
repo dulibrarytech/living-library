@@ -133,20 +133,17 @@ exports.read = function (req, callback) {
         });
      */
 
-    /* Query for Completed Donations page (in old app, see
-     * getCompletedDonations() from donationsmodel.php for model, and
-     * dashboard.php and completedDonations.php for view)
-     */
-    DB('completeddonations')
-        .join('donorinformation', 'completeddonations.donorID', '=',
-              'donorinformation.donorID')
-        .join('donationamountinformation', 'donationamountinformation.donorID',
-              '=', 'donorinformation.donorID')
+    /* Query for Completed Donations page */
+    DB('tbl_donations')
+      /*
         .select('completeddonations.donorID', 'donorinformation.donorTitle',
                 'donorinformation.donorFirstName',
                 'donorinformation.donorLastName',
                 'donationamountinformation.dateOfDonation')
-        .orderBy('completeddonations.timestamp', 'desc')
+      */
+        .select('*')
+        .whereNot('is_completed', 0)
+        .orderBy('created', 'desc')
         .then(function (data) {
 
             callback({
