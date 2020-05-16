@@ -21,7 +21,7 @@
 const LOGGER = require('../libs/log4'),
     ASYNC = require('async'),
     DB = require('../config/db')(),
-    TABLE = 'donorinformation';
+    TABLE = 'tbl_donations';
 
 /**
  * Creates record
@@ -140,8 +140,8 @@ exports.read = function (req, callback) {
                      donor->"$.first_name" as first_name,
                      donor->"$.last_name" as last_name,
                      donor->"$.date_of_donation" as date_of_donation
-              FROM tbl_donations
-              WHERE NOT is_completed = 0
+              FROM ` + TABLE +
+              ` WHERE NOT is_completed = 0
               ORDER BY created desc`)
         .then(function (data) {
 
