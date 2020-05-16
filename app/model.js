@@ -134,32 +134,21 @@ exports.read = function (req, callback) {
      */
 
     /* Query for Completed Donations page */
-    /*
-    DB('tbl_donations')
-      /*
-        .select('completeddonations.donorID', 'donorinformation.donorTitle',
-                'donorinformation.donorFirstName',
-                'donorinformation.donorLastName',
-                'donationamountinformation.dateOfDonation')
-      */
-      /**
-       * returns TypeError: DB(...).raw is not a function
-       *
-        .raw('SELECT id, donor->"$.title" AS title')
-        or
-        .schema.raw('SELECT id, donor->"$.title" AS title')
-       *
-     */
-     DB
-        .raw('SELECT id, donor->"$.title" AS title FROM tbl_donations WHERE NOT is_completed = 0 ORDER BY created desc')
-        //.whereNot('is_completed', 0)
-        //.orderBy('created', 'desc')
+    DB
+        .raw(`SELECT id,
+                     donor->"$.title" AS title,
+                     donor->"$.first_name" as first_name,
+                     donor->"$.last_name" as last_name,
+                     donor->"$.date_of_donation" as date_of_donation
+              FROM tbl_donations
+              WHERE NOT is_completed = 0
+              ORDER BY created desc`)
         .then(function (data) {
 
             callback({
                 status: 200,
                 message: 'Record retrieved.',
-                data: data
+                data: data[0]
             });
 
         })
