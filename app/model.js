@@ -97,43 +97,10 @@ exports.create = function (req, callback) {
  */
 exports.read = function (req, callback) {
 
-    /* original read query
-    DB(TABLE)
-        .select('*')
-        .where({
-            id: req.query.id
-        })
-    */
-
-    /* Query for Donation Queue page (in old app, see getDonorQueue() from
-     * donationsmodel.php for model, and dashboard.php and donorQueue.php for
-     * view)
-    DB('queue')
-        .join('donorinformation', 'queue.donorID', '=',
-              'donorinformation.donorID')
-        .join('donationamountinformation', 'donationamountinformation.donorID',
-              '=', 'donorinformation.donorID')
-        .select('queue.donorID', 'donorinformation.donorTitle',
-                'donorinformation.donorFirstName',
-                'donorinformation.donorLastName',
-                'donationamountinformation.dateOfDonation')
-        .orderBy('queue.timestamp', 'desc')
-        .then(function (data) {
-
-            callback({
-                status: 200,
-                message: 'Record retrieved.',
-                data: data
-            });
-
-        })
-        .catch(function (error) {
-            LOGGER.module().fatal('FATAL: Unable to read record ' + error);
-            throw 'FATAL: Unable to read record ' + error;
-        });
+    /**
+     * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
+     * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
      */
-
-    /* Query for Completed Donations page */
     DB
         .raw(`SELECT id,
                      donor->"$.title" AS title,
@@ -141,13 +108,13 @@ exports.read = function (req, callback) {
                      donor->"$.last_name" as last_name,
                      donor->"$.date_of_donation" as date_of_donation
               FROM ` + TABLE +
-              ` WHERE NOT is_completed = 0
-              ORDER BY created desc`)
+              ` WHERE is_completed = ` + req.query.is_completed +
+              ` ORDER BY created desc`)
         .then(function (data) {
 
             callback({
                 status: 200,
-                message: 'Record retrieved.',
+                message: 'Records retrieved.',
                 data: data[0]
             });
 
