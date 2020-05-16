@@ -98,17 +98,22 @@ exports.create = function (req, callback) {
 exports.read = function (req, callback) {
 
     /**
+     * Query for all donation records: SITE_URL/api/app?api_key=API_KEY
      * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
      * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
      */
+    let where_clause = typeof req.query.is_completed === 'undefined' ? "" : " WHERE"
+                       + " is_completed = " + req.query.is_completed;
+    console.log(where_clause === "" ? "where_clause is an empty string" : where_clause);
+
     DB
         .raw(`SELECT id,
                      donor->"$.title" AS title,
                      donor->"$.first_name" as first_name,
                      donor->"$.last_name" as last_name,
                      donor->"$.date_of_donation" as date_of_donation
-              FROM ` + TABLE +
-              ` WHERE is_completed = ` + req.query.is_completed +
+              FROM ` + TABLE
+              + where_clause +
               ` ORDER BY created desc`)
         .then(function (data) {
 
