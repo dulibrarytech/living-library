@@ -134,6 +134,7 @@ exports.read = function (req, callback) {
      */
 
     /* Query for Completed Donations page */
+    /*
     DB('tbl_donations')
       /*
         .select('completeddonations.donorID', 'donorinformation.donorTitle',
@@ -141,9 +142,18 @@ exports.read = function (req, callback) {
                 'donorinformation.donorLastName',
                 'donationamountinformation.dateOfDonation')
       */
-        .select('*')
-        .whereNot('is_completed', 0)
-        .orderBy('created', 'desc')
+      /**
+       * returns TypeError: DB(...).raw is not a function
+       *
+        .raw('SELECT id, donor->"$.title" AS title')
+        or
+        .schema.raw('SELECT id, donor->"$.title" AS title')
+       *
+     */
+     DB
+        .raw('SELECT id, donor->"$.title" AS title FROM tbl_donations WHERE NOT is_completed = 0 ORDER BY created desc')
+        //.whereNot('is_completed', 0)
+        //.orderBy('created', 'desc')
         .then(function (data) {
 
             callback({
