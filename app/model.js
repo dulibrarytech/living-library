@@ -116,6 +116,12 @@ exports.read = function (req, callback) {
               + where_clause +
               ` ORDER BY created desc`)
         .then(function (data) {
+            for (let i = 0; i < data[0].length; i++) {
+                console.log("Tracking ID = " + data[0][i].id + ", from " +
+                            data[0][i].title + " " + data[0][i].first_name +
+                            " " + data[0][i].last_name + ", donated on " +
+                            data[0][i].date_of_donation);
+            }
 
             callback({
                 status: 200,
