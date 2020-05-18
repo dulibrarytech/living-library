@@ -151,7 +151,9 @@ exports.update = function (req, callback) {
         .update({
             donor: req.body.donor,
             who_to_notify: req.body.who_to_notify,
-            recipient: req.body.recipient
+            recipient: req.body.recipient,
+            book: req.body.book,
+            is_completed: req.body.is_completed
         })
         .then(function (data) {
 
@@ -180,10 +182,11 @@ exports.delete = function (req, callback) {
 
     DB(TABLE)
         .where({
-            donorID: req.query.id
+            id: req.query.id
         })
         .del()
         .then(function (data) {
+            console.log("Deleted " + req.query.id)
 
             callback({
                 status: 204,
