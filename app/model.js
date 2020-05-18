@@ -43,7 +43,7 @@ exports.create = function (req, callback) {
             .insert(req.body)
             .then(function (data) {
                 console.log("Added " + data);
-                obj.donorID = data;
+                obj.id = data;
                 callback(null, obj);
                 return false;
             })
@@ -58,7 +58,7 @@ exports.create = function (req, callback) {
         DB(TABLE)
             .select('*')
             .where({
-                donorID: obj.donorID
+                id: obj.id
             })
             .then(function (data) {
                 console.log("Inside secondFunction");
