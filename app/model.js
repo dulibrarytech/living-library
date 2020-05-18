@@ -142,18 +142,21 @@ exports.read = function (req, callback) {
  * @param callback
  */
 exports.update = function (req, callback) {
-    let record = req.body;
-    console.log(record);
+    console.log(req.body);
+
     DB(TABLE)
         .where({
-            donorID: req.query.id
+            id: req.query.id
         })
         .update({
-            donorTitle: record.donorTitle
+            donor: req.body.donor,
+            who_to_notify: req.body.who_to_notify,
+            recipient: req.body.recipient
         })
         .then(function (data) {
 
             if (data === 1) {
+                console.log("Updated " + req.query.id);
 
                 callback({
                     status: 200,
