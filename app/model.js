@@ -29,7 +29,8 @@ const LOGGER = require('../libs/log4'),
  * @param callback
  */
 exports.create = function (req, callback) {
-    console.log(req.body);
+    let request_body = req.body;
+    console.log(request_body);
 
     /**
      * Donation Form submission actions
@@ -40,7 +41,7 @@ exports.create = function (req, callback) {
         let obj = {};
 
         DB(TABLE)
-            .insert(req.body)
+            .insert(request_body)
             .then(function (data) {
                 console.log("Added " + data);
                 obj.id = data;
@@ -102,8 +103,18 @@ exports.read = function (req, callback) {
      * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
      * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
      */
+
+    let is_completed = req.query.is_completed.toLowerCase();
+    console.log("is_completed = " + is_completed);
+    console.log("typeof is_completed = " + typeof is_completed);
+    let where_clause = is_completed !== 'true' && is_completed !== 'false'
+                       && is_completed !== '0' && is_completed !== '1'
+                       ? ""
+                       : " WHERE" + " is_completed = " + is_completed;
+    /*
     let where_clause = typeof req.query.is_completed === 'undefined' ? "" : " WHERE"
                        + " is_completed = " + req.query.is_completed;
+    */
     console.log(where_clause === "" ? "where_clause is an empty string" : where_clause);
 
     DB
@@ -116,6 +127,9 @@ exports.read = function (req, callback) {
               + where_clause +
               ` ORDER BY created desc`)
         .then(function (data) {
+            /** To do this without MySQL's JSON functions, you'll need to run
+             *  JSON.parse on the data first.
+             */
             for (let i = 0; i < data[0].length; i++) {
                 console.log("Tracking ID = " + data[0][i].id + ", from " +
                             data[0][i].title + " " + data[0][i].first_name +
@@ -142,23 +156,25 @@ exports.read = function (req, callback) {
  * @param callback
  */
 exports.update = function (req, callback) {
-    console.log(req.body);
+    let id = req.query.id;
+    let request_body = req.body;
+    console.log(request_body);
 
     DB(TABLE)
         .where({
-            id: req.query.id
+            id: id
         })
         .update({
-            donor: req.body.donor,
-            who_to_notify: req.body.who_to_notify,
-            recipient: req.body.recipient,
-            book: req.body.book,
-            is_completed: req.body.is_completed
+            donor: request_body.donor,
+            who_to_notify: request_body.who_to_notify,
+            recipient: request_body.recipient,
+            book: request_body.book,
+            is_completed: request_body.is_completed
         })
         .then(function (data) {
 
             if (data === 1) {
-                console.log("Updated " + req.query.id);
+                console.log("Updated " + id);
 
                 callback({
                     status: 200,
@@ -179,14 +195,15 @@ exports.update = function (req, callback) {
  * @param callback
  */
 exports.delete = function (req, callback) {
+    let id = req.query.id;
 
     DB(TABLE)
         .where({
-            id: req.query.id
+            id: id
         })
         .del()
         .then(function (data) {
-            console.log("Deleted " + req.query.id)
+            console.log("Deleted " + id)
 
             callback({
                 status: 204,
