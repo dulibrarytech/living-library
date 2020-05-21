@@ -119,7 +119,8 @@ exports.read = function (req, callback) {
 
     DB
         .raw(`SELECT id,
-                     donor->"$.title" AS title,
+                     donor->"$.title" AS title1,
+                     JSON_EXTRACT(donor, '$.title') as title2,
                      donor->"$.first_name" as first_name,
                      donor->"$.last_name" as last_name,
                      donor->"$.date_of_donation" as date_of_donation
