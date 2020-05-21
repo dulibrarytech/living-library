@@ -112,31 +112,21 @@ exports.read = function (req, callback) {
     console.log("is_completed = " + is_completed);
     console.log("typeof is_completed = " + typeof is_completed);
 
-    /*
-    let where_clause = is_completed !== 'true' && is_completed !== 'false'
-                       && is_completed !== '0' && is_completed !== '1'
-                       ? ""
-                       : " WHERE" + " is_completed = " + is_completed;
-
-    console.log(where_clause === "" ? "where_clause is an empty string" : where_clause);
-    */
-
     DB(TABLE)
         .select('id', 'donor', 'who_to_notify', 'is_completed')
         .orderBy('created', 'desc')
         .modify(function(queryBuilder) {
-            let where_clause = false;
-            if (is_completed === 'true' || is_completed === '1') {
-                is_completed = 1;
-                where_clause = true;
-            } else if (is_completed === 'false' || is_completed === '0') {
-                is_completed = 0;
-                where_clause = true;
-            }
-            if (where_clause) {
+            if (is_completed === 'true' || is_completed === 'false'
+                || is_completed === '0' || is_completed === '1') {
+                // convert from string to boolean
+                is_completed = is_completed === 'true' || is_completed === '1';
+                console.log("is_completed = " + is_completed);
+
                 queryBuilder.where({
                     is_completed: is_completed
                 })
+            } else {
+                console.log("No where clause because is_completed = " + is_completed);
             }
         })
         .then(function (data) {
@@ -162,10 +152,13 @@ exports.read = function (req, callback) {
             // Is is ok to make 'donor' a constant?
             for (let i = 0; i < data.length; i++) {
                 const donor = JSON.parse(data[i].donor);
+                let completed_string = data[i].is_completed
+                                       ? " is completed."
+                                       : " is in the queue.";
                 console.log("Tracking ID = " + data[i].id + ", from " +
                             donor.title + " " + donor.first_name +
                             " " + donor.last_name + ", donated on " +
-                            donor.date_of_donation);
+                            donor.date_of_donation + completed_string);
             }
 
             callback({
