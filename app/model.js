@@ -112,37 +112,66 @@ exports.read = function (req, callback) {
     console.log("is_completed = " + is_completed);
     console.log("typeof is_completed = " + typeof is_completed);
 
+    /*
     let where_clause = is_completed !== 'true' && is_completed !== 'false'
                        && is_completed !== '0' && is_completed !== '1'
                        ? ""
                        : " WHERE" + " is_completed = " + is_completed;
 
     console.log(where_clause === "" ? "where_clause is an empty string" : where_clause);
+    */
 
-    DB
-        .raw(`SELECT id,
-                     donor->"$.title" AS title,
-                     donor->"$.first_name" as first_name,
-                     donor->"$.last_name" as last_name,
-                     donor->"$.date_of_donation" as date_of_donation
-              FROM ` + TABLE
-              + where_clause +
-              ` ORDER BY created desc`)
+    DB(TABLE)
+        .select('id', 'donor', 'who_to_notify', 'is_completed')
+        .orderBy('created', 'desc')
+        .modify(function(queryBuilder) {
+            let where_clause = false;
+            if (is_completed === 'true' || is_completed === '1') {
+                is_completed = 1;
+                where_clause = true;
+            } else if (is_completed === 'false' || is_completed === '0') {
+                is_completed = 0;
+                where_clause = true;
+            }
+            if (where_clause) {
+                queryBuilder.where({
+                    is_completed: is_completed
+                })
+            }
+        })
         .then(function (data) {
-            /** To do this without MySQL's JSON functions, you'll need to run
-             *  JSON.parse on the data first.
+            /** The Knex query returns a JSON object containing the query results.
+             *  Why does Postman return the JSON object with escaped quotes \"
+             *  and newlines in the callback? Is this okay?
              */
-            for (let i = 0; i < data[0].length; i++) {
-                console.log("Tracking ID = " + data[0][i].id + ", from " +
-                            data[0][i].title + " " + data[0][i].first_name +
-                            " " + data[0][i].last_name + ", donated on " +
-                            data[0][i].date_of_donation);
+            console.log("data = " + data + "\n");
+            console.log("data[0] = " + data[0] + "\n");
+            // So you can access each field (id and donor) using dot notation
+            console.log("data[0].id = " + data[0].id + "\n");
+            /** Note that the donor field is a string (not a JSON object) because
+             *  that's how it's stored in the database.
+             */
+            console.log("data[0].donor = " + data[0].donor + "\n");
+            // Since the donor field is a string, you can't access the keys.
+            console.log("data[0].donor.title = " + data[0].donor.title);
+            // So you can have to parse the JSON string into an object.
+            const donor0 = JSON.parse(data[0].donor);
+            console.log("donor0 = " + donor0 + "\n");
+            // Then you can access the title key's value using dot notation
+            console.log("donor0.title = " + donor0.title + "\n\n");
+            // Is is ok to make 'donor' a constant?
+            for (let i = 0; i < data.length; i++) {
+                const donor = JSON.parse(data[i].donor);
+                console.log("Tracking ID = " + data[i].id + ", from " +
+                            donor.title + " " + donor.first_name +
+                            " " + donor.last_name + ", donated on " +
+                            donor.date_of_donation);
             }
 
             callback({
                 status: 200,
                 message: 'Records retrieved.',
-                data: data[0]
+                data: data
             });
 
         })
