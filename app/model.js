@@ -107,11 +107,6 @@ exports.read = function (req, callback) {
                        ? ""
                        : req.query.is_completed.toLowerCase();
 
-    console.log("req.query.is_completed = " + req.query.is_completed);
-    console.log("typeof req.query.is_completed = " + typeof req.query.is_completed);
-    console.log("is_completed = " + is_completed);
-    console.log("typeof is_completed = " + typeof is_completed);
-
     DB(TABLE)
         .select('id', 'donor', 'who_to_notify', 'is_completed')
         .orderBy('created', 'desc')
@@ -120,13 +115,14 @@ exports.read = function (req, callback) {
                 || is_completed === '0' || is_completed === '1') {
                 // convert from string to boolean
                 is_completed = is_completed === 'true' || is_completed === '1';
-                console.log("is_completed = " + is_completed);
+                console.log("is_completed = " + is_completed + "\n");
 
                 queryBuilder.where({
                     is_completed: is_completed
                 })
             } else {
-                console.log("No where clause because is_completed = " + is_completed);
+                console.log("No where clause because is_completed = "
+                            + is_completed + "\n");
             }
         })
         .then(function (data) {
@@ -134,23 +130,8 @@ exports.read = function (req, callback) {
              *  Why does Postman return the JSON object with escaped quotes \"
              *  and newlines in the callback? Is this okay?
              */
-            console.log("data = " + data + "\n");
-            console.log("data[0] = " + data[0] + "\n");
-            // So you can access each field (id and donor) using dot notation
-            console.log("data[0].id = " + data[0].id + "\n");
-            /** Note that the donor field is a string (not a JSON object) because
-             *  that's how it's stored in the database.
-             */
-            console.log("data[0].donor = " + data[0].donor + "\n");
-            // Since the donor field is a string, you can't access the keys.
-            console.log("data[0].donor.title = " + data[0].donor.title);
-            // So you can have to parse the JSON string into an object.
-            const donor0 = JSON.parse(data[0].donor);
-            console.log("donor0 (i.e. JSON.parse(data[0].donor)) = " + donor0 + "\n");
-            // Then you can access the title key's value using dot notation
-            console.log("donor0.title = " + donor0.title + "\n\n");
-            // Is is ok to make 'donor' a constant?
             for (let i = 0; i < data.length; i++) {
+                // Is is ok to make 'donor' a constant?
                 const donor = JSON.parse(data[i].donor);
                 let is_completed_string = data[i].is_completed
                                           ? " is completed."
@@ -160,6 +141,7 @@ exports.read = function (req, callback) {
                             " " + donor.last_name + ", donated on " +
                             donor.date_of_donation + is_completed_string);
             }
+            console.log("=====================\n");
 
             callback({
                 status: 200,
