@@ -108,7 +108,7 @@ exports.read = function (req, callback) {
                        : req.query.is_completed.toLowerCase();
 
     DB(TABLE)
-        .select('id', 'donor', 'who_to_notify', 'is_completed')
+        .select('id', 'donor', 'recipient', 'is_completed')
         .orderBy('created', 'desc')
         .modify(function(queryBuilder) {
             if (is_completed === 'true' || is_completed === 'false'
@@ -133,13 +133,18 @@ exports.read = function (req, callback) {
             for (let i = 0; i < data.length; i++) {
                 // Is is ok to make 'donor' a constant?
                 const donor = JSON.parse(data[i].donor);
+                const recipient = JSON.parse(data[i].recipient);
                 let is_completed_string = data[i].is_completed
-                                          ? " is completed."
-                                          : " is in the queue.";
-                console.log("Tracking ID = " + data[i].id + ", from " +
+                                          ? "completed"
+                                          : "in the queue";
+                console.log("Tracking ID = " + data[i].id + " from " +
                             donor.title + " " + donor.first_name +
-                            " " + donor.last_name + ", donated on " +
-                            donor.date_of_donation + is_completed_string);
+                            " " + donor.last_name + ".\n"
+                            + recipient.donation_type + " " + recipient.title
+                            + " " + recipient.first_name + " "
+                            + recipient.last_name + ".\nDonated on "
+                            + donor.date_of_donation + ".\nStatus: "
+                            + is_completed_string + ".\n");
             }
             console.log("=====================\n");
 
