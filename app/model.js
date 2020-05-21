@@ -40,6 +40,13 @@ exports.create = function (req, callback) {
     function createDonor(callback) {
         let obj = {};
 
+        /**
+         * This inserts all fields from the request_body, with newlines included,
+         * into the database. Is that okay?
+         *
+         * Would this be the spot to add JSON validation? Or should it be at
+         * the view or controller level?
+         */
         DB(TABLE)
             .insert(request_body)
             .then(function (data) {
@@ -73,6 +80,11 @@ exports.create = function (req, callback) {
             });
     }
 
+    /**
+     * Is this waterfall approach needed here? I don't think secondFunction
+     * is necessary since I can populate the entire tbl_donations record with
+     * one insert.
+     */
     ASYNC.waterfall([
        createDonor,
        secondFunction
@@ -171,6 +183,19 @@ exports.update = function (req, callback) {
     let request_body = req.body;
     console.log(request_body);
 
+    /**
+     * This updates all fields from the request_body, with newlines included,
+     * into the database. Any key from the request body that is not in the
+     * database is ignored. Is that okay?
+     *
+     * Should I check for valid values for each field before updating the DB?
+     * If so, at which level (model, controller or view)?
+     *
+     * If I have last_updated keys in my JSON fields, I'll need to automatically
+     * add the current timestamp to each JSON field before updating the database.
+     * Do you have a recommendation on how to implement this type of
+     * timestamping within JSON?
+     */
     DB(TABLE)
         .where({
             id: id
@@ -213,8 +238,23 @@ exports.delete = function (req, callback) {
             id: id
         })
         .del()
-        .then(function (data) {
-            console.log("Deleted " + id)
+        .then(function (count) {
+            switch(count) {
+                /**
+                 *  Would it be better to throw an error for case 0?
+                 *  If not, 204 seems like an appropriate status code even if
+                 *  nothing is deleted. But I need a more accurate callback
+                 *  message that works for all cases here.
+                 */
+                case 0:
+                    console.log(id + " doesn't exist. Nothing to delete.");
+                    break;
+                case 1:
+                    console.log("Deleted " + id);
+                    break;
+                default:
+                    console.log("Delete " + count + " records.");
+            }
 
             callback({
                 status: 204,
