@@ -103,18 +103,20 @@ exports.read = function (req, callback) {
      * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
      * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
      */
+    let is_completed = typeof req.query.is_completed === 'undefined'
+                       ? ""
+                       : req.query.is_completed.toLowerCase();
 
-    let is_completed = req.query.is_completed.toLowerCase();
+    console.log("req.query.is_completed = " + req.query.is_completed);
+    console.log("typeof req.query.is_completed = " + typeof req.query.is_completed);
     console.log("is_completed = " + is_completed);
     console.log("typeof is_completed = " + typeof is_completed);
+
     let where_clause = is_completed !== 'true' && is_completed !== 'false'
                        && is_completed !== '0' && is_completed !== '1'
                        ? ""
                        : " WHERE" + " is_completed = " + is_completed;
-    /*
-    let where_clause = typeof req.query.is_completed === 'undefined' ? "" : " WHERE"
-                       + " is_completed = " + req.query.is_completed;
-    */
+
     console.log(where_clause === "" ? "where_clause is an empty string" : where_clause);
 
     DB
@@ -133,7 +135,7 @@ exports.read = function (req, callback) {
              */
             for (let i = 0; i < data[0].length; i++) {
                 console.log("Tracking ID = " + data[0][i].id + ", from " +
-                            data[0][i].title + " " + data[0][i].first_name +
+                            data[0][i].title2 + " " + data[0][i].first_name +
                             " " + data[0][i].last_name + ", donated on " +
                             data[0][i].date_of_donation);
             }
