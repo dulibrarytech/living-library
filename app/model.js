@@ -121,8 +121,7 @@ exports.read = function (req, callback) {
 
     DB
         .raw(`SELECT id,
-                     donor->"$.title" AS title1,
-                     JSON_EXTRACT(donor, '$.title') as title2,
+                     donor->"$.title" AS title,
                      donor->"$.first_name" as first_name,
                      donor->"$.last_name" as last_name,
                      donor->"$.date_of_donation" as date_of_donation
@@ -135,7 +134,7 @@ exports.read = function (req, callback) {
              */
             for (let i = 0; i < data[0].length; i++) {
                 console.log("Tracking ID = " + data[0][i].id + ", from " +
-                            data[0][i].title2 + " " + data[0][i].first_name +
+                            data[0][i].title + " " + data[0][i].first_name +
                             " " + data[0][i].last_name + ", donated on " +
                             data[0][i].date_of_donation);
             }
