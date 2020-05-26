@@ -36,16 +36,28 @@ exports.create = function (req, callback) {
      * Donation Form submission actions
      */
 
+    // Add validation here
+
     // 1.)
     function createDonor(callback) {
         let obj = {};
 
         /**
          * This inserts all fields from the request_body, with newlines included,
-         * into the database. Is that okay?
+         * into the database. Is that okay? This could be problematic. Keep an
+         * eye on this.
          *
          * Would this be the spot to add JSON validation? Or should it be at
-         * the view or controller level?
+         * the view or controller level? Yes, add it just above this function
+         * defintion (see above comment).
+         *
+         * Validation process:
+         * 1) Do validation at the HTML form-level to alert for invalid field
+         *    values and empty required fields.
+         * 2) Construct JSON based on form data.
+         * 3) Validate the JSON before sending to the controller/model.
+         * 4) The model can have its own JSON validation (since there can be
+         *    other endpoints using the model).
          */
         DB(TABLE)
             .insert(request_body)
@@ -83,7 +95,7 @@ exports.create = function (req, callback) {
     /**
      * Is this waterfall approach needed here? I don't think secondFunction
      * is necessary since I can populate the entire tbl_donations record with
-     * one insert.
+     * one insert. <-- This is correct (no waterfall approach needed here).
      */
     ASYNC.waterfall([
        createDonor,
@@ -140,10 +152,11 @@ exports.read = function (req, callback) {
         .then(function (data) {
             /** The Knex query returns a JSON object containing the query results.
              *  Why does Postman return the JSON object with escaped quotes \"
-             *  and newlines in the callback? Is this okay?
+             *  and newlines in the callback? Is this okay? This could be
+             *  problematic. Keep an eye on this.
              */
             for (let i = 0; i < data.length; i++) {
-                // Is is ok to make 'donor' a constant?
+                // Is is ok to make 'donor' a constant? Yes.
                 const donor = JSON.parse(data[i].donor);
                 const recipient = JSON.parse(data[i].recipient);
                 let is_completed_string = data[i].is_completed
@@ -186,16 +199,25 @@ exports.update = function (req, callback) {
     /**
      * This updates all fields from the request_body, with newlines included,
      * into the database. Any key from the request body that is not in the
-     * database is ignored. Is that okay?
+     * database is ignored. Is that okay? This could be problematic. Keep an
+     * eye on this.
      *
      * Should I check for valid values for each field before updating the DB?
-     * If so, at which level (model, controller or view)?
+     * If so, at which level (model, controller or view)? At the form level.
      *
      * If I have last_updated keys in my JSON fields, I'll need to automatically
      * add the current timestamp to each JSON field before updating the database.
      * Do you have a recommendation on how to implement this type of
-     * timestamping within JSON?
+     * timestamping within JSON? Take the following approach:
+     * 1) Use moment.js time library (the built-in time library isn’t very good)
+     *    to get the current timestamp.
+     * 2) Construct the key-value pair.
+     * 3) Then add the key-value pair to the JSON before inserting the JSON into
+     *    the database.
      */
+
+    // Validate the request body
+
     DB(TABLE)
         .where({
             id: id
