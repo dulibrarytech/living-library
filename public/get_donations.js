@@ -76,6 +76,7 @@ fetch(url)
         console.log("data = " + data);
         const json = data ? JSON.parse(data) : {};
         console.log(json);
+        let html = '';
         for (let i = 0; i < json.length; i++) {
             const donor = JSON.parse(json[i].donor);
             const recipient = JSON.parse(json[i].recipient);
@@ -90,6 +91,20 @@ fetch(url)
                         + recipient.last_name + ".\nDonated on "
                         + donor.date_of_donation + ".\nStatus: "
                         + is_completed_string + ".\n");
+
+            html += "<p>Tracking ID = " + json[i].id + " from " +
+                    donor.title + " " + donor.first_name +
+                    " " + donor.last_name + ".\n"
+                    + recipient.donation_type + " " + recipient.title
+                    + " " + recipient.first_name + " "
+                    + recipient.last_name + ".\nDonated on "
+                    + donor.date_of_donation + ".\nStatus: "
+                    + is_completed_string + ".\n</p>"
+        }
+        let id = document.querySelector('#donations');
+
+        if (id) {
+            id.innerHTML = html;
         }
     })
     .catch((error) => {
