@@ -61,60 +61,63 @@ fetch(url, {
  * the JSON keys without a problem.
  */
 
-const url = "http://localhost:8000/api/app?is_completed=false&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR";
+function get_donations(is_completed) {
+    const url = 'http://localhost:8000/api/app?is_completed=' + is_completed
+                + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
-/*
-fetch(url, {
-    mode: 'no-cors'
-})
-*/
-fetch(url)
-    .then(response => {
-        return response.json();
+    /*
+    fetch(url, {
+        mode: 'no-cors'
     })
-    .then(data => {
-        console.log(data);
-        let html = '<table>';
-        html += '<tr>';
-        html += '<th>Book Plate Form</th>';
-        html += '<th>Tracking Number</th>';
-        html += '<th>Donor Name</th>';
-        html += '<th>Recipient Name</th>';
-        html += '<th>Date of Donation</th>';
-        html += '</tr>';
-        for (let i = 0; i < data.length; i++) {
-            const donor = JSON.parse(data[i].donor);
-            const recipient = JSON.parse(data[i].recipient);
-            let is_completed_string = data[i].is_completed
-                                      ? 'completed'
-                                      : 'in the queue';
-            console.log('Tracking ID = ' + data[i].id + ' from ' +
-                        donor.title + ' ' + donor.first_name +
-                        ' ' + donor.last_name + '.\n'
-                        + recipient.donation_type + ' ' + recipient.title
-                        + ' ' + recipient.first_name + ' '
-                        + recipient.last_name + '.\nDonated on '
-                        + donor.date_of_donation + '.\nStatus: '
-                        + is_completed_string + '.\n');
-
+    */
+    fetch(url)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            let html = '<table>';
             html += '<tr>';
-            html += '<td>' + data[i].id + '</td>'; // To-Do: Should link to book plate form
-            html += '<td>' + data[i].id + '</td>';
-            html += '<td>' + donor.title + ' ' + donor.first_name + ' '
-                    + donor.last_name + '</td>';
-            html += '<td>' + recipient.title + ' ' + recipient.first_name + ' '
-                    + recipient.last_name + '</td>';
-            html += '<td>' + donor.date_of_donation + '</td>';
+            html += '<th>Book Plate Form</th>';
+            html += '<th>Tracking Number</th>';
+            html += '<th>Donor Name</th>';
+            html += '<th>Recipient Name</th>';
+            html += '<th>Date of Donation</th>';
             html += '</tr>';
-        }
-        html += '</table>';
-        let id = document.querySelector('#donations');
+            for (let i = 0; i < data.length; i++) {
+                const donor = JSON.parse(data[i].donor);
+                const recipient = JSON.parse(data[i].recipient);
+                let is_completed_string = data[i].is_completed
+                                          ? 'completed'
+                                          : 'in the queue';
+                console.log('Tracking ID = ' + data[i].id + ' from ' +
+                            donor.title + ' ' + donor.first_name +
+                            ' ' + donor.last_name + '.\n'
+                            + recipient.donation_type + ' ' + recipient.title
+                            + ' ' + recipient.first_name + ' '
+                            + recipient.last_name + '.\nDonated on '
+                            + donor.date_of_donation + '.\nStatus: '
+                            + is_completed_string + '.\n');
 
-        if (id) {
-            id.innerHTML = html;
-        }
-    })
-    .catch((error) => {
-        console.log('In the catch block');
-        console.log(error);
-    })
+                html += '<tr>';
+                html += '<td>' + data[i].id + '</td>'; // To-Do: Should link to book plate form
+                html += '<td>' + data[i].id + '</td>';
+                html += '<td>' + donor.title + ' ' + donor.first_name + ' '
+                        + donor.last_name + '</td>';
+                html += '<td>' + recipient.title + ' ' + recipient.first_name + ' '
+                        + recipient.last_name + '</td>';
+                html += '<td>' + donor.date_of_donation + '</td>';
+                html += '</tr>';
+            }
+            html += '</table>';
+            let id = document.querySelector('#donations');
+
+            if (id) {
+                id.innerHTML = html;
+            }
+        })
+        .catch((error) => {
+            console.log('In the catch block');
+            console.log(error);
+        })
+}
