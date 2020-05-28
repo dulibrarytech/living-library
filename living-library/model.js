@@ -68,8 +68,8 @@ exports.create = function (req, callback) {
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().error('FATAL [/app/model module (create/createDonor)] Unable to create record ' + error);
-                throw 'FATAL [/app/model module (create/createDonor)] Unable to create record ' + error;
+                LOGGER.module().error('FATAL [/living-library/model module (create/createDonor)] Unable to create record ' + error);
+                throw 'FATAL [/living-library/model module (create/createDonor)] Unable to create record ' + error;
             });
     }
 
@@ -87,8 +87,8 @@ exports.create = function (req, callback) {
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().error('FATAL: [/app/model module (create/secondFunction)] Unable to create record ' + error);
-                throw 'FATAL: [/app/model module (create/secondFunction)] Unable to create record ' + error;
+                LOGGER.module().error('FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error);
+                throw 'FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error;
             });
     }
 
@@ -104,7 +104,7 @@ exports.create = function (req, callback) {
         console.log("Inside waterfall function");
 
         if (error) {
-            LOGGER.module().error('ERROR: [/app/model module (create/async.waterfall)] ' + error);
+            LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] ' + error);
         }
 
         callback({

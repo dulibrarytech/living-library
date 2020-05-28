@@ -52,5 +52,5 @@ module.exports = function() {
     APP.set('views', './views');
     APP.set('view engine', 'ejs');
 
-    require('../app/routes.js')(APP);
+    require('../living-library/routes.js')(APP);
 };

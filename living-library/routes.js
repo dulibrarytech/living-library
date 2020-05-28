@@ -18,7 +18,7 @@
 
 'use strict';
 
-const DUAPP = require('../app/controller'),
+const DUAPP = require('../living-library/controller'),
     TOKEN = require('../libs/tokens');
 
 module.exports = function (app) {

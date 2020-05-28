@@ -18,8 +18,8 @@
 
 'use strict';
 
-const DUAPP = require('../app/model'),
-    SERVICE = require('../app/service');
+const DUAPP = require('../living-library/model'),
+    SERVICE = require('../living-library/service');
 
 exports.create = function (req, res) {
     DUAPP.create(req, function (data) {
