@@ -23,7 +23,7 @@ const DUAPP = require('../app/controller'),
 
 module.exports = function (app) {
 
-    app.route('/api/app')
+    app.route('/api/v1/living-library/donations')
         .post(TOKEN.verify, DUAPP.create)
         .get(TOKEN.verify, DUAPP.read)
         .put(TOKEN.verify, DUAPP.update)

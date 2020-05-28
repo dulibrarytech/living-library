@@ -62,8 +62,8 @@ fetch(url, {
  */
 
 function get_donations(is_completed) {
-    const url = 'http://localhost:8000/api/app?is_completed=' + is_completed
-                + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
+                + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
     /*
     fetch(url, {
@@ -128,8 +128,9 @@ function get_donations(is_completed) {
 }
 
 function get_donation(is_completed, id) {
-    const url = 'http://localhost:8000/api/app?is_completed=' + is_completed
-                + '&id=' + id + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
+                + is_completed + '&id=' + id
+                + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
     /*
     fetch(url, {
