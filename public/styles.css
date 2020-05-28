@@ -2,6 +2,10 @@ a:hover {
     color: green;
 }
 
+.label {
+    font-weight: bold;
+}
+
 nav ul {
     margin: 0;
     padding: 0;

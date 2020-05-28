@@ -145,13 +145,15 @@ function get_donation(is_completed, id) {
             const donor = JSON.parse(data[0].donor);
             const who_to_notify = JSON.parse(data[0].who_to_notify);
             const recipient = JSON.parse(data[0].recipient);
-            let html = '<p>Person making donation: ';
+            let html = '<p><span class="label">Person making donation: </span>';
             html += donor.title + ' ' + donor.first_name + ' '
                     + donor.last_name + '</p>';
             if (donor.notes !== null) {
-                html += '<p>Notes: ' + donor.notes + '</p>';
+                html += '<p><span class="label">Notes: </span>'
+                        + donor.notes + '</p>';
             }
-            html += '<p>Person(s) to be notified of donation: ';
+            html += '<p><span class="label">Person(s) to be notified of '
+                    + 'donation: </span>';
             for (let i = 0; i < who_to_notify.length; i++) {
                 if (i > 0)
                     html += ', ';
@@ -160,15 +162,16 @@ function get_donation(is_completed, id) {
                         + who_to_notify[i].last_name;
             }
             html += '</p>';
-            html += '<p>Person receiving donation: ';
+            html += '<p><span class="label">Person receiving donation: </span>';
             html += recipient.title + ' ' + recipient.first_name + ' '
                     + recipient.last_name + ' (' + recipient.donation_type
                     + ')</p>';
-            html += '<p>Date of donation: ' + donor.date_of_donation + '</p>';
+            html += '<p><span class="label">Date of donation: </span>'
+                    + donor.date_of_donation + '</p>';
             if (donor.subject_areas === null) {
-                html+= '<p>No subject areas selected</p>'
+                html+= '<p><span class="label">No subject areas selected</span></p>'
             } else {
-                html += '<p>Selected subject areas: ';
+                html += '<p><span class="label">Selected subject areas: </span>';
                 for (let i = 0; i < donor.subject_areas.length; i++) {
                     if (i > 0)
                         html += ', ';
