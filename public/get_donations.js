@@ -78,7 +78,9 @@ function get_donations(is_completed) {
             console.log(data);
             let html = '<table>';
             html += '<tr>';
-            html += '<th>Book Plate Form</th>';
+            html += is_completed === 'false'
+                    ? '<th>Book Plate Form</th>'
+                    : '<th>Full Record</th>'
             html += '<th>Tracking Number</th>';
             html += '<th>Donor Name</th>';
             html += '<th>Recipient Name</th>';

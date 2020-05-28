@@ -152,6 +152,17 @@ exports.read = function (req, callback) {
                             + is_completed + "\n");
             }
         })
+        .modify(function(queryBuilder) {
+            if (typeof id !== 'undefined') {
+                console.log("id = " + id + ", so adding to SQL query\n");
+
+                queryBuilder.where({
+                    id: id
+                })
+            } else {
+                console.log("id = " + id + ", so no adjustment to SQL query\n");
+            }
+        })
         .then(function (data) {
             /** The Knex query returns a JSON object containing the query results.
              *  Why does Postman return the JSON object with escaped quotes \"
