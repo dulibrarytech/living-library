@@ -146,7 +146,9 @@ function get_donation(is_completed, id) {
             let html = '<p>Person making donation: ';
             html += donor.title + ' ' + donor.first_name + ' '
                     + donor.last_name + '</p>';
-            html += '<p>Notes: ' + donor.notes + '</p>';
+            if (donor.notes !== null) {
+                html += '<p>Notes: ' + donor.notes + '</p>';
+            }
             html += '<p>Person(s) to be notified of donation: ';
             for (let i = 0; i < who_to_notify.length; i++) {
                 if (i > 0)
@@ -161,13 +163,17 @@ function get_donation(is_completed, id) {
                     + recipient.last_name + ' (' + recipient.donation_type
                     + ')</p>';
             html += '<p>Date of donation: ' + donor.date_of_donation + '</p>';
-            html += '<p>Selected subject areas: ';
-            for (let i = 0; i < donor.subject_areas.length; i++) {
-                if (i > 0)
-                    html += ', ';
-                html += donor.subject_areas[i];
+            if (donor.subject_areas === null) {
+                html+= '<p>No subject areas selected</p>'
+            } else {
+                html += '<p>Selected subject areas: ';
+                for (let i = 0; i < donor.subject_areas.length; i++) {
+                    if (i > 0)
+                        html += ', ';
+                    html += donor.subject_areas[i];
+                }
+                html += '</p>';
             }
-            html += '</p>';
             console.log(html);
             let id = document.querySelector('#donations');
 
