@@ -116,7 +116,7 @@ exports.create = function (req, callback) {
 };
 
 /**
- * Reads record
+ * Reads records
  * @param req
  * @param callback
  */
@@ -126,6 +126,7 @@ exports.read = function (req, callback) {
      * Query for all donation records: SITE_URL/api/app?api_key=API_KEY
      * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
      * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
+     * Query for a single donation record: SITE_URL/api/app?id=[id]&api_key=API_KEY
      */
     let is_completed = typeof req.query.is_completed === 'undefined'
                        ? ""
