@@ -135,7 +135,7 @@ exports.read = function (req, callback) {
     let id = req.query.id;
 
     DB(TABLE)
-        .select('id', 'donor', 'who_to_notify', 'recipient', 'is_completed')
+        .select('id', 'donor', 'who_to_notify', 'recipient', 'book', 'is_completed')
         .orderBy('created', 'desc')
         .modify(function(queryBuilder) {
             if (is_completed === 'true' || is_completed === 'false'
