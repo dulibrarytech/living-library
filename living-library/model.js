@@ -171,21 +171,37 @@ exports.read = function (req, callback) {
              */
             for (let i = 0; i < data.length; i++) {
                 // Is is ok to make 'donor' a constant? Yes.
+                console.log(data[i]);
                 const donor = JSON.parse(data[i].donor);
+                console.log("Donor JSON = " + donor);
                 const recipient = JSON.parse(data[i].recipient);
                 let is_completed_string = data[i].is_completed
                                           ? "completed"
                                           : "in the queue";
-                console.log("Tracking ID = " + data[i].id + " from " +
-                            donor.title + " " + donor.first_name +
-                            " " + donor.last_name + ".\n"
-                            + recipient.donation_type + " " + recipient.title
-                            + " " + recipient.first_name + " "
-                            + recipient.last_name + ".\nDonated on "
-                            + donor.date_of_donation + ".\nStatus: "
-                            + is_completed_string + ".\n");
+                if (donor !== null) {
+                    console.log("Tracking ID = " + data[i].id + " from " +
+                                donor.title + " " + donor.first_name +
+                                " " + donor.last_name + ".\n");
+                } else {
+                    console.log("Donor field of " + data[i].id + " is "
+                                + donor);
+                }
+
+                if (recipient !== null) {
+                    console.log(recipient.donation_type + " " + recipient.title
+                                + " " + recipient.first_name + " "
+                                + recipient.last_name + ".\n");
+                } else {
+                    console.log("Recipient field of " + data[i].id + " is "
+                                  + recipient);
+                }
+
+                if (donor !== null) {
+                    console.log("Donated on " + donor.date_of_donation
+                                + ".\nStatus: " + is_completed_string + ".\n");
+                }
             }
-            console.log("=====================\n");
+            console.log("End of READ query from model\n=====================\n");
 
             callback({
                 status: 200,
