@@ -24,7 +24,8 @@ const HTTP = require('http'),
     BODYPARSER = require('body-parser'),
     METHODOVERRIDE = require('method-override'),
     HELMET = require('helmet'),
-    XSS = require('../libs/dom');
+    XSS = require('../libs/dom'),
+    CORS = require('cors');
 
 module.exports = function() {
 
@@ -49,6 +50,7 @@ module.exports = function() {
     APP.use(EXPRESS.static('./public'));
     APP.use(XSS.sanitize_req_query);
     APP.use(XSS.sanitize_req_body);
+    APP.use(CORS());
     APP.set('views', './views');
     APP.set('view engine', 'ejs');
 
