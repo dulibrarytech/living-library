@@ -8,44 +8,50 @@ function get_donations(is_completed) {
         })
         .then(data => {
             console.log(data);
-            let html = '<table>';
-            html += '<tr>';
-            html += is_completed === 'false'
-                    ? '<th>Book Plate Form</th>'
-                    : '<th>Full Record</th>'
-            html += '<th>Tracking Number</th>';
-            html += '<th>Donor Name</th>';
-            html += '<th>Recipient Name</th>';
-            html += '<th>Date of Donation</th>';
-            html += '</tr>';
-            for (let i = 0; i < data.length; i++) {
-                const donor = JSON.parse(data[i].donor);
-                const recipient = JSON.parse(data[i].recipient);
-                let is_completed_string = data[i].is_completed
-                                          ? 'completed'
-                                          : 'in the queue';
-                console.log('Tracking ID = ' + data[i].id + ' from ' +
-                            donor.title + ' ' + donor.first_name +
-                            ' ' + donor.last_name + '.\n'
-                            + recipient.donation_type + ' ' + recipient.title
-                            + ' ' + recipient.first_name + ' '
-                            + recipient.last_name + '.\nDonated on '
-                            + donor.date_of_donation + '.\nStatus: '
-                            + is_completed_string + '.\n');
+            let html = '';
 
+            if (data.length === 0) {
+                html += '<p class="label">No donation records found.</p>';
+            } else {
+                html += '<table>';
                 html += '<tr>';
-                html += '<td><a href="#" onclick="get_donation('
-                        + data[i].is_completed + ', ' + data[i].id + ')">'
-                        + data[i].id + '</a></td>';
-                html += '<td>' + data[i].id + '</td>';
-                html += '<td>' + donor.title + ' ' + donor.first_name + ' '
-                        + donor.last_name + '</td>';
-                html += '<td>' + recipient.title + ' ' + recipient.first_name + ' '
-                        + recipient.last_name + '</td>';
-                html += '<td>' + donor.date_of_donation + '</td>';
+                html += is_completed === 'false'
+                        ? '<th>Book Plate Form</th>'
+                        : '<th>Full Record</th>'
+                html += '<th>Tracking Number</th>';
+                html += '<th>Donor Name</th>';
+                html += '<th>Recipient Name</th>';
+                html += '<th>Date of Donation</th>';
                 html += '</tr>';
+                for (let i = 0; i < data.length; i++) {
+                    const donor = JSON.parse(data[i].donor);
+                    const recipient = JSON.parse(data[i].recipient);
+                    let is_completed_string = data[i].is_completed
+                                              ? 'completed'
+                                              : 'in the queue';
+                    console.log('Tracking ID = ' + data[i].id + ' from ' +
+                                donor.title + ' ' + donor.first_name +
+                                ' ' + donor.last_name + '.\n'
+                                + recipient.donation_type + ' ' + recipient.title
+                                + ' ' + recipient.first_name + ' '
+                                + recipient.last_name + '.\nDonated on '
+                                + donor.date_of_donation + '.\nStatus: '
+                                + is_completed_string + '.\n');
+
+                    html += '<tr>';
+                    html += '<td><a href="#" onclick="get_donation('
+                            + data[i].is_completed + ', ' + data[i].id + ')">'
+                            + data[i].id + '</a></td>';
+                    html += '<td>' + data[i].id + '</td>';
+                    html += '<td>' + donor.title + ' ' + donor.first_name + ' '
+                            + donor.last_name + '</td>';
+                    html += '<td>' + recipient.title + ' ' + recipient.first_name + ' '
+                            + recipient.last_name + '</td>';
+                    html += '<td>' + donor.date_of_donation + '</td>';
+                    html += '</tr>';
+                }
+                html += '</table>';
             }
-            html += '</table>';
             console.log(html);
             let id = document.querySelector('#donations');
 
