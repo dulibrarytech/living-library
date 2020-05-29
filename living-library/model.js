@@ -171,9 +171,7 @@ exports.read = function (req, callback) {
              */
             for (let i = 0; i < data.length; i++) {
                 // Is is ok to make 'donor' a constant? Yes.
-                console.log(data[i]);
                 const donor = JSON.parse(data[i].donor);
-                console.log("Donor JSON = " + donor);
                 const recipient = JSON.parse(data[i].recipient);
                 let is_completed_string = data[i].is_completed
                                           ? "completed"
@@ -181,7 +179,7 @@ exports.read = function (req, callback) {
                 if (donor !== null) {
                     console.log("Tracking ID = " + data[i].id + " from " +
                                 donor.title + " " + donor.first_name +
-                                " " + donor.last_name + ".\n");
+                                " " + donor.last_name);
                 } else {
                     console.log("Donor field of " + data[i].id + " is "
                                 + donor);
@@ -190,7 +188,7 @@ exports.read = function (req, callback) {
                 if (recipient !== null) {
                     console.log(recipient.donation_type + " " + recipient.title
                                 + " " + recipient.first_name + " "
-                                + recipient.last_name + ".\n");
+                                + recipient.last_name);
                 } else {
                     console.log("Recipient field of " + data[i].id + " is "
                                   + recipient);
@@ -198,8 +196,9 @@ exports.read = function (req, callback) {
 
                 if (donor !== null) {
                     console.log("Donated on " + donor.date_of_donation
-                                + ".\nStatus: " + is_completed_string + ".\n");
+                                + ".\nStatus: " + is_completed_string);
                 }
+                console.log();
             }
             console.log("End of READ query from model\n=====================\n");
 
