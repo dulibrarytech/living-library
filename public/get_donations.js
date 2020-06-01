@@ -8,12 +8,36 @@ function get_donations(is_completed) {
         })
         .then(data => {
             console.log(data);
+
+            /*
+             * Recreating browseDonorsView.initPage() from libs/donorDB/views.js
+             */
+
+            $(".content-window").css("height", "770px");
+            $(".pre-scrollable").css("max-height", "485px");
+
+            $("#page-label").text("Completed Donations");
+
+            /* Original donordb code for table-header
+             *
+            $("#table-header").html("<thead> <th class='span2'><!--SPACE--></th> <th class='span4'>Last Name / Organization</th> <th class='span4'>First Name</th> <th style='align:right'><!--SPACE--></th> </thead>");
+
+            utils.getDonorDataArray(setQueue);
+            viewUtils.setUserLabel();
+            */
+
+            $("#table-header").html("<thead> <th class='span2'>Tracking Number</th> <th class='span4'>Donor Name</th> <th class='span4'>Recipient Name</th> <th style='align:right'>Date of Donation</th> </thead>");
+
+            $("#table-content").html('');
             let html = '';
 
             if (data.length === 0) {
                 html += '<p class="label">No donation records found.</p>';
             } else {
-                html += '<table>';
+                // html += '<table>';
+                html += '<table class="table table-bordered table-striped">';
+                /* Table headings in table-header above
+                 *
                 html += '<tr>';
                 html += is_completed === 'false'
                         ? '<th>Book Plate Form</th>'
@@ -23,6 +47,7 @@ function get_donations(is_completed) {
                 html += '<th>Recipient Name</th>';
                 html += '<th>Date of Donation</th>';
                 html += '</tr>';
+                */
                 for (let i = 0; i < data.length; i++) {
                     const donor = JSON.parse(data[i].donor);
                     const recipient = JSON.parse(data[i].recipient);
@@ -56,27 +81,33 @@ function get_donations(is_completed) {
 
                     html += '<tr>';
 
+                    /* Leaving out column with link to individual donation
+                     * record for now.
+                     *
                     html += '<td><a href="#" onclick="get_donation('
                             + data[i].is_completed + ', ' + data[i].id + ')">'
                             + data[i].id + '</a></td>';
+                    */
 
-                    html += '<td>' + data[i].id + '</td>';
+                    // html += '<td>' + data[i].id + '</td>';
+                    html += '<td class="span2" style="text-align: center">'
+                            + data[i].id + '</td>';
 
-                    html += '<td>';
+                    html += '<td class="span4 name-cell4">';
                     if (donor !== null) {
                         html += donor.title + ' ' + donor.first_name + ' '
                                 + donor.last_name;
                     }
                     html += '</td>';
 
-                    html += '<td>';
+                    html += '<td class="span4 name-cell4">';
                     if (recipient !== null) {
                         html += recipient.title + ' ' + recipient.first_name
                                 + ' ' + recipient.last_name;
                     }
                     html += '</td>';
 
-                    html += '<td>';
+                    html += '<td style="text-align: center">';
                     if (donor !== null) {
                         html += donor.date_of_donation;
                     }
@@ -87,11 +118,15 @@ function get_donations(is_completed) {
                 html += '</table>';
             }
             console.log(html);
+
+            /*
             let id = document.querySelector('#donations');
 
             if (id) {
                 id.innerHTML = html;
             }
+            */
+            $("#table-content").html(html);
         })
         .catch((error) => {
             console.log('In the catch block');
