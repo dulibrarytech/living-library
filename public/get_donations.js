@@ -81,7 +81,14 @@ function get_donations(is_completed) {
                     }
                     console.log();
 
-                    html += '<tr>';
+                    html += '<tr onmouseover='
+                            + '"change_tracking_number_cell_text.call(this, '
+                            + data[i].is_completed + ', ' + data[i].id
+                            + ')" onmouseout='
+                            + '"change_tracking_number_cell_text.call(this, '
+                            + data[i].is_completed + ', ' + data[i].id + ')"'
+                            + ' onclick="get_donation(' + data[i].is_completed
+                            + ', ' + data[i].id + ')">';
 
                     /* Leaving out column with link to individual donation
                      * record for now.
@@ -134,6 +141,15 @@ function get_donations(is_completed) {
             console.log('In the catch block');
             console.log(error);
         })
+}
+
+function change_tracking_number_cell_text(is_completed, id) {
+    let firstChild = this.firstChild;
+    if (firstChild.textContent == id) {
+        firstChild.textContent = is_completed ? 'View record' : 'View book form';
+    } else {
+        firstChild.textContent = id;
+    }
 }
 
 function get_donation(is_completed, id) {
