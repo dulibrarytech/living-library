@@ -1,15 +1,6 @@
-/* Dropdown Button */
-.dropbtn {
-  /*
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  */
-}
-
-/* The container <div> - needed to position the dropdown content */
+/* The container for the dropdown menu
+ * - needed to position the dropdown content
+ */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -33,11 +24,22 @@
   display: block;
 }
 
+/* Remove text decoration when visited */
+.dropdown-content a:visited {
+  /* The style below is not working. Why?
+   * Both a:visited and a:hover should theoretically already have no
+   * text-decoration because it was set in ".dropdown-content a" above.
+   */
+  text-decoration: none !important;
+}
+
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: #ddd;
+  text-decoration: none;
+}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-/* .dropdown:hover .dropbtn {background-color: #3e8e41;} */
+.dropdown:hover .dropdown-content {
+  display: block;
+}

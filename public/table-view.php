@@ -1,7 +1,7 @@
 
 
 <?php
-	ini_set('display_errors', 1);
+	ini_set('display_errors', 1); // added for living library implementation testing
 ?>
 
 
@@ -56,6 +56,9 @@
 
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
+
+		<!-- added for living library implementation -->
+		<!-- needed for dropdown navbar menu -->
 		<link rel="stylesheet" type="text/css" href="living-library.css" />
 
 	</head>
@@ -126,63 +129,15 @@
 
 		            <li class="navbar-item"><a title="Statistics" href="http://localhost/donordb/index.php/search/statisticsView">Statistics</a></li>
 
-								<!--<li class="navbar-item">-->
-
+								<!-- added for living library implementation -->
 								<li class="navbar-item dropdown">
-			              <a title="Living Library" class="dropbtn">Dropdown</a>
+			              <a title="Living Library">Living Library</a>
 			              <div class="dropdown-content">
-			                  <a href="#">Link 1</a>
-			                  <a href="#">Link 2</a>
-			                  <a href="#">Link 3</a>
+			                  <a href="#">Donation Form</a>
+			                  <a href="#" onclick="get_donations('false')">Donation Queue</a>
+			                  <a href="#" onclick="get_donations('true')">Completed Donations</a>
 			              </div>
 			          </li>
-
-								<!--
-								<div class="dropdown">
-	                  <button class="dropbtn">Dropdown</button>
-	                  <div class="dropdown-content">
-	                      <a href="#">Link 1</a>
-	                      <a href="#">Link 2</a>
-	                      <a href="#">Link 3</a>
-	                  </div>
-	              </div>
-								-->
-
-								<!--
-								<li class="navbar-item dropdown">
-									  <a class="dropbtn">Dropdown</button></a>
-									  <div class="dropdown-content">
-										    <a href="#">Link 1</a>
-										    <a href="#">Link 2</a>
-										    <a href="#">Link 3</a>
-									  </div>
-								</li>
-								-->
-
-								<!--
-								<div class="dropdown">
-								  <button class="dropbtn">Dropdown</button>
-								  <div class="dropdown-content">
-								    <a href="#">Link 1</a>
-								    <a href="#">Link 2</a>
-								    <a href="#">Link 3</a>
-								  </div>
-								</div>
-								-->
-
-								<!--
-								<li class="navbar-item dropdown">
-				          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				          	Living Library
-				          </a>
-				          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-				            <a class="dropdown-item" href="#">Action</a>
-				            <a class="dropdown-item" href="#">Another action</a>
-				            <div class="dropdown-divider"></div>
-				            <a class="dropdown-item" href="#">Something else here</a>
-				          </div>
-				        </li>
-								-->
 
 		            <li class="navbar-item" id="logout-link" style="border: none;"><a title="Logout" onclick="authentication.logout();">Logout</a></li> <!-- call controller -->
 
@@ -267,6 +222,8 @@
 	<!--?php echo $pageLoader; ?>-->
 	<!-- $pageLoader loads browseDonorsView.initPage() -->
 
+	<!-- added for living library implementation -->
+	<!-- this should load the default view for Living Library? -->
 	<script src="get_donations.js"></script>
 	<script>get_donations('true');</script>
 

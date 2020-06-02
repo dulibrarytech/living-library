@@ -16,7 +16,9 @@ function get_donations(is_completed) {
             $(".content-window").css("height", "770px");
             $(".pre-scrollable").css("max-height", "485px");
 
-            $("#page-label").text("Completed Donations");
+            $("#page-label").text(is_completed === "false"
+                                  ? "Donation Queue"
+                                  : "Completed Donations");
 
             /* Original donordb code for table-header
              *
