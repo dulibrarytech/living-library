@@ -253,7 +253,14 @@ a:not([href]) {
   margin-left: 0;
 }
 
-/* added for living library implementation */
+/* Added for the Living Library integration:
+ * This ensures that the Completed Donations table (for Living Library) has its
+ * columns aligned correctly.
+ * Without this, the header row's columns do not line up with the content rows'
+ * columns.
+ * This is because the column heading "Full Record" is too wide for the span1
+ * class above.
+ */
 .table td.span1_wider,
 .table th.span1_wider {
   float: none;

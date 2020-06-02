@@ -1,7 +1,7 @@
 
 
 <?php
-	ini_set('display_errors', 1); // added for living library implementation testing
+	ini_set('display_errors', 1); // Added for testing the Living Library integration.
 ?>
 
 
@@ -57,7 +57,7 @@
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
 
-		<!-- added for living library implementation -->
+		<!-- Added for the Living Library integration -->
 		<!-- needed for dropdown navbar menu -->
 		<link rel="stylesheet" type="text/css" href="living-library.css" />
 
@@ -129,7 +129,7 @@
 
 		            <li class="navbar-item"><a title="Statistics" href="http://localhost/donordb/index.php/search/statisticsView">Statistics</a></li>
 
-								<!-- added for living library implementation -->
+								<!-- Added for the Living Library integration -->
 								<li class="navbar-item dropdown">
 			              <a title="Living Library">Living Library</a>
 			              <div class="dropdown-content">
@@ -222,7 +222,7 @@
 	<!--?php echo $pageLoader; ?>-->
 	<!-- $pageLoader loads browseDonorsView.initPage() -->
 
-	<!-- added for living library implementation -->
+	<!-- Added for the Living Library integration -->
 	<!-- this should load the default view for Living Library? -->
 	<script src="get_donations.js"></script>
 	<script>get_donations('true');</script>
