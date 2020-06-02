@@ -56,6 +56,7 @@
 
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
 		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="living-library.css" />
 
 	</head>
 
@@ -124,6 +125,64 @@
 		            <li class="navbar-item"><a title="New Gift" href="http://localhost/donordb/index.php/edit/addGiftView/1">Anonymous Gift</a></li>
 
 		            <li class="navbar-item"><a title="Statistics" href="http://localhost/donordb/index.php/search/statisticsView">Statistics</a></li>
+
+								<!--<li class="navbar-item">-->
+
+								<li class="navbar-item dropdown">
+			              <a title="Living Library" class="dropbtn">Dropdown</a>
+			              <div class="dropdown-content">
+			                  <a href="#">Link 1</a>
+			                  <a href="#">Link 2</a>
+			                  <a href="#">Link 3</a>
+			              </div>
+			          </li>
+
+								<!--
+								<div class="dropdown">
+	                  <button class="dropbtn">Dropdown</button>
+	                  <div class="dropdown-content">
+	                      <a href="#">Link 1</a>
+	                      <a href="#">Link 2</a>
+	                      <a href="#">Link 3</a>
+	                  </div>
+	              </div>
+								-->
+
+								<!--
+								<li class="navbar-item dropdown">
+									  <a class="dropbtn">Dropdown</button></a>
+									  <div class="dropdown-content">
+										    <a href="#">Link 1</a>
+										    <a href="#">Link 2</a>
+										    <a href="#">Link 3</a>
+									  </div>
+								</li>
+								-->
+
+								<!--
+								<div class="dropdown">
+								  <button class="dropbtn">Dropdown</button>
+								  <div class="dropdown-content">
+								    <a href="#">Link 1</a>
+								    <a href="#">Link 2</a>
+								    <a href="#">Link 3</a>
+								  </div>
+								</div>
+								-->
+
+								<!--
+								<li class="navbar-item dropdown">
+				          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				          	Living Library
+				          </a>
+				          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+				            <a class="dropdown-item" href="#">Action</a>
+				            <a class="dropdown-item" href="#">Another action</a>
+				            <div class="dropdown-divider"></div>
+				            <a class="dropdown-item" href="#">Something else here</a>
+				          </div>
+				        </li>
+								-->
 
 		            <li class="navbar-item" id="logout-link" style="border: none;"><a title="Logout" onclick="authentication.logout();">Logout</a></li> <!-- call controller -->
 
