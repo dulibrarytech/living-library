@@ -1,8 +1,9 @@
 function get_donations(is_completed) {
-    const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
+    const base_url = 'http://localhost/donordb/living-library';
+    const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
                 + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
-    fetch(url)
+    fetch(api_url)
         .then(response => {
             return response.json();
         })
@@ -28,7 +29,17 @@ function get_donations(is_completed) {
             viewUtils.setUserLabel();
             */
 
-            $("#table-header").html("<thead> <th class='span2'>Tracking Number</th> <th class='span4'>Donor Name</th> <th class='span4'>Recipient Name</th> <th style='align:right'>Date of Donation</th> </thead>");
+            $("#table-header").html("<thead> " +
+                                    "<th class='span1_wider'>" +
+                                    (is_completed === "false"
+                                    ? "Book Plate Form"
+                                    : "Full Record") +
+                                    "</th> " +
+                                    "<th class='span1'>ID</th> " +
+                                    "<th class='span4'>Donor Name</th> " +
+                                    "<th class='span4'>Recipient Name</th> " +
+                                    "<th style='align:right'>Date of Donation</th> " +
+                                    "</thead>");
 
             $("#table-content").html('');
             let html = '';
@@ -81,25 +92,19 @@ function get_donations(is_completed) {
                     }
                     console.log();
 
-                    html += '<tr onmouseover='
-                            + '"change_tracking_number_cell_text.call(this, '
-                            + data[i].is_completed + ', ' + data[i].id
-                            + ')" onmouseout='
-                            + '"change_tracking_number_cell_text.call(this, '
-                            + data[i].is_completed + ', ' + data[i].id + ')"'
-                            + ' onclick="get_donation(' + data[i].is_completed
-                            + ', ' + data[i].id + ')">';
+                    html += '<tr>';
 
-                    /* Leaving out column with link to individual donation
-                     * record for now.
-                     *
-                    html += '<td><a href="#" onclick="get_donation('
+                    html += '<td class="span1_wider" style="text-align: center">'
+                            + '<a href="#" onclick="get_donation('
                             + data[i].is_completed + ', ' + data[i].id + ')">'
-                            + data[i].id + '</a></td>';
-                    */
+                            + '<img src="' + base_url
+                            + (is_completed === 'false'
+                              ? '/images/application_form.png" />'
+                              : '/images/application_view_list.png" />')
+                            + '</a>'
+                            + '</td>';
 
-                    // html += '<td>' + data[i].id + '</td>';
-                    html += '<td class="span2" style="text-align: center">'
+                    html += '<td class="span1" style="text-align: center">'
                             + data[i].id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
