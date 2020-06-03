@@ -1,20 +1,5 @@
 function get_donations(is_completed) {
-    // Default to is_completed = false
-    console.log("before switch, is_completed = " + is_completed);
-    switch (typeof is_completed) {
-        case 'boolean':
-            break;
-        case 'number':
-            is_completed = is_completed === 1;
-            break;
-        case 'string':
-            is_completed = is_completed.toLowerCase() === 'true' ||
-                           is_completed.toLowerCase() === '1';
-            break;
-        default:
-            is_completed = false;
-    }
-    console.log("after switch, is_completed = " + is_completed);
+    is_completed = validate_is_completed_parameter(is_completed);
 
     const base_url = 'http://localhost/donordb/living-library';
     const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
@@ -64,20 +49,7 @@ function get_donations(is_completed) {
             if (data.length === 0) {
                 html += '<p class="label">No donation records found.</p>';
             } else {
-                // html += '<table>';
                 html += '<table class="table table-bordered table-striped">';
-                /* Table headings in table-header above
-                 *
-                html += '<tr>';
-                html += is_completed === 'false'
-                        ? '<th>Book Plate Form</th>'
-                        : '<th>Full Record</th>';
-                html += '<th>Tracking Number</th>';
-                html += '<th>Donor Name</th>';
-                html += '<th>Recipient Name</th>';
-                html += '<th>Date of Donation</th>';
-                html += '</tr>';
-                */
                 for (let i = 0; i < data.length; i++) {
                     const donor = JSON.parse(data[i].donor);
                     const recipient = JSON.parse(data[i].recipient);
@@ -166,25 +138,18 @@ function get_donations(is_completed) {
         })
 }
 
-// Consider deleting (this is no longer being used, I think)
-function change_tracking_number_cell_text(is_completed, id) {
-    let firstChild = this.firstChild;
-    if (firstChild.textContent == id) {
-        firstChild.textContent = is_completed ? 'View record' : 'View book form';
-    } else {
-        firstChild.textContent = id;
-    }
-}
-
 function get_donation(is_completed, id) {
+    is_completed = validate_is_completed_parameter(is_completed);
     const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
                 + is_completed + '&id=' + id
                 + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
-    if (is_completed)
+    if (is_completed) {
         get_completed_donation(url);
-    else {
+        console.log("Based on URL parameter, this is a completed donation");
+    } else {
         get_queued_donation(url);
+        console.log("Based on URL parameter, this is a queued donation");
     }
 }
 
@@ -388,4 +353,29 @@ function get_queued_donation(url) {
             console.log('In the catch block');
             console.log(error);
         })
+}
+
+ /**
+  * Returns a valid boolean value based on is_completed parameter.
+  * Defaults to false for any invalid value or type.
+  * Any number that is not 1 is considered false.
+  * @param is_completed
+  */
+function validate_is_completed_parameter(is_completed) {
+    console.log("before switch, is_completed = " + is_completed);
+    switch (typeof is_completed) {
+        case 'boolean':
+            break;
+        case 'number':
+            is_completed = is_completed == 1;
+            break;
+        case 'string':
+            is_completed = is_completed.toLowerCase() == 'true' ||
+                           is_completed == '1';
+            break;
+        default:
+            is_completed = false;
+    }
+    console.log("after switch, is_completed = " + is_completed);
+    return is_completed;
 }
