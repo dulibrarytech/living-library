@@ -1,4 +1,21 @@
 function get_donations(is_completed) {
+    // Default to is_completed = false
+    console.log("before switch, is_completed = " + is_completed);
+    switch (typeof is_completed) {
+        case 'boolean':
+            break;
+        case 'number':
+            is_completed = is_completed === 1;
+            break;
+        case 'string':
+            is_completed = is_completed.toLowerCase() === 'true' ||
+                           is_completed.toLowerCase() === '1';
+            break;
+        default:
+            is_completed = false;
+    }
+    console.log("after switch, is_completed = " + is_completed);
+
     const base_url = 'http://localhost/donordb/living-library';
     const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
                 + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
@@ -17,9 +34,9 @@ function get_donations(is_completed) {
             $(".content-window").css("height", "770px");
             $(".pre-scrollable").css("max-height", "485px");
 
-            $("#page-label").text(is_completed === "false"
-                                  ? "Donation Queue"
-                                  : "Completed Donations");
+            $("#page-label").text(is_completed
+                                  ? "Completed Donations"
+                                  : "Donation Queue");
 
             /* Original donordb code for table-header
              *
@@ -31,9 +48,9 @@ function get_donations(is_completed) {
 
             $("#table-header").html("<thead> " +
                                     "<th class='span1_wider'>" +
-                                    (is_completed === "false"
-                                    ? "Book Plate Form"
-                                    : "Full Record") +
+                                    (is_completed
+                                    ? "Full Record"
+                                    : "Book Plate Form") +
                                     "</th> " +
                                     "<th class='span1'>ID</th> " +
                                     "<th class='span4'>Donor Name</th> " +
@@ -99,9 +116,9 @@ function get_donations(is_completed) {
                             + data[i].id
                             + '&is_completed=' + data[i].is_completed + '">'
                             + '<img src="' + base_url
-                            + (is_completed === 'false'
-                              ? '/images/application_form.png" />'
-                              : '/images/application_view_list.png" />')
+                            + (data[i].is_completed
+                              ? '/images/application_view_list.png" />'
+                              : '/images/application_form.png" />')
                             + '</a>'
                             + '</td>';
 
@@ -149,6 +166,7 @@ function get_donations(is_completed) {
         })
 }
 
+// Consider deleting (this is no longer being used, I think)
 function change_tracking_number_cell_text(is_completed, id) {
     let firstChild = this.firstChild;
     if (firstChild.textContent == id) {
@@ -360,7 +378,7 @@ function get_queued_donation(url) {
             }
 
             console.log(html);
-            let id = document.querySelector('#donations');
+            let id = document.querySelector('#description_area');
 
             if (id) {
                 id.innerHTML = html;

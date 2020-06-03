@@ -145,8 +145,8 @@
 			              <a title="Living Library">Living Library</a>
 			              <div class="dropdown-content">
 			                  <a href="#">Donation Form</a>
-			                  <a href="#" onclick="get_donations('false')">Donation Queue</a>
-			                  <a href="#" onclick="get_donations('true')">Completed Donations</a>
+			                  <a href="table-view.php?is_completed=false">Donation Queue</a>
+			                  <a href="table-view.php?is_completed=true">Completed Donations</a>
 			              </div>
 			          </li>
 
