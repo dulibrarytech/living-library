@@ -353,11 +353,13 @@
 	<!-- $pageLoader loads editDonorView.initPage() -->
 	<!-- Added for the Living Library integration -->
 	<?php
+			/* Any security issues with using $_SERVER['REQUEST_URI']?
+			 * I read that "using this code has security implications. The client can
+			 * set ... REQUEST_URI to any arbitrary value it wants"
+			 * (https://stackoverflow.com/questions/6768793/get-the-full-url-in-php).
+			 */
 			$uri_components = parse_url($_SERVER['REQUEST_URI']);
-			print_r($uri_components);
 			parse_str($uri_components['query'], $params);
-			echo '<br>' . 'id = ' . $params['id'] . '<br>';
-			echo 'is_completed = ' . $params['is_completed'] . '<br>';
 	?>
 
 	<script src="get_donations.js"></script>
