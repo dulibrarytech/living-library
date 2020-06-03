@@ -27,9 +27,9 @@
 	<!-- Add fancyBox -->
 	<link rel="stylesheet" href="http://localhost/donordb/libs/fancyBox/source/jquery.fancybox.css" type="text/css" media="screen" />
 
-	<meta name="page" content="table-view">
-
 	<!-- end of head-partial.php -->
+
+	<meta name="page" content="table-view">
 
 	<!-- Positioning -->
 	<style>

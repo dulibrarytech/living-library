@@ -95,8 +95,9 @@ function get_donations(is_completed) {
                     html += '<tr>';
 
                     html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="#" onclick="get_donation('
-                            + data[i].is_completed + ', ' + data[i].id + ')">'
+                            + '<a href="info-view.php?id='
+                            + data[i].id
+                            + '&is_completed=' + data[i].is_completed + '">'
                             + '<img src="' + base_url
                             + (is_completed === 'false'
                               ? '/images/application_form.png" />'
@@ -272,7 +273,7 @@ function get_completed_donation(url) {
             }
 
             console.log(html);
-            let id = document.querySelector('#donations');
+            let id = document.querySelector('#description_area');
 
             if (id) {
                 id.innerHTML = html;
