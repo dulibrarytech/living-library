@@ -256,7 +256,7 @@ function get_completed_donation(url) {
             }
 
             console.log(html);
-            let id = document.querySelector('#description_area');
+            let id = document.querySelector('#table-content');
 
             if (id) {
                 id.innerHTML = html;
@@ -343,7 +343,7 @@ function get_queued_donation(url) {
             }
 
             console.log(html);
-            let id = document.querySelector('#description_area');
+            let id = document.querySelector('#table-content');
 
             if (id) {
                 id.innerHTML = html;

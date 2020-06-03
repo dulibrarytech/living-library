@@ -170,7 +170,10 @@
 			</td>
 		</tr></table>
 
+		<div class="well donor-info-form-section" id="table-content"></div>
+
 		<form id="donor-input-form" method="post">
+			<!--
 			<div class="well donor-info-form-section" id="upper_well">
 
 				<table class="table">
@@ -247,7 +250,9 @@
 				</table>
 
 			</div>
+			-->
 
+			<!--
 			<div class="well donor-info-form-section" id="lower_well">
 				<table class="table">
 
@@ -257,7 +262,9 @@
 							<textarea class="textarea" id="description_area" name="giftDescription"></textarea>
 						</td>
 						<td class="span2">
+			-->
 							<!-- Spacer -->
+			<!--
 						</td>
 						<td class="span3">
 							<label for="gift-date-box" class="form-label-text" id="gift_date_label">Select Gift:</label>
@@ -281,6 +288,7 @@
                                 </div>
                                 <div>
                                 <div id="important-check-box"> <!-- this is not directly related to the important_gift_check td ID -->
+			<!--
                                     <input type='hidden' name='importantFlag' value="0"/>
                                     <input type="checkbox" name="importantFlag" id="important-checkbox" value="1"></input>
                                     <label for="important-checkbox" class="form-label-text left-edge-field" id="important_label">Hand-Typed Letter</label>
@@ -292,15 +300,19 @@
 					</tr>
 				</table>
 			</div>
+			-->
 
 			<!-- This table creates a row with the submit button and an 'adding donor info' status message to the right of the button-->
+			<!--
 			<table class="table lower_controls"><tr>
 				<td class="span1"><button type="submit" class="btn-grey" id="add_info_button">Save</button></td>
 				<td class="span1"><button type="button" class="btn-grey" id="back_button">Back</button></td>
 				<td class="span1"><button type="button" class="btn-grey" id="gen_letter_button">Letter</button></td>
 				<td class="span9"><div id="add_info_message"></div></td>
 				<!--td class=""><input type="checkbox" id="add_gift_checkbox" name="addGiftCheckbox">&nbsp&nbspDo not add a gift at this time</input></td></tr-->
+			<!--
 			</table>
+			-->
 		</form>
 
 	</div>

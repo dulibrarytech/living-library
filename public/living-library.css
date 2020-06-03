@@ -43,3 +43,15 @@
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+/* Style for label-value pairs for fields */
+dt {
+  float: left;
+  clear: left;
+  width: 6em;
+  font-weight: bold;
+}
+
+dd {
+  float: left;
+}
