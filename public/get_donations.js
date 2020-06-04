@@ -84,7 +84,7 @@ function get_donations(is_completed) {
                     html += '<tr>';
 
                     html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="info-view.php?id='
+                            + '<a href="record-view.php?id='
                             + data[i].id
                             + '&is_completed=' + data[i].is_completed + '">'
                             + '<img src="' + base_url
@@ -160,103 +160,109 @@ function get_completed_donation(url) {
         })
         .then(data => {
             console.log(data);
+            $("#page-label").html('Donation Record');
+
             const donor = JSON.parse(data[0].donor);
             const who_to_notify = JSON.parse(data[0].who_to_notify);
             const recipient = JSON.parse(data[0].recipient);
             const book = JSON.parse(data[0].book);
+
             let html = '';
 
             if (donor === null) {
-                html += '<p><span class="label">No person making donation.'
-                        + '</span></p>';
+                html += '<h4>No person making donation.</h4>';
             } else {
-                html += '<h2>Person making donation</h2>';
-                html += '<p><span class="label">Title: </span>' + donor.title
-                        + '</p>';
-                html += '<p><span class="label">First Name: </span>'
-                        + donor.first_name + '</p>';
-                html += '<p><span class="label">Last Name: </span>'
-                        + donor.last_name + '</p>';
-                html += '<p><span class="label">Address: </span>' + donor.address
-                        + '</p>';
-                html += '<p><span class="label">City: </span>'
-                        + donor.city + '</p>';
-                html += '<p><span class="label">State: </span>'
-                        + donor.state + '</p>';
-                html += '<p><span class="label">Zip: </span>'
-                        + donor.zip + '</p>';
+                html += '<h4>Person making donation</h4>';
+                html += '<dl>';
+                html += '<dt>Title: </dt>'
+                        + '<dd>' + donor.title + '</dd>';
+                html += '<dt>First Name: </dt>'
+                        + '<dd>' + donor.first_name + '</dd>';
+                html += '<dt>Last Name: </dt>'
+                        + '<dd>' + donor.last_name + '</dd>';
+                html += '<dt>Address: </dt>'
+                        + '<dd>' + donor.address + '</dd>';
+                html += '<dt>City: </dt>'
+                        + '<dd>' + donor.city + '</dd>';
+                html += '<dt>State: </dt>'
+                        + '<dd>' + donor.state + '</dd>';
+                html += '<dt>Zip: </dt>'
+                        + '<dd>' + donor.zip + '</dd>';
+                html += '</dl>';
             }
 
             if (who_to_notify === null) {
-                html += '<p><span class="label">No person to be notified of '
-                        + 'donation.</span></p>';
+                html += '<h4>No person to be notified of donation.</h4>';
             } else {
-                html += '<h2>Person(s) to be notified of donation</h2>';
+                html += '<h4>Person(s) to be notified of donation</h4>';
                 for (let i = 0; i < who_to_notify.length; i++) {
-                    html += '<div class="content_block">';
-                    html += '<p><span class="label">Title: </span>'
-                            + who_to_notify[i].title + '</p>';
-                    html += '<p><span class="label">First Name: </span>'
-                            + who_to_notify[i].first_name + '</p>';
-                    html += '<p><span class="label">Last Name: </span>'
-                            + who_to_notify[i].last_name + '</p>';
-                    html += '<p><span class="label">Address: </span>'
-                            + who_to_notify[i].address + '</p>';
-                    html += '<p><span class="label">City: </span>'
-                            + who_to_notify[i].city + '</p>';
-                    html += '<p><span class="label">State: </span>'
-                            + who_to_notify[i].state + '</p>';
-                    html += '<p><span class="label">Zip: </span>'
-                            + who_to_notify[i].zip + '</p>';
-                    html += '<p><span class="label">Relation to Donor: </span>'
-                            + who_to_notify[i].relation_to_donor + '</p>';
-                    html += '</div>';
+                    html += '<dl class="name_address_block">';
+                    html += '<dt>Title: </dt>'
+                            + '<dd>' + who_to_notify[i].title + '</dd>';
+                    html += '<dt>First Name: </dt>'
+                            + '<dd>' + who_to_notify[i].first_name + '</dd>';
+                    html += '<dt>Last Name: </dt>'
+                            + '<dd>' + who_to_notify[i].last_name + '</dd>';
+                    html += '<dt>Address: </dt>'
+                            + '<dd>' + who_to_notify[i].address + '</dd>';
+                    html += '<dt>City: </dt>'
+                            + '<dd>' + who_to_notify[i].city + '</dd>';
+                    html += '<dt>State: </dt>'
+                            + '<dd>' + who_to_notify[i].state + '</dd>';
+                    html += '<dt>Zip: </dt>'
+                            + '<dd>' + who_to_notify[i].zip + '</dd>';
+                    html += '<dt>Relation to Donor: </dt>'
+                            + '<dd>' + who_to_notify[i].relation_to_donor + '</dd>';
+                    html += '</dl>';
                 }
             }
 
             if (recipient === null) {
-                html += '<p><span class="label">No person receiving donation.'
-                        + '</span></p>';
+                html += '<h4>No person receiving donation.</h4>';
             } else {
-                html += '<h2>Person receiving donation</h2>';
-                html += '<p><span class="label">Title: </span>'
-                        + recipient.title + '</p>';
-                html += '<p><span class="label">First Name: </span>'
-                        + recipient.first_name + '</p>';
-                html += '<p><span class="label">Last Name: </span>'
-                        + recipient.last_name + '</p>';
-                html += '<p><span class="label">Donation Type: </span>'
-                        + recipient.donation_type + '</p>';
+                html += '<h4>Person receiving donation</h4>';
+                html += '<dl>';
+                html += '<dt>Title: </dt>'
+                        + '<dd>' + recipient.title + '</dd>';
+                html += '<dt>First Name: </dt>'
+                        + '<dd>' + recipient.first_name + '</dd>';
+                html += '<dt>Last Name: </dt>'
+                        + '<dd>' + recipient.last_name + '</dd>';
+                html += '<dt>Donation Type: </dt>'
+                        + '<dd>' + recipient.donation_type + '</dd>';
+                html += '</dl>';
             }
 
             if (donor === null) {
-                html += '<p><span class="label">No donation date or amount.'
-                        + '</span></p>';
+                html += '<h4>No donation date or amount.</h4>';
             } else {
-                html += '<h2>Donation Information</h2>';
-                html += '<p><span class="label">Amount of Donation: </span>'
-                        + donor.amount_of_donation + '</p>';
-                html += '<p><span class="label">Date of Donation: </span>'
-                        + donor.date_of_donation + '</p>';
+                html += '<h4>Donation Information</h4>';
+                html += '<dl>';
+                html += '<dt>Amount of Donation: </dt>'
+                        + '<dd>' + donor.amount_of_donation + '</dd>';
+                html += '<dt>Date of Donation: </dt>'
+                        + '<dd>' + donor.date_of_donation + '</dd>';
+                html += '</dl>';
             }
 
             if (book === null) {
-                html += '<p><span class="label">No book information.</span>'
-                        + '</p>';
+                html += '<h4>No book information.</h4>';
             } else {
-                html += '<h2>Book Information</h2>';
-                html += '<p><span class="label">Author Name: </span>'
-                        + book.author_name + '</p>';
-                html += '<p><span class="label">Book Title: </span>'
-                        + book.book_title + '</p>';
-                html += '<p><span class="label">Bibliographic Number: </span>'
-                        + book.bibliographic_number + '</p>';
-                html += '<p><span class="label">Call Number: </span>'
-                        + book.call_number + '</p>';
+                html += '<h4>Book Information</h4>';
+                html += '<dl>';
+                html += '<dt>Author Name: </dt>'
+                        + '<dd>' + book.author_name + '</dd>';
+                html += '<dt>Book Title: </dt>'
+                        + '<dd>' + book.book_title + '</dd>';
+                html += '<dt>Bibliographic Number: </dt>'
+                        + '<dd>' + book.bibliographic_number + '</dd>';
+                html += '<dt>Call Number: </dt>'
+                        + '<dd>' + book.call_number + '</dd>';
+                html += '</dl>';
             }
 
             console.log(html);
-            let id = document.querySelector('#table-content');
+            let id = document.querySelector('#record-content');
 
             if (id) {
                 id.innerHTML = html;
@@ -275,75 +281,78 @@ function get_queued_donation(url) {
         })
         .then(data => {
             console.log(data);
+            $("#page-label").html('Book Plate Form');
+
             const donor = JSON.parse(data[0].donor);
             const who_to_notify = JSON.parse(data[0].who_to_notify);
             const recipient = JSON.parse(data[0].recipient);
-            let html = '';
+
+            let html = '<dl>';
 
             if (donor === null) {
-                html += '<p><span class="label">No person making donation.'
-                        + '</span>';
+                html += '<dt>No person making donation.</dt>'
+                        + '<dd></dd>';
             } else {
-                html += '<p><span class="label">Person making donation: </span>';
-                html += donor.title + ' ' + donor.first_name + ' '
-                        + donor.last_name + '</p>';
+                html += '<dt>Person making donation: </dt>'
+                        + '<dd>' + donor.title + ' ' + donor.first_name + ' '
+                        + donor.last_name + '</dd>';
 
                 if (donor.notes !== null) {
-                    html += '<p><span class="label">Notes: </span>'
-                            + donor.notes + '</p>';
+                    html += '<dt>Notes: </dt>'
+                            + '<dd>' + donor.notes + '</dd>';
                 }
             }
 
             if (who_to_notify === null || who_to_notify.length === 0) {
-                html += '<p><span class="label">No person to be notified of '
-                        + 'donation.</span>';
+                html += '<dt>No person to be notified of donation.</dt>'
+                        + '<dd></dd>';
             } else {
-                html += '<p><span class="label">Person(s) to be notified of '
-                        + 'donation: </span>';
+                html += '<dt>Person(s) to be notified of donation: </dt>';
+                html += '<dd>';
                 for (let i = 0; i < who_to_notify.length; i++) {
                     if (i > 0)
-                        html += ', ';
+                        html += '; ';
                     html += who_to_notify[i].title + ' '
                             + who_to_notify[i].first_name + ' '
                             + who_to_notify[i].last_name;
                 }
-                html += '</p>';
+                html += '</dd>';
             }
 
             if (recipient === null) {
-                html += '<p><span class="label">No person receiving donation.'
-                        + '</span>';
+                html += '<dt>No person receiving donation.</dt>';
             } else {
-                html += '<p><span class="label">Person receiving donation: '
-                        + '</span>';
-                html += recipient.title + ' ' + recipient.first_name + ' '
-                        + recipient.last_name + ' (' + recipient.donation_type
-                        + ')</p>';
+                html += '<dt>Person receiving donation: </dt>'
+                        + '<dd>' + recipient.title + ' ' + recipient.first_name
+                        + ' ' + recipient.last_name + ' ('
+                        + recipient.donation_type + ')</dd>';
             }
 
             if (donor === null) {
-                html += '<p><span class="label">No date of donation.</span>';
+                html += '<dt>No date of donation.</dt>';
             } else {
-                html += '<p><span class="label">Date of donation: </span>'
-                        + donor.date_of_donation + '</p>';
+                html += '<dt>Date of donation: </dt>'
+                        + '<dd>' + donor.date_of_donation + '</dd>';
             }
 
             if (donor === null || donor.subject_areas === null
                 || donor.subject_areas.length === 0) {
-                html += '<p><span class="label">No subject areas selected.</span>'
-                       + '</p>';
+                html += '<dt>No subject areas selected.</dt>';
             } else {
-                html += '<p><span class="label">Selected subject areas: </span>';
+                html += '<dt>Selected subject areas: </dt>';
+                html += '<dd>';
                 for (let i = 0; i < donor.subject_areas.length; i++) {
                     if (i > 0)
-                        html += ', ';
+                        html += '; ';
                     html += donor.subject_areas[i];
                 }
-                html += '</p>';
+                html += '</dd>';
             }
 
+            html += '</dl>';
+
             console.log(html);
-            let id = document.querySelector('#table-content');
+            let id = document.querySelector('#record-content');
 
             if (id) {
                 id.innerHTML = html;

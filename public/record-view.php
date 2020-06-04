@@ -152,7 +152,7 @@
 
 		<table style="width: 100%"><tr>
 			<td>
-				<div class="container generic-label" id="page-label">Book Plate Form</div>
+				<div class="container generic-label" id="page-label"></div>
 			</td>
 			<td align="right" style="text-align: right;">
 				<div class="small-label" id="username-label"></div>
@@ -174,99 +174,9 @@
 			<!-- Record content section -->
 			<div class="container pre-scrollable" id="scroll-section">
 
-				<div class="donor-info-form-section">
-					<dl>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-						<dt>Coffee</dt>
-					  <dd>Black hot drink</dd>
-					  <dt>Milk</dt>
-					  <dd>White cold drink</dd>
-					</dl>
-				</div>
+				<div class="donor-info-form-section" id="record-content"></div>
 
+				<!--
 				<div>
 					<form id="donor-input-form" method="post">
 
@@ -345,6 +255,7 @@
 
 					</form>
 				</div>
+				-->
 
 			</div><!--/Record content section-->
 		</div><!--/Results Table Section -->

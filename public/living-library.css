@@ -44,14 +44,10 @@
   display: block;
 }
 
-/* Style for label-value pairs for fields */
+/* Style for label-value pairs */
 dt {
   float: left;
   clear: left;
-  width: 6em;
+  width: 18em;
   font-weight: bold;
-}
-
-dd {
-  float: left;
 }
