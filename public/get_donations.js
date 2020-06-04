@@ -320,7 +320,8 @@ function get_queued_donation(url) {
             }
 
             if (recipient === null) {
-                html += '<dt>No person receiving donation.</dt>';
+                html += '<dt>No person receiving donation.</dt>'
+                        + '<dd></dd>';
             } else {
                 html += '<dt>Person receiving donation: </dt>'
                         + '<dd>' + recipient.title + ' ' + recipient.first_name
@@ -329,7 +330,8 @@ function get_queued_donation(url) {
             }
 
             if (donor === null) {
-                html += '<dt>No date of donation.</dt>';
+                html += '<dt>No date of donation.</dt>'
+                        + '<dd></dd>';
             } else {
                 html += '<dt>Date of donation: </dt>'
                         + '<dd>' + donor.date_of_donation + '</dd>';
@@ -337,7 +339,8 @@ function get_queued_donation(url) {
 
             if (donor === null || donor.subject_areas === null
                 || donor.subject_areas.length === 0) {
-                html += '<dt>No subject areas selected.</dt>';
+                html += '<dt>No subject areas selected.</dt>'
+                        + '<dd></dd>';
             } else {
                 html += '<dt>Selected subject areas: </dt>';
                 html += '<dd>';
