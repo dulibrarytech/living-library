@@ -223,6 +223,8 @@ exports.read = function (req, callback) {
 exports.update = function (req, callback) {
     let id = req.query.id;
     let request_body = req.body;
+    console.log("id = " + id);
+    console.log("Trying to print request_body:");
     console.log(request_body);
 
     /**

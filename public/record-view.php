@@ -159,24 +159,14 @@
 			</td>
 		</tr></table>
 
-		<!-- Results Table Section -->
-		<div id="table-section">
+		<!-- Record Section -->
+		<div id="results-section">
 
-			<!--
-			<div id="jumpTo"></div>
-			-->
-
-			<!-- Stationary table header -->
-			<!--
-			<div class="table table-bordered" id="table-header"></div>
-			-->
-
-			<!-- Record content section -->
+			<!-- Record Content Section -->
 			<div class="container pre-scrollable" id="scroll-section">
 
 				<div class="donor-info-form-section" id="record-content"></div>
 
-				<!--
 				<div>
 					<form id="donor-input-form" method="post">
 
@@ -184,81 +174,40 @@
 
 							<tr>
 								<td>
-									<label for="title-edit-box" class="form-label-text" id="title-label">Title:</label>
-									<div id="dropdown-box"></div>
-
-									<input type="text" class="input-medium" id="title-edit-box" placeholder="Enter new title:" />
+									<label for="author_name_input_box" class="form-label-text">Author Name:</label>
+									<input type="text" id="author_name_input_box" class="input_form-default" name="author_name"/>
 								</td>
 
 								<td>
-									<label for="fname_input_box" class="form-label-text">First Name:</label>
-									<input type="text" id="fname_input_box" class="input_form-default" name="fName"/>
-								</td>
-
-								<td>
-									<label for="lName_input_box" class="form-label-text">Last Name:</label>
-									<input type="text" id="lName_input_box" class="input_form-default" name="lName"/>
+									<label for="book_title_input_box" class="form-label-text">Book Title:</label>
+									<input type="text" id="book_title_input_box" class="input_form-default" name="book_title"/>
 								</td>
 							</tr>
 
 							<tr>
 								<td>
-									<label for="org_input_box" class="form-label-text">Organization:</label>
-									<input type="text" id="org_input_box" class="input_form-default" name="org"/>
+									<label for="bibliographic_number_input_box" class="form-label-text">Bibliographic Number:</label>
+									<input type="text" id="bibliographic_number_input_box" class="input_form-default" name="bibliographic_number"/>
 								</td>
 								<td>
-									<label for="addr1_input_box" class="form-label-text">Address 1:</label>
-									<input type="text" id="addr1_input_box" class="input_form-default" name="addr1"/>
-								</td>
-
-								<td>
-									<label for="addr2_input_box" class="form-label-text">Address 2:</label>
-									<input type="text" id="addr2_input_box" class="input_form-default" name="addr2"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td>
-									<label for="city_input_box" class="form-label-text">City:</label>
-									<input type="text" id="city_input_box" class="input_form-default" name="city"/>
-								</td>
-
-								<td>
-									<label for="state_input_box" class="form-label-text">State:</label>
-									<input type="text" id="state_input_box" class="input-medium" name="state"/>
-								</td>
-
-								<td>
-									<label for="zip_input_box" class="form-label-text">Zip:</label>
-									<input type="text" id="zip_input_box" class="input-small" name="zip"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td>
-									<label for="country_input_box" class="form-label-text">Country:</label>
-									<input type="text" id="country_input_box" class="input_form-default" name="country" value="USA"/>
-								</td>
-
-								<td>
-									<label for="phone_input_box" class="form-label-text">Phone:</label>
-									<input type="text" id="phone_input_box" class="input_form-default" name="phone"/>
-								</td>
-
-								<td>
-									<label for="email_input_box" class="form-label-text">Email:</label>
-									<input type="text" id="email_input_box" class="input_form-default" name="email"/>
+									<label for="call_number_input_box" class="form-label-text">Call Number:</label>
+									<input type="text" id="call_number_input_box" class="input_form-default" name="call_number"/>
 								</td>
 							</tr>
 
 						</table>
 
+						<input type="hidden" name="donation_id" value="7"/>
+
+						<table class="table lower_controls"><tr>
+							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate();">Save Book Plate</button></td>
+						</table>
+
 					</form>
 				</div>
-				-->
 
-			</div><!--/Record content section-->
-		</div><!--/Results Table Section -->
+			</div><!--/Record Content Section-->
+		</div><!--/Record Section -->
 	</div><!--/Main Content Window -->
 
 	<div class="copyright-text">
@@ -324,6 +273,7 @@
 			get_donation(<?php echo $params['is_completed']; ?>,
 									 <?php echo $params['id']; ?>);
 	</script>
+	<script src="post-form-data.js"></script>
 
 	<script>//authentication.validateSession();</script>
 
