@@ -197,7 +197,7 @@
 
 						</table>
 
-						<input type="hidden" name="donation_id" value="7"/>
+						<input type="hidden" id="donation_id_hidden_box" name="donation_id" value=""/>
 
 						<table class="table lower_controls"><tr>
 							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate(event);">Save Book Plate</button></td>

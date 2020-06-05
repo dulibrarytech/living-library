@@ -355,10 +355,18 @@ function get_queued_donation(url) {
             html += '</dl>';
 
             console.log(html);
-            let id = document.querySelector('#record-content');
+            let record_content_id = document.querySelector('#record-content');
 
-            if (id) {
-                id.innerHTML = html;
+            if (record_content_id) {
+                record_content_id.innerHTML = html;
+            }
+
+            let donation_id_hidden_box =
+                document.querySelector('#donation_id_hidden_box');
+
+            console.log("donation id = " + data[0].id);
+            if (donation_id_hidden_box) {
+                donation_id_hidden_box.setAttribute('value', data[0].id);
             }
         })
         .catch((error) => {
