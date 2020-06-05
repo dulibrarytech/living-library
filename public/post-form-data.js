@@ -1,4 +1,4 @@
-function save_book_plate(event) {
+const save_book_plate = function (event) {
     console.log("typeof event = " + typeof event);
 
     // Stop the form from submitting the default way
@@ -101,6 +101,9 @@ function save_book_plate(event) {
     console.log("call_number = " + form_data.call_number.value);
     console.log("donation_id = " + form_data.donation_id.value);
 
+    // Calling form to JSON function
+    console.log("form_to_JSON(form_data) = " + JSON.stringify(form_to_JSON(form_data)));
+
     console.log("==============\n New form testing starts here");
     let hard_coded_json = '{"author_name":' + '"' + form_data.author_name.value + '", '
                           + '"book_title":' + '"' + form_data.book_title.value + '", '
@@ -135,4 +138,16 @@ function save_book_plate(event) {
         body: form_params_with_hard_coded_json
     });
 
-}
+};
+
+/**
+ * Retrieves input data from a form and returns it as a JSON object.
+ * @param  {HTMLFormControlsCollection} form_elements  the form elements
+ * @return {Object}                                    form data as an object literal
+ *
+ * Adapted from: https://www.learnwithjason.dev/blog/get-form-values-as-json/
+ */
+const form_to_JSON = form_elements => [].reduce.call(form_elements, (data, element) => {
+    data[element.name] = element.value;
+    return data;
+}, {});
