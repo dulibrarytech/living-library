@@ -1,4 +1,7 @@
 const save_book_plate = function (event) {
+    const BOOK_PLATE_FORM_FIELDS = ["author_name", "book_title",
+                                    "bibliographic_number", "call_number"];
+
     console.log("typeof event = " + typeof event);
 
     // Stop the form from submitting the default way
@@ -101,9 +104,6 @@ const save_book_plate = function (event) {
     console.log("call_number = " + form_data.call_number.value);
     console.log("donation_id = " + form_data.donation_id.value);
 
-    // Calling form to JSON function
-    console.log("form_to_JSON(form_data) = " + JSON.stringify(form_to_JSON(form_data)));
-
     console.log("==============\n New form testing starts here");
     let hard_coded_json = '{"author_name":' + '"' + form_data.author_name.value + '", '
                           + '"book_title":' + '"' + form_data.book_title.value + '", '
@@ -114,6 +114,15 @@ const save_book_plate = function (event) {
                           + '"book_timestamp": "2020-05-26 13:58:00"}';
     console.log("hard_coded_json = " + hard_coded_json);
 
+    // Calling form_to_JSON function
+    let form_as_JSON = form_to_JSON(BOOK_PLATE_FORM_FIELDS, form_data);
+    console.log("form_to_JSON(form_data) = " + JSON.stringify(form_as_JSON));
+
+    /* TO-DO: Add the book_timestamp key-value pair with the current time.
+     * (The book fields publisher and date_published are not needed.)
+     */
+
+    /*
     let form_params_with_hard_coded_json = new URLSearchParams();
     form_params_with_hard_coded_json.append('book', hard_coded_json);
 
@@ -121,6 +130,10 @@ const save_book_plate = function (event) {
     for (field of form_params_with_hard_coded_json) {
         console.log(field);
     }
+    */
+
+    let book_field = new URLSearchParams();
+    book_field.append('book', JSON.stringify(form_as_JSON));
 
     const url = 'http://localhost:8000/api/v1/living-library/donations?id='
                 + form_data.donation_id.value
@@ -131,11 +144,9 @@ const save_book_plate = function (event) {
     fetch(url, {
         method: 'PUT',
         headers: {
-        // 'Content-Type': 'application/json'
         'Content-Type': 'application/x-www-form-urlencoded'
         },
-        // body: JSON.stringify(form_data_params)
-        body: form_params_with_hard_coded_json
+        body: book_field
     });
 
 };
@@ -147,7 +158,11 @@ const save_book_plate = function (event) {
  *
  * Adapted from: https://www.learnwithjason.dev/blog/get-form-values-as-json/
  */
-const form_to_JSON = form_elements => [].reduce.call(form_elements, (data, element) => {
-    data[element.name] = element.value;
-    return data;
-}, {});
+const form_to_JSON = function (expected_form_fields, form_elements) {
+    return [].reduce.call(form_elements, (data, element) => {
+        if (expected_form_fields.includes(element.name)) {
+            data[element.name] = element.value;
+        }
+        return data;
+    }, {});
+};
