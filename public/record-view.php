@@ -133,7 +133,7 @@
 								<li class="navbar-item dropdown">
 			              <a title="Living Library">Living Library</a>
 			              <div class="dropdown-content">
-			                  <a href="#">Donation Form</a>
+			                  <a href="donation-form.php">Donation Form</a>
 			                  <a href="table-view.php?is_completed=false">Donation Queue</a>
 			                  <a href="table-view.php?is_completed=true">Completed Donations</a>
 			              </div>
