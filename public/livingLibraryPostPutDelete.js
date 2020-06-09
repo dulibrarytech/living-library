@@ -1,3 +1,13 @@
+/*
+ * Donor Application
+ *
+ * Living Library Functions involving POST, PUT, and DELETE requests
+ *
+ * Author: Scott Salvaggio
+ *
+ * University of Denver, June 2020
+ */
+
 const save_book_plate = function (event) {
     console.log("Inside save_book_plate function");
 

@@ -254,12 +254,12 @@ a:not([href]) {
 }
 
 /* Added for the Living Library integration:
- * This ensures that the Completed Donations table (for Living Library) has its
- * columns aligned correctly.
+ * This ensures that the Living Library tables (i.e. Donation Queue and
+ * Completed Donations) have their columns aligned correctly.
  * Without this, the header row's columns do not line up with the content rows'
  * columns.
- * This is because the column heading "Full Record" is too wide for the span1
- * class above.
+ * This is because the column heading "Full Record" (in the Completed Donations
+ * table) is too wide for the span1 class above.
  */
 .table td.span1_wider,
 .table th.span1_wider {

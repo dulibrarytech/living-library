@@ -1,3 +1,13 @@
+/*
+ * Donor Application
+ *
+ * Living Library Functions involving GET requests
+ *
+ * Author: Scott Salvaggio
+ *
+ * University of Denver, June 2020
+ */
+
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
@@ -89,8 +99,8 @@ function get_donations(is_completed) {
                             + '&is_completed=' + data[i].is_completed + '">'
                             + '<img src="' + base_url
                             + (data[i].is_completed
-                              ? '/images/application_view_list.png" />'
-                              : '/images/application_form.png" />')
+                              ? '../../img/living_library_application_view_list.png" />'
+                              : '../../img/living_library_application_form.png" />')
                             + '</a>'
                             + '</td>';
 
