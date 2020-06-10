@@ -76,9 +76,7 @@
 	 			<div id="table-content"></div>
 
 				<div class="donor-info-form-section" id="record-content"></div>
-				<div>
-					<form id="donor-input-form" method="post"></form>
-				</div>
+				<div id="form-content"></div>
 
 			</div><!--/Table content section -->
 		</div>

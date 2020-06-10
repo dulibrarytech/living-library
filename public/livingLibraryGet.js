@@ -30,8 +30,8 @@ function get_donations(is_completed) {
             $(".pre-scrollable").css("max-height", "485px");
 
             $("#page-label").text(is_completed
-                                  ? "Completed Donations"
-                                  : "Donation Queue");
+                                  ? "Living Library: Completed Donations"
+                                  : "Living Library: Donation Queue");
 
             /* Original donordb code for table-header
              *
@@ -179,7 +179,7 @@ function get_completed_donation(url) {
         })
         .then(data => {
             console.log(data);
-            $("#page-label").html('Donation Record');
+            $("#page-label").html('Living Library: Donation Record');
 
             const donor = JSON.parse(data[0].donor);
             const who_to_notify = JSON.parse(data[0].who_to_notify);
@@ -300,12 +300,13 @@ function get_queued_donation(url) {
         })
         .then(data => {
             console.log(data);
-            $("#page-label").html('Book Plate Form');
+            $("#page-label").html('Living Library: Book Plate Form');
 
             const donor = JSON.parse(data[0].donor);
             const who_to_notify = JSON.parse(data[0].who_to_notify);
             const recipient = JSON.parse(data[0].recipient);
 
+            /* Add information from the donation record */
             let html = '<dl>';
 
             if (donor === null) {
@@ -373,11 +374,83 @@ function get_queued_donation(url) {
 
             html += '</dl>';
 
-            console.log(html);
-            let record_content_id = document.querySelector('#record-content');
+            html += '<br>';
 
-            if (record_content_id) {
-                record_content_id.innerHTML = html;
+            html += '<h4>Book Plate Information</h4>';
+
+            console.log(html);
+            let record_content_element = document.querySelector('#record-content');
+
+            if (record_content_element) {
+                record_content_element.innerHTML = html;
+            }
+
+            /* Add book plate form */
+            let form_html = '<form id="donor-input-form" method="post">';
+
+            form_html += '<table class="table">';
+
+            form_html += '<tr>';
+            form_html += '<td>'
+                         + '<label for="author_name_input_box" '
+                         + 'class="form-label-text">Author Name:'
+                         + '</label>'
+                         + '<input type="text" id="author_name_input_box" '
+                         + 'class="input_form-default" name="author_name"/>'
+                         + '</td>';
+
+            form_html += '<td>'
+                         + '<label for="book_title_input_box" '
+                         + 'class="form-label-text">Book Title:'
+                         + '</label>'
+                         + '<input type="text" id="book_title_input_box" '
+                         + 'class="input_form-default" name="book_title"/>'
+                         + '</td>';
+            form_html += '</tr>';
+
+            form_html += '<tr>';
+            form_html += '<td>'
+                         + '<label for="bibliographic_number_input_box" '
+                         + 'class="form-label-text">Bibliographic Number:'
+                         + '</label>'
+                         + '<input type="text" '
+                         + 'id="bibliographic_number_input_box" '
+                         + 'class="input_form-default" '
+                         + 'name="bibliographic_number"/>'
+                         + '</td>';
+
+            form_html += '<td>'
+                         + '<label for="call_number_input_box" '
+                         + 'class="form-label-text">Call Number:'
+                         + '</label>'
+                         + '<input type="text" id="call_number_input_box" '
+                         + 'class="input_form-default" name="call_number"/>'
+                         + '</td>';
+            form_html += '</tr>';
+
+            form_html += '</table>'; // close table with text input boxes
+
+            form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                         + 'name="donation_id" value=""/>';
+
+            form_html += '<table class="table lower_controls">'
+                         + '<tr>'
+                         + '<td class="span1">'
+                         + '<button type="submit" '
+                         + 'class="btn-grey" id="save_book_plate_button" '
+                         + 'onclick="save_book_plate(event);">Save Book Plate'
+                         + '</button>'
+                         + '</td>'
+                         + '</tr>'
+                         + '</table>';
+
+            form_html += '</form>';
+
+            console.log(form_html);
+            let form_content_element = document.querySelector('#form-content');
+
+            if (form_content_element) {
+                form_content_element.innerHTML = form_html;
             }
 
             let donation_id_hidden_box =
