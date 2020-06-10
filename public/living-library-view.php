@@ -62,21 +62,27 @@
 			</td>
 		</tr></table>
 
-		<!-- Results Table Section -->
+		<!-- Content Section -->
+		<div id="content-section"></div>
+
+		<!-- Original table view code -->
+
+		<!-- Results Table Section --
 		<div id="table-section">
 
 			<div id="jumpTo"></div>
 
-			<!-- Stationary table header -->
+			<!-- Stationary table header --
 			<div class="table table-bordered" id="table-header"></div>
 
-			<!-- Table content section -->
+			<!-- Table content section --
 			<div class="container pre-scrollable" id="scroll-section">
 	 			<div id="table-content"></div>
 			</div>
 		</div>
+		-->
 
-	</div>
+	</div><!--/Main Content Window -->
 
 	<div class="copyright-text">
 		<p>University of Denver, University Libraries &copy2013</p>

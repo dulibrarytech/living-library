@@ -41,17 +41,29 @@ function get_donations(is_completed) {
             viewUtils.setUserLabel();
             */
 
-            $("#table-header").html("<thead> " +
-                                    "<th class='span1_wider'>" +
-                                    (is_completed
-                                    ? "Full Record"
-                                    : "Book Plate Form") +
-                                    "</th> " +
-                                    "<th class='span1'>ID</th> " +
-                                    "<th class='span4'>Donor Name</th> " +
-                                    "<th class='span4'>Recipient Name</th> " +
-                                    "<th style='align:right'>Date of Donation</th> " +
-                                    "</thead>");
+            $("#content-section").html("<!-- Results Table Section --> " +
+                                        "<div id='table-section'> " +
+                                        "<!-- Stationary table header --> " +
+                                        "<div class='table table-bordered' " +
+                                        "id='table-header'> " +
+                                        "<thead> " +
+                                        "<th class='span1_wider'>" +
+                                        (is_completed
+                                        ? "Full Record"
+                                        : "Book Plate Form") +
+                                        "</th> " +
+                                        "<th class='span1'>ID</th> " +
+                                        "<th class='span4'>Donor Name</th> " +
+                                        "<th class='span4'>Recipient Name</th> " +
+                                        "<th style='align:right'>Date of Donation</th> " +
+                                        "</thead> " +
+                                        "</div><!--/Stationary table header --> " +
+                                        "<!-- Table content section --> " +
+                                        "<div class='container pre-scrollable' " +
+                                        "id='scroll-section'> " +
+                                        "<div id='table-content'></div> " +
+                                        "</div><!-- Table content section --> " +
+                                        "</div><!--/Results Table Section -->");
 
             $("#table-content").html('');
             let html = '';
