@@ -72,11 +72,18 @@
 
 			<!-- Table content section -->
 			<div class="container pre-scrollable" id="scroll-section">
+
 	 			<div id="table-content"></div>
-			</div>
+
+				<div class="donor-info-form-section" id="record-content"></div>
+				<div>
+					<form id="donor-input-form" method="post"></form>
+				</div>
+
+			</div><!--/Table content section -->
 		</div>
 
-	</div>
+	</div><!--/Results Table Section -->
 
 	<div class="copyright-text">
 		<p>University of Denver, University Libraries &copy2013</p>

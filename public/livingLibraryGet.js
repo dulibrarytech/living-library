@@ -11,7 +11,7 @@
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
-    const base_url = 'http://localhost/donordb/living-library';
+    const base_url = 'http://localhost/donordb/';
     const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
                 + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
@@ -94,13 +94,12 @@ function get_donations(is_completed) {
                     html += '<tr>';
 
                     html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="record-view.php?id='
-                            + data[i].id
-                            + '&is_completed=' + data[i].is_completed + '">'
+                            + '<a href="#" onclick="get_donation('
+                            + data[i].is_completed + ', ' + data[i].id + ');">'
                             + '<img src="' + base_url
                             + (data[i].is_completed
-                              ? '../../img/living_library_application_view_list.png" />'
-                              : '../../img/living_library_application_form.png" />')
+                              ? 'img/living_library_application_view_list.png" />'
+                              : 'img/living_library_application_form.png" />')
                             + '</a>'
                             + '</td>';
 
@@ -153,6 +152,16 @@ function get_donation(is_completed, id) {
     const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
                 + is_completed + '&id=' + id
                 + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+
+    $("#table-header").html('');
+    let table_header_element = document.getElementById("table-header");
+    table_header_element.classList.remove("table-bordered");
+    table_header_element.classList.remove("table");
+    table_header_element.setAttribute("id", "no-table-header");
+
+    $("#table-content").html('');
+    document.getElementById("table-content")
+            .setAttribute("id", "no-table-content");
 
     if (is_completed) {
         get_completed_donation(url);
