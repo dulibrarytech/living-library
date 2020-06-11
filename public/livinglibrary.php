@@ -12,12 +12,12 @@
  */
 class LivingLibrary extends CI_Controller {
 
-    function __construct()
-    {
-        parent::__construct();
-        $this->load->helper('url');
-        $this->load->helper('sanitizer_helper');
-    }
+  function __construct()
+  {
+      parent::__construct();
+      $this->load->helper('url');
+      $this->load->helper('sanitizer_helper');
+  }
 
 	/*
 	 * Loads Living Library View
@@ -39,5 +39,12 @@ class LivingLibrary extends CI_Controller {
 
     	$this->load->view('living-library-view');
     	//echo "<h1 style='margin-top:100px;'>ECHO TEST" . $resetSearchCache . "</h1>";
+	}
+
+  public function createDonation()
+	{
+		$data['pageLoader'] = "<script>create_donation();</script>";
+
+		$this->load->view('living-library-view', $data);
 	}
 }

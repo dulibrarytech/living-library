@@ -8,6 +8,81 @@
  * University of Denver, June 2020
  */
 
+function create_donation() {
+    console.log("hello world from create_donation JS function");
+
+    hide_table_header_and_content();
+
+    $("#page-label").html('Living Library: Donation Form');
+
+    let form_html = '<form id="donor-input-form" method="post">';
+
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="author_name_input_box" '
+                 + 'class="form-label-text">Author Name:'
+                 + '</label>'
+                 + '<input type="text" id="author_name_input_box" '
+                 + 'class="input_form-default" name="author_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="book_title_input_box" '
+                 + 'class="form-label-text">Book Title:'
+                 + '</label>'
+                 + '<input type="text" id="book_title_input_box" '
+                 + 'class="input_form-default" name="book_title"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="bibliographic_number_input_box" '
+                 + 'class="form-label-text">Bibliographic Number:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="bibliographic_number_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="bibliographic_number"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="call_number_input_box" '
+                 + 'class="form-label-text">Call Number:'
+                 + '</label>'
+                 + '<input type="text" id="call_number_input_box" '
+                 + 'class="input_form-default" name="call_number"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close table with text input boxes
+
+    form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                 + 'name="donation_id" value=""/>';
+
+    form_html += '<table class="table lower_controls">'
+                 + '<tr>'
+                 + '<td class="span1">'
+                 + '<button type="submit" '
+                 + 'class="btn-grey" id="save_book_plate_button" '
+                 + 'onclick="save_book_plate(event);">Save Book Plate'
+                 + '</button>'
+                 + '</td>'
+                 + '</tr>'
+                 + '</table>';
+
+    form_html += '</form>';
+
+    console.log(form_html);
+    let form_content_element = document.querySelector('#form-content');
+
+    if (form_content_element) {
+        form_content_element.innerHTML = form_html;
+    }
+}
+
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
@@ -153,15 +228,7 @@ function get_donation(is_completed, id) {
                 + is_completed + '&id=' + id
                 + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
-    $("#table-header").html('');
-    let table_header_element = document.getElementById("table-header");
-    table_header_element.classList.remove("table-bordered");
-    table_header_element.classList.remove("table");
-    table_header_element.setAttribute("id", "no-table-header");
-
-    $("#table-content").html('');
-    document.getElementById("table-content")
-            .setAttribute("id", "no-table-content");
+    hide_table_header_and_content();
 
     if (is_completed) {
         get_completed_donation(url);
@@ -465,6 +532,21 @@ function get_queued_donation(url) {
             console.log('In the catch block');
             console.log(error);
         })
+}
+
+/**
+ * Removes table header and table content elements from view.
+ */
+function hide_table_header_and_content() {
+    $("#table-header").html('');
+    let table_header_element = document.getElementById("table-header");
+    table_header_element.classList.remove("table-bordered");
+    table_header_element.classList.remove("table");
+    table_header_element.setAttribute("id", "no-table-header");
+
+    $("#table-content").html('');
+    document.getElementById("table-content")
+            .setAttribute("id", "no-table-content");
 }
 
  /**

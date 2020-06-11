@@ -170,8 +170,12 @@
 				<div>
 					<form id="donor-input-form" method="post">
 
-						<h4>Person making donation</h4>
 						<table class="table">
+							<tr>
+								<td><h4>Person making donation</h4></td>
+								<td></td>
+								<td></td>
+							</tr>
 
 							<tr>
 								<td>
@@ -236,18 +240,23 @@
 
 						</table>
 
-						<h4>Person(s) to be notified of donation</h4>
 						<table class="table">
+
+							<tr>
+								<td><h4>Person(s) to be notified of donation</h4></td>
+								<td></td>
+								<td></td>
+							</tr>
 
 							<tr>
 								<td>
 									<!-- all the title labels have id="title-lable" - either make this a class or a unique id -->
-									<label for="who_to_notify_title_dropdown" class="form-label-text" id="title-label">Title:</label>
+									<label for="notify_title_dropdown" class="form-label-text" id="title-label">Title:</label>
 
 									<!-- delete this div if you're not going to use it - note that the id is not unique -->
 									<div id="dropdown-box"></div>
 
-									<select class='input-medium' id='who_to_notify_title_dropdown' name='who_to_notify_title'>
+									<select class='input-medium' id='notify_title_dropdown' name='notify_title'>
 										<option value=''>Select a title</option>
 										<option value='Ms.'>Ms.</option>
 										<option value='Mr.'>Mr.</option>
@@ -255,34 +264,34 @@
 								</td>
 
 								<td>
-									<label for="donor_first_name_input_box" class="form-label-text">First Name:</label>
-									<input type="text" id="donor_first_name_input_box" class="input_form-default" name="donor_first_name"/>
+									<label for="notify_first_name_input_box" class="form-label-text">First Name:</label>
+									<input type="text" id="notify_first_name_input_box" class="input_form-default" name="notify_first_name"/>
 								</td>
 
 								<td>
-									<label for="donor_last_name_input_box" class="form-label-text">Last Name:</label>
-									<input type="text" id="donor_last_name_input_box" class="input_form-default" name="donor_last_name"/>
+									<label for="notify_last_name_input_box" class="form-label-text">Last Name:</label>
+									<input type="text" id="notify_last_name_input_box" class="input_form-default" name="notify_last_name"/>
 								</td>
 							</tr>
 
 							<tr>
 								<td>
-									<label for="donor_address_input_box" class="form-label-text">Address:</label>
-									<input type="text" id="donor_address_input_box" class="input_form-default" name="donor_address"/>
+									<label for="notify_address_input_box" class="form-label-text">Address:</label>
+									<input type="text" id="notify_address_input_box" class="input_form-default" name="notify_address"/>
 								</td>
 
 								<td>
-									<label for="donor_city_input_box" class="form-label-text">City:</label>
-									<input type="text" id="donor_city_input_box" class="input_form-default" name="donor_city"/>
+									<label for="notify_city_input_box" class="form-label-text">City:</label>
+									<input type="text" id="notify_city_input_box" class="input_form-default" name="notify_city"/>
 								</td>
 
 								<td>
-									<label for="donor_state_dropdown" class="form-label-text" id="state-label">State:</label>
+									<label for="notify_state_dropdown" class="form-label-text" id="state-label">State:</label>
 
 									<!-- delete this div if you're not going to use it - note that the id is not unique -->
 									<div id="dropdown-box"></div>
 
-									<select class='input-medium' id='donor_state_dropdown' name='donor_state'>
+									<select class='input-medium' id='notify_state_dropdown' name='notify_state'>
 										<option value=''>Select a state</option>
 										<option value='Ms.'>CA</option>
 										<option value='Mr.'>CO</option>
@@ -292,148 +301,193 @@
 
 							<tr>
 								<td>
-									<label for="donor_zip_input_box" class="form-label-text">Zip:</label>
-									<input type="text" id="donor_zip_input_box" class="input_form-default" name="donor_zip"/>
+									<label for="notify_zip_input_box" class="form-label-text">Zip:</label>
+									<input type="text" id="notify_zip_input_box" class="input_form-default" name="notify_zip"/>
 								</td>
 
-								<td></td>
+								<td>
+									<label for="notify_relation_to_donor_dropdown" class="form-label-text" id="state-label">Relation to Donor:</label>
+
+									<!-- delete this div if you're not going to use it - note that the id is not unique -->
+									<div id="dropdown-box"></div>
+
+									<select class='input_form-default' id='notify_relation_to_donor_dropdown' name='notify_relation_to_donor'>
+										<option value=''>Select a relation to donor</option>
+										<option value='Ms.'>CA</option>
+										<option value='Mr.'>CO</option>
+									</select>
+								</td>
+
 								<td></td>
 							</tr>
 
 						</table>
-
-						<!-- new fields -->
 
 						<table class="table">
 
 							<tr>
+								<td><h4>Person receiving donation</h4></td>
+								<td></td>
+								<td></td>
+							</tr>
+
+							<tr>
 								<td>
-									<label for="title-edit-box" class="form-label-text" id="title-label">Title:</label>
+									<label for="recipient_title_dropdown" class="form-label-text" id="title-label">Title:</label>
 									<div id="dropdown-box"></div>
 
-									<select class='input-medium' id='title-dropdown' name='title'>
+									<select class='input-medium' id='recipient_title_dropdown' name='recipient_title'>
 										<option value=''>Select a title</option>
 										<option value='Ms.'>Ms.</option>
 										<option value='Mr.'>Mr.</option>
 									</select>
-
-									<!--
-									<input type="text" class="input-medium" id="title-edit-box" placeholder="Enter new title:" />
-									-->
 								</td>
 
 								<td>
-									<label for="fname_input_box" class="form-label-text">First Name:</label>
-									<input type="text" id="fname_input_box" class="input_form-default" name="fName"/>
+									<label for="recipient_first_name_input_box" class="form-label-text">First Name:</label>
+									<input type="text" id="recipient_first_name_input_box" class="input_form-default" name="recipient_first_name"/>
 								</td>
 
 								<td>
-									<label for="lName_input_box" class="form-label-text">Last Name:</label>
-									<input type="text" id="lName_input_box" class="input_form-default" name="lName"/>
+									<label for="recipient_last_name_input_box" class="form-label-text">Last Name:</label>
+									<input type="text" id="recipient_last_name_input_box" class="input_form-default" name="recipient_last_name"/>
 								</td>
 							</tr>
 
 							<tr>
 								<td>
-									<label for="org_input_box" class="form-label-text">Organization:</label>
-									<input type="text" id="org_input_box" class="input_form-default" name="org"/>
-								</td>
-								<td>
-									<label for="addr1_input_box" class="form-label-text">Address 1:</label>
-									<input type="text" id="addr1_input_box" class="input_form-default" name="addr1"/>
+									<div>
+										<label for="recipient_donation_type_radio_choice1" class="radio inline">
+								      <input type="radio" id="recipient_donation_type_radio_choice1" name="recipient_donation_type" checked>In Honor of
+								    </label>
+									</div>
+									<div>
+								    <label for="recipient_donation_type_radio_choice2" class="radio inline">
+								      <input type="radio" id="recipient_donation_type_radio_choice2" name="recipient_donation_type">In Memory of
+								    </label>
+									</div>
 								</td>
 
-								<td>
-									<label for="addr2_input_box" class="form-label-text">Address 2:</label>
-									<input type="text" id="addr2_input_box" class="input_form-default" name="addr2"/>
-								</td>
+								<td></td>
+
+								<td></td>
+							</tr>
+
+						</table>
+
+						<table class="table">
+
+							<tr>
+								<td><h4>Donation information</h4></td>
+								<td></td>
+								<td></td>
 							</tr>
 
 							<tr>
 								<td>
-									<label for="city_input_box" class="form-label-text">City:</label>
-									<input type="text" id="city_input_box" class="input_form-default" name="city"/>
+									<label for="donor_amount_of_donation_input_box" class="form-label-text">Amount of Donation (e.g. 100.00):</label>
+									<input type="text" id="donor_amount_of_donation_input_box" class="input_form-default" name="donor_amount_of_donation"/>
 								</td>
-
 								<td>
-									<label for="state_input_box" class="form-label-text">State:</label>
-									<input type="text" id="state_input_box" class="input-medium" name="state"/>
-								</td>
-
-								<td>
-									<label for="zip_input_box" class="form-label-text">Zip:</label>
-									<input type="text" id="zip_input_box" class="input-small" name="zip"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td>
-									<label for="country_input_box" class="form-label-text">Country:</label>
-									<input type="text" id="country_input_box" class="input_form-default" name="country" value="USA"/>
-								</td>
-
-								<td>
-									<label for="phone_input_box" class="form-label-text">Phone:</label>
-									<input type="text" id="phone_input_box" class="input_form-default" name="phone"/>
-								</td>
-
-								<td>
-									<label for="email_input_box" class="form-label-text">Email:</label>
-									<input type="text" id="email_input_box" class="input_form-default" name="email"/>
-								</td>
-							</tr>
-
-							<!-- more new fields -->
-
-							<tr>
-								<td class="span7" rowspan="2">
-									<label for="description_area" class="form-label-text">Gift Description:</label>
-									<textarea class="textarea" id="description_area" name="giftDescription"></textarea>
-								</td>
-								<td class="span2">
-
-									<!-- Spacer -->
-
-								</td>
-								<td class="span3">
-									<label for="gift-date-box" class="form-label-text" id="gift_date_label">Select Gift:</label>
-									<input type="text" class="input-small" id="gift-date-box" name="giftDate"/>
+									<label for="gift-date-box" class="form-label-text" id="gift_date_label">Donation Date:</label>
+									<input type="text" class="input_form-default" id="gift-date-box" name="donor_date_of_donation"/>
 
 									<div id="gift-date-box-section"></div>
 								</td>
 
-								<td class="span3">
-									<label for="gift_quantity_box" class="form-label-text" id="gift_quantity_label">Gift Quantity:</label>
-									<input type="text" class="input-small" id="gift_quantity_box" name="giftQuantity"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td id="important_gift_check" colspan="2" rowspan="2">
-		                                <div id="skip-letter-check-box">
-		                                    <input type='hidden' name='skipLetterFlag' value="0"/>
-		                                    <input type="checkbox" name="skipLetterFlag" id="skip-letter-checkbox" value="1"></input>
-		                                    <label for="skip-letter-checkbox" class="form-label-text left-edge-field" id="skip_gift_label">Bypass Letter Request</label>
-		                                </div>
-
-		                                <div id="important-check-box"> <!-- this is not directly related to the important_gift_check td ID -->
-
-		                                    <input type='hidden' name='importantFlag' value="0"/>
-		                                    <input type="checkbox" name="importantFlag" id="important-checkbox" value="1"></input>
-		                                    <label for="important-checkbox" class="form-label-text left-edge-field" id="important_label">Hand-Typed Letter</label>
-		                                </div>
-		              </td>
 								<td>
-									<button type="button" class="btn" id="edit-gift-button">Edit Gift</button>
+									<label for="donor_notes_textarea" class="form-label-text">Notes:</label>
+									<textarea class="input_form-default" id="donor_notes_textarea" name="donor_notes"></textarea>
 								</td>
 							</tr>
 
 						</table>
 
-						<input type="hidden" id="donation_id_hidden_box" name="donation_id" value=""/>
+						<table class="table">
+
+							<tr>
+								<td><h4>Subject areas</h4></td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td>
+									<label for="inlineCheckbox1" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox1" value="option1"/>Information Science
+									</label>
+								</td>
+
+								<td>
+									<label for="inlineCheckbox2" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox2" value="option2"/>Computer Science
+									</label>
+								</td>
+								<!--
+								This adds too much space between checkbox and label:
+								<td>
+									<input type="checkbox" id="inlineCheckbox3" value="option3"/>
+									<label for="inlineCheckbox3" class="checkbox inline">3</label>
+								</td>
+
+								<td>
+									<input type="checkbox" id="inlineCheckbox4" value="option4"/>
+									<label for="inlineCheckbox4" class="checkbox inline">4</label>
+								</td>
+
+								Original checkbox code:
+								<td id="important_gift_check" colspan="2" rowspan="2">
+								<div id="skip-letter-check-box">
+                    <input type='hidden' name='skipLetterFlag' value="0"/>
+                    <input type="checkbox" name="skipLetterFlag" id="skip-letter-checkbox" value="1"></input>
+                    <label for="skip-letter-checkbox" class="form-label-text left-edge-field" id="skip_gift_label">Bypass Letter Request</label>
+                </div>
+
+								Online example code:
+								<label class="checkbox inline">
+									<input type="checkbox" id="inlineCheckbox1" value="option1"> 1
+								</label>
+								<label class="checkbox inline">
+									<input type="checkbox" id="inlineCheckbox2" value="option2"> 2
+								</label>
+								<label class="checkbox inline">
+									<input type="checkbox" id="inlineCheckbox3" value="option3"> 3
+								</label>
+								</td>
+								-->
+							</tr>
+
+							<tr>
+								<td>
+									<label for="inlineCheckbox1" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox1" value="option1"/>Geography
+									</label>
+								</td>
+
+								<td>
+									<label for="inlineCheckbox2" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox2" value="option2"/>Art
+									</label>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<label for="inlineCheckbox1" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox1" value="option1"/>Music
+									</label>
+								</td>
+
+								<td>
+									<label for="inlineCheckbox2" class="checkbox inline">
+										<input type="checkbox" id="inlineCheckbox2" value="option2"/>Political Science/International Relations
+									</label>
+								</td>
+							</tr>
+
+						</table>
 
 						<table class="table lower_controls"><tr>
-							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate(event);">Save Book Plate</button></td>
+							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate(event);">Send to Queue</button></td>
 						</table>
 
 					</form>

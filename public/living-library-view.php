@@ -99,7 +99,7 @@
 	<script>//authentication.validateSession();</script>
 
 	<!-- Run page loader for requested page (set in CI controller) -->
-	<!--?php echo $pageLoader; ?-->
+	<?php if ($pageLoader) echo $pageLoader; ?>
 
 	<!-- Added for the Living Library integration -->
 	<?php
