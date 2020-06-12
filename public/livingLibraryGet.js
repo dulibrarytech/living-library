@@ -9,32 +9,55 @@
  */
 
 function create_donation() {
-    console.log("hello world from create_donation JS function");
-
     hide_table_header_and_content();
 
-    $("#page-label").html('Living Library: Donation Form');
+    let page_label_element = document.querySelector('#page-label');
+
+    if (page_label_element) {
+        page_label_element.innerHTML = 'Living Library: Donation Form';
+    }
 
     let form_html = '<form id="donor-input-form" method="post">';
 
     form_html += '<table class="table">';
 
     form_html += '<tr>';
+    form_html += '<td><h4>Person making donation</h4></td>';
+    form_html += '<td></td>';
+    form_html += '<td></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
     form_html += '<td>'
-                 + '<label for="author_name_input_box" '
-                 + 'class="form-label-text">Author Name:'
+                 + '<label for="donor_title_dropdown" '
+                 + 'class="form-label-text">Title:'
                  + '</label>'
-                 + '<input type="text" id="author_name_input_box" '
-                 + 'class="input_form-default" name="author_name"/>'
+                 + '<select class="input-medium" id="donor_title_dropdown" '
+                 + 'name="donor_title">'
+                 + '<option value="" selected>--Select a title--</option>';
+
+    // fetch titles from database and loop through results to form the html
+    form_html += '<option value="Mr.">Mr.</option>'
+                 + '<option value="Ms.">Ms.</option>';
+
+    form_html += '</select>'
                  + '</td>';
 
     form_html += '<td>'
-                 + '<label for="book_title_input_box" '
-                 + 'class="form-label-text">Book Title:'
+                 + '<label for="donor_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
                  + '</label>'
-                 + '<input type="text" id="book_title_input_box" '
-                 + 'class="input_form-default" name="book_title"/>'
+                 + '<input type="text" id="donor_first_name_input_box" '
+                 + 'class="input_form-default" name="donor_first_name"/>'
                  + '</td>';
+
+    form_html += '<td>'
+              + '<label for="donor_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="donor_last_name_input_box" '
+              + 'class="input_form-default" name="donor_last_name"/>'
+              + '</td>';
     form_html += '</tr>';
 
     form_html += '<tr>';

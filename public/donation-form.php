@@ -179,14 +179,10 @@
 
 							<tr>
 								<td>
-									<!-- all the title labels have id="title-lable" - either make this a class or a unique id -->
-									<label for="donor_title_dropdown" class="form-label-text" id="title-label">Title:</label>
-
-									<!-- delete this div if you're not going to use it - note that the id is not unique -->
-									<div id="dropdown-box"></div>
+									<label for="donor_title_dropdown" class="form-label-text">Title:</label>
 
 									<select class='input-medium' id='donor_title_dropdown' name='donor_title'>
-										<option value=''>Select a title</option>
+										<option value='' selected>--Select a title--</option>
 										<option value='Ms.'>Ms.</option>
 										<option value='Mr.'>Mr.</option>
 									</select>
