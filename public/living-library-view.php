@@ -96,39 +96,7 @@
 	<!--Load javascript functions-->
 	<?php $this->load->view("partials/javascript-partial.php"); ?>
 
-	<script>//authentication.validateSession();</script>
-
 	<!-- Run page loader for requested page (set in CI controller) -->
 	<?php if ($pageLoader) echo $pageLoader; ?>
-
-	<!-- Added for the Living Library integration -->
-	<?php
-			/* Any security issues with using $_SERVER['REQUEST_URI']?
-			 * I read that "using this code has security implications. The client can
-			 * set ... REQUEST_URI to any arbitrary value it wants"
-			 * (https://stackoverflow.com/questions/6768793/get-the-full-url-in-php).
-			 */
-			$uri_components = parse_url($_SERVER['REQUEST_URI']);
-			parse_str($uri_components['query'], $params);
-	?>
-
-	<!-- No is_completed parameter in URL causes an "Uncaught SyntaxError:
-			 Unexpected token". Also, if the is_completed value is a string and it's
-		   not surrounded by quotes, then this causes an "Uncaught ReferenceError:
-			 [parameter value] is not defined". If the is_completed value is a string
-			 (i.e. it's surrounded by quotes), then the model will handle the string
-			 value, whether valid or invalid.
-
-			 Both of these errors occur because get_donations() doesn't have a valid
-		   parameter value (but get_donations() is built to handle any or no
-			 parameter value), so they seem to be caused from this PHP page (not from
-			 get_donations()). Perhaps we should only call get_donations() if we have
-			 a valid parameter value, i.e. 0, false, 1, or true. However, we could
-		 	 also try checking the parameter first and only changing it enough to
-		 	 prevent the error messages (since get_donations() can take care of the
-		 	 full validation behavior). -->
-	<script>
-			get_donations(<?php echo $params['is_completed']; ?>);
-	</script>
 
 </footer>

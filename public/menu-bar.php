@@ -28,8 +28,8 @@
 								<a title="Living Library">Living Library</a>
 								<div class="dropdown-content">
 										<a href="<?php echo base_url();?>index.php/livinglibrary/createDonation">Donation Form</a>
-										<a href="<?php echo base_url();?>index.php/livinglibrary?is_completed=false">Donation Queue</a>
-										<a href="<?php echo base_url();?>index.php/livinglibrary?is_completed=true">Completed Donations</a>
+										<a href="<?php echo base_url();?>index.php/livinglibrary/getDonations/queued">Donation Queue</a>
+										<a href="<?php echo base_url();?>index.php/livinglibrary/getDonations/completed">Completed Donations</a>
 								</div>
 						</li>
 

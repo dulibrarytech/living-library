@@ -166,11 +166,16 @@ function get_donations(is_completed) {
                     }
                     console.log();
 
+                    let donation_status = data[i].is_completed
+                                          ? 'completed'
+                                          : 'queued';
+
                     html += '<tr>';
 
                     html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="#" onclick="get_donation('
-                            + data[i].is_completed + ', ' + data[i].id + ');">'
+                            + '<a href="' + base_url + 'index.php/livinglibrary/'
+                            + 'getDonation/' + donation_status + '/'
+                            + data[i].id + '">'
                             + '<img src="' + base_url
                             + (data[i].is_completed
                               ? 'img/living_library_application_view_list.png" />'
@@ -207,14 +212,12 @@ function get_donations(is_completed) {
             }
             console.log(html);
 
-            /*
-            let id = document.querySelector('#donations');
+            let id = document.querySelector('#table-content');
 
             if (id) {
                 id.innerHTML = html;
             }
-            */
-            $("#table-content").html(html);
+
         })
         .catch((error) => {
             console.log('In the catch block');
