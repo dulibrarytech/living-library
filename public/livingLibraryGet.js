@@ -8,7 +8,149 @@
  * University of Denver, June 2020
  */
 
+function create_donation_using_then_promises() {
+    const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
+    const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const titles_table = 'tbl_titles_lookup';
+
+    // Fetch titles from lookup table
+    fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
+          + '&api_key=' + api_key)
+    .then(function(response) {
+        if (response.status !== 200) {
+            console.warn('Looks like there was a problem. Status Code: '
+                        + response.status);
+            return;
+        }
+
+        response.json().then(function(data) {
+            console.log("Inside Titles fetch");
+
+            let title_options_html = '';
+
+            for (let i = 0; i < data.length; i++) {
+                console.log("data[" + i + "].title = " + data[i].title);
+
+                if (i > 0) {
+                    title_options_html += ' ';
+                }
+
+                title_options_html += '<option value="' + data[i].title
+                                      + '">' + data[i].title
+                                      + '</option>';
+            }
+
+            console.log("[Inside Titles fetch] title_options_html = " + title_options_html);
+
+            return title_options_html;
+        });
+    })
+    .catch(function(error) {
+        LOGGER.module().error('FATAL: [create_donation] Unable to fetch titles ' + error);
+        throw 'FATAL: [create_donation] Unable to fetch titles ' + error;
+    })
+    .then(function(title_options_html) {
+
+        console.log("title_options_html = " + title_options_html);
+
+        hide_table_header_and_content();
+
+        let page_label_element = document.querySelector('#page-label');
+
+        if (page_label_element) {
+            page_label_element.innerHTML = 'Living Library: Donation Form';
+        }
+
+        let form_html = '<form id="donor-input-form" method="post">';
+
+        form_html += '<table class="table">';
+
+        form_html += '<tr>';
+        form_html += '<td><h4>Person making donation</h4></td>';
+        form_html += '<td></td>';
+        form_html += '<td></td>';
+        form_html += '</tr>';
+
+        form_html += '<tr>';
+        form_html += '<td>'
+                     + '<label for="donor_title_dropdown" '
+                     + 'class="form-label-text">Title:'
+                     + '</label>'
+                     + '<select class="input-medium" id="donor_title_dropdown" '
+                     + 'name="donor_title">'
+                     + title_options_html
+                     + '</select>'
+                     + '</td>';
+
+        form_html += '<td>'
+                     + '<label for="donor_first_name_input_box" '
+                     + 'class="form-label-text">First Name:'
+                     + '</label>'
+                     + '<input type="text" id="donor_first_name_input_box" '
+                     + 'class="input_form-default" name="donor_first_name"/>'
+                     + '</td>';
+
+        form_html += '<td>'
+                  + '<label for="donor_last_name_input_box" '
+                  + 'class="form-label-text">Last Name:'
+                  + '</label>'
+                  + '<input type="text" id="donor_last_name_input_box" '
+                  + 'class="input_form-default" name="donor_last_name"/>'
+                  + '</td>';
+        form_html += '</tr>';
+
+        form_html += '<tr>';
+        form_html += '<td>'
+                     + '<label for="bibliographic_number_input_box" '
+                     + 'class="form-label-text">Bibliographic Number:'
+                     + '</label>'
+                     + '<input type="text" '
+                     + 'id="bibliographic_number_input_box" '
+                     + 'class="input_form-default" '
+                     + 'name="bibliographic_number"/>'
+                     + '</td>';
+
+        form_html += '<td>'
+                     + '<label for="call_number_input_box" '
+                     + 'class="form-label-text">Call Number:'
+                     + '</label>'
+                     + '<input type="text" id="call_number_input_box" '
+                     + 'class="input_form-default" name="call_number"/>'
+                     + '</td>';
+        form_html += '</tr>';
+
+        form_html += '</table>'; // close table with text input boxes
+
+        form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                     + 'name="donation_id" value=""/>';
+
+        form_html += '<table class="table lower_controls">'
+                     + '<tr>'
+                     + '<td class="span1">'
+                     + '<button type="submit" '
+                     + 'class="btn-grey" id="save_book_plate_button" '
+                     + 'onclick="save_book_plate(event);">Save Book Plate'
+                     + '</button>'
+                     + '</td>'
+                     + '</tr>'
+                     + '</table>';
+
+        form_html += '</form>';
+
+        console.log(form_html);
+        let form_content_element = document.querySelector('#form-content');
+
+        if (form_content_element) {
+           form_content_element.innerHTML = form_html;
+        }
+    });
+}
+
 function create_donation() {
+    const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
+    const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const titles_table = 'tbl_titles_lookup';
+
     hide_table_header_and_content();
 
     let page_label_element = document.querySelector('#page-label');
@@ -33,12 +175,408 @@ function create_donation() {
                  + 'class="form-label-text">Title:'
                  + '</label>'
                  + '<select class="input-medium" id="donor_title_dropdown" '
-                 + 'name="donor_title">'
-                 + '<option value="" selected>--Select a title--</option>';
+                 + 'name="donor_title">';
+                 + '</select>'
+                 + '</td>';
 
-    // fetch titles from database and loop through results to form the html
+    form_html += '<td>'
+                 + '<label for="donor_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" id="donor_first_name_input_box" '
+                 + 'class="input_form-default" name="donor_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+              + '<label for="donor_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="donor_last_name_input_box" '
+              + 'class="input_form-default" name="donor_last_name"/>'
+              + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="bibliographic_number_input_box" '
+                 + 'class="form-label-text">Bibliographic Number:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="bibliographic_number_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="bibliographic_number"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="call_number_input_box" '
+                 + 'class="form-label-text">Call Number:'
+                 + '</label>'
+                 + '<input type="text" id="call_number_input_box" '
+                 + 'class="input_form-default" name="call_number"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close table with text input boxes
+
+    form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                 + 'name="donation_id" value=""/>';
+
+    form_html += '<table class="table lower_controls">'
+                 + '<tr>'
+                 + '<td class="span1">'
+                 + '<button type="submit" '
+                 + 'class="btn-grey" id="save_book_plate_button" '
+                 + 'onclick="save_book_plate(event);">Save Book Plate'
+                 + '</button>'
+                 + '</td>'
+                 + '</tr>'
+                 + '</table>';
+
+    form_html += '</form>';
+
+    console.log(form_html);
+    let form_content_element = document.querySelector('#form-content');
+
+    if (form_content_element) {
+        form_content_element.innerHTML = form_html;
+    }
+
+    let donor_title_dropdown = document.querySelector('#donor_title_dropdown');
+    donor_title_dropdown.length = 0;
+
+    let default_title_option = document.createElement('option');
+    default_title_option.text = '--Select a title--';
+    default_title_option.setAttribute('value', '');
+    default_title_option.setAttribute('selected', '');
+
+    donor_title_dropdown.add(default_title_option);
+    donor_title_dropdown.selectedIndex = 0;
+
+    // fetch titles from database to build title dropdown menu
+    fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
+          + '&api_key=' + api_key)
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem with fetching '
+                             'titles. Status Code: ' + response.status);
+                return;
+            }
+
+            response.json().then(function(data) {
+                console.log("Inside Titles fetch");
+
+                let option;
+
+                for (let i = 0; i < data.length; i++) {
+                    console.log("data[" + i + "].title = " + data[i].title);
+
+                    option = document.createElement('option');
+                    option.text = data[i].title;
+                    option.value = data[i].title;
+                    donor_title_dropdown.add(option);
+                }
+            });
+        })
+        .catch(function(error) {
+            LOGGER.module().error('FATAL: [create_donation] Unable to fetch titles ' + error);
+            throw 'FATAL: [create_donation] Unable to fetch titles ' + error;
+        });
+}
+
+/* This causes the following errors:
+- Uncaught ReferenceError: require is not defined
+- Uncaught ReferenceError: Cannot access 'ASYNC' before initialization
+
+const LOGGER = require('../libs/log4'),
+      ASYNC = require('async');
+*/
+
+function create_donation_async() {
+    const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
+    const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const titles_table = 'tbl_titles_lookup';
+
+    /**
+     * 1.) Fetch titles from lookup table
+     */
+    function fetch_titles(callback) {
+        let obj = {};
+
+        fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
+              + '&api_key=' + api_key)
+            .then(function(response) {
+                if (response.status !== 200) {
+                    console.warn('Looks like there was a problem. Status Code: '
+                                 + response.status);
+                    return;
+                }
+
+                response.json().then(function(data) {
+                    console.log("Inside Titles fetch");
+
+                    obj.titles = '';
+                    for (let i = 0; i < data.length; i++) {
+                        console.log("data[" + i + "].title = " + data[i].title);
+
+                        if (i > 0) {
+                            obj.titles += ' ';
+                        }
+
+                        obj.titles += '<option value="' + data[i].title + '">'
+                                      + data[i].title
+                    	                + '</option>';
+                    }
+
+                    callback(null, obj);
+                    return false;
+                });
+            })
+            .catch(function(error) {
+                LOGGER.module().error('FATAL: [create_donation/fetch_titles] Unable to fetch titles ' + error);
+                throw 'FATAL: [create_donation/fetch_titles] Unable to fetch titles ' + error;
+            });
+    }
+
+    /**
+     * 2.) Build html and add it to page
+     */
+    function build_html(obj, callback) {
+        hide_table_header_and_content();
+
+        let page_label_element = document.querySelector('#page-label');
+
+        if (page_label_element) {
+            page_label_element.innerHTML = 'Living Library: Donation Form';
+        }
+
+        let form_html = '<form id="donor-input-form" method="post">';
+
+        form_html += '<table class="table">';
+
+        form_html += '<tr>';
+        form_html += '<td><h4>Person making donation</h4></td>';
+        form_html += '<td></td>';
+        form_html += '<td></td>';
+        form_html += '</tr>';
+
+        form_html += '<tr>';
+        form_html += '<td>'
+                     + '<label for="donor_title_dropdown" '
+                     + 'class="form-label-text">Title:'
+                     + '</label>'
+                     + '<select class="input-medium" id="donor_title_dropdown" '
+                     + 'name="donor_title">'
+                     + obj.titles
+                     + '</select>'
+                     + '</td>';
+
+        form_html += '<td>'
+                     + '<label for="donor_first_name_input_box" '
+                     + 'class="form-label-text">First Name:'
+                     + '</label>'
+                     + '<input type="text" id="donor_first_name_input_box" '
+                     + 'class="input_form-default" name="donor_first_name"/>'
+                     + '</td>';
+
+        form_html += '<td>'
+                  + '<label for="donor_last_name_input_box" '
+                  + 'class="form-label-text">Last Name:'
+                  + '</label>'
+                  + '<input type="text" id="donor_last_name_input_box" '
+                  + 'class="input_form-default" name="donor_last_name"/>'
+                  + '</td>';
+        form_html += '</tr>';
+
+        form_html += '<tr>';
+        form_html += '<td>'
+                     + '<label for="bibliographic_number_input_box" '
+                     + 'class="form-label-text">Bibliographic Number:'
+                     + '</label>'
+                     + '<input type="text" '
+                     + 'id="bibliographic_number_input_box" '
+                     + 'class="input_form-default" '
+                     + 'name="bibliographic_number"/>'
+                     + '</td>';
+
+        form_html += '<td>'
+                     + '<label for="call_number_input_box" '
+                     + 'class="form-label-text">Call Number:'
+                     + '</label>'
+                     + '<input type="text" id="call_number_input_box" '
+                     + 'class="input_form-default" name="call_number"/>'
+                     + '</td>';
+        form_html += '</tr>';
+
+        form_html += '</table>'; // close table with text input boxes
+
+        form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                     + 'name="donation_id" value=""/>';
+
+        form_html += '<table class="table lower_controls">'
+                     + '<tr>'
+                     + '<td class="span1">'
+                     + '<button type="submit" '
+                     + 'class="btn-grey" id="save_book_plate_button" '
+                     + 'onclick="save_book_plate(event);">Save Book Plate'
+                     + '</button>'
+                     + '</td>'
+                     + '</tr>'
+                     + '</table>';
+
+        form_html += '</form>';
+
+        console.log(form_html);
+        let form_content_element = document.querySelector('#form-content');
+
+        if (form_content_element) {
+            form_content_element.innerHTML = form_html;
+        }
+
+        callback(null, obj);
+        return false;
+
+        /*
+        DB(TABLE)
+            .select('*')
+            .where({
+                id: obj.id
+            })
+            .then(function (data) {
+                console.log("Inside secondFunction");
+                obj.data = data;
+                callback(null, obj);
+                return false;
+            })
+            .catch(function (error) {
+                LOGGER.module().error('FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error);
+                throw 'FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error;
+            });
+        */
+    }
+
+    /**
+     * Is this waterfall approach needed here? I don't think secondFunction
+     * is necessary since I can populate the entire tbl_donations record with
+     * one insert. <-- This is correct (no waterfall approach needed here).
+     */
+    ASYNC.waterfall([
+        fetch_titles,
+        build_html
+    ], function (error, results) {
+        console.log("Inside create_donation waterfall function");
+
+        if (error) {
+            LOGGER.module().error('ERROR: [create_donation/async.waterfall] ' + error);
+        }
+
+        /*
+        callback({
+            status: 201,
+            message: 'Record created.',
+            data: results.data
+        });
+        */
+    });
+}
+
+function create_donation_old() {
+    const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
+    const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const titles_table = 'tbl_titles_lookup';
+
+    hide_table_header_and_content();
+
+    let page_label_element = document.querySelector('#page-label');
+
+    if (page_label_element) {
+        page_label_element.innerHTML = 'Living Library: Donation Form';
+    }
+
+    let form_html = '<form id="donor-input-form" method="post">';
+
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td><h4>Person making donation</h4></td>';
+    form_html += '<td></td>';
+    form_html += '<td></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="donor_title_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium" id="donor_title_dropdown" '
+                 + 'name="donor_title">';
+
+    /* This code is for when you're trying to find an existing select element.
+     * But since we're building the HTML, this select element does not yet
+     * exist in the DOM.
+
+    let donor_title_dropdown = document.getElementById('donor_title_dropdown');
+    donor_title_dropdown.length = 0;
+
+    let default_title_option = document.createElement('option');
+    default_title_option.text = '--Select a title--';
+    default_title_option.setAttribute('value', '');
+    default_title_option.setAttribute('selected', '');
+
+    donor_title_dropdown.add(default_title_option);
+    donor_title_dropdown.selectedIndex = 0;
+
+    fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
+          + '&api_key=' + api_key)
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem. Status Code: '
+                             + response.status);
+                return;
+            }
+
+            // Examine the text in the response
+            response.json().then(function(data) {
+                let option;
+
+                for (let i = 0; i < data.length; i++) {
+                    option = document.createElement('option');
+                	  option.text = data[i].name;
+                	  option.value = data[i].abbreviation;
+                	  donor_title_dropdown.add(option);
+                }
+            });
+        })
+        .catch(function(error) {
+            console.error('Fetch Error: ', error);
+        });
+
+    */
+
+    // fetch titles from database to build dropdown menu
     form_html += '<option value="Mr.">Mr.</option>'
                  + '<option value="Ms.">Ms.</option>';
+    fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
+          + '&api_key=' + api_key)
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem. Status Code: '
+                             + response.status);
+                return;
+            }
+
+            response.json().then(function(data) {
+                console.log("Inside Titles fetch");
+                for (let i = 0; i < data.length; i++) {
+                    console.log("data[" + i + "].title = " + data[i].title);
+                    form_html += '<option value="' + data[i].title + '">'
+                                 + data[i].title
+                	               + '</option>';
+                }
+            });
+        })
+        .catch(function(error) {
+            console.error('Fetch Error: ', error);
+        });
 
     form_html += '</select>'
                  + '</td>';
@@ -245,7 +783,7 @@ function get_donations(is_completed) {
         .catch((error) => {
             console.log('In the catch block');
             console.log(error);
-        })
+        });
 }
 
 function get_donation(is_completed, id) {
@@ -383,7 +921,7 @@ function get_completed_donation(url) {
         .catch((error) => {
             console.log('In the catch block');
             console.log(error);
-        })
+        });
 }
 
 function get_queued_donation(url) {
@@ -557,7 +1095,7 @@ function get_queued_donation(url) {
         .catch((error) => {
             console.log('In the catch block');
             console.log(error);
-        })
+        });
 }
 
 /**

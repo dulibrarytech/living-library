@@ -19,9 +19,9 @@
 'use strict';
 
 const LOGGER = require('../libs/log4'),
-    ASYNC = require('async'),
-    DB = require('../config/db')(),
-    TABLE = 'tbl_donations';
+      ASYNC = require('async'),
+      DB = require('../config/db')(),
+      TABLE = 'tbl_donations';
 
 /**
  * Creates record
@@ -122,97 +122,161 @@ exports.create = function (req, callback) {
  */
 exports.read = function (req, callback) {
 
-    /**
-     * Query for all donation records: SITE_URL/api/app?api_key=API_KEY
-     * Query for donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
-     * Query for completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
-     * Query for a single donation record: SITE_URL/api/app?id=[id]&api_key=API_KEY
-     */
-    let is_completed = typeof req.query.is_completed === 'undefined'
-                       ? ""
-                       : req.query.is_completed.toLowerCase();
+    let tbl = typeof req.query.tbl === 'undefined'
+              ? ""
+              : req.query.tbl.toLowerCase();
 
-    let id = req.query.id;
-
-    DB(TABLE)
-        .select('id', 'donor', 'who_to_notify', 'recipient', 'book', 'is_completed')
-        .orderBy('created', 'desc')
-        .modify(function(queryBuilder) {
-            if (is_completed === 'true' || is_completed === 'false'
-                || is_completed === '0' || is_completed === '1') {
-                // convert from string to boolean
-                is_completed = is_completed === 'true' || is_completed === '1';
-                console.log("is_completed = " + is_completed + "\n");
-
-                queryBuilder.where({
-                    is_completed: is_completed
-                })
-            } else {
-                console.log("No where clause because is_completed = "
-                            + is_completed + "\n");
-            }
-        })
-        .modify(function(queryBuilder) {
-            if (typeof id !== 'undefined') {
-                console.log("id = " + id + ", so adding to SQL query\n");
-
-                queryBuilder.where({
-                    id: id
-                })
-            } else {
-                console.log("id = " + id + ", so no adjustment to SQL query\n");
-            }
-        })
-        .then(function (data) {
-            /** The Knex query returns a JSON object containing the query results.
-             *  Why does Postman return the JSON object with escaped quotes \"
-             *  and newlines in the callback? Is this okay? This could be
-             *  problematic. Keep an eye on this.
+    switch(tbl) {
+        case "": {
+            /**
+             * No tbl parameter, so default to querying tbl_donations.
+             *
+             * tbl_donations query URLs:
+             * GET all donation records: SITE_URL/api/app?api_key=API_KEY
+             * GET donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
+             * GET completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
+             * GET a single donation record: SITE_URL/api/app?id=[id]&api_key=API_KEY
              */
-            for (let i = 0; i < data.length; i++) {
-                // Is is ok to make 'donor' a constant? Yes.
-                const donor = JSON.parse(data[i].donor);
-                const recipient = JSON.parse(data[i].recipient);
-                let is_completed_string = data[i].is_completed
-                                          ? "completed"
-                                          : "in the queue";
-                if (donor !== null) {
-                    console.log("Tracking ID = " + data[i].id + " from " +
-                                donor.title + " " + donor.first_name +
-                                " " + donor.last_name);
-                } else {
-                    console.log("Donor field of " + data[i].id + " is "
-                                + donor);
-                }
+            let is_completed = typeof req.query.is_completed === 'undefined'
+                               ? ""
+                               : req.query.is_completed.toLowerCase();
 
-                if (recipient !== null) {
-                    console.log(recipient.donation_type + " " + recipient.title
-                                + " " + recipient.first_name + " "
-                                + recipient.last_name);
-                } else {
-                    console.log("Recipient field of " + data[i].id + " is "
-                                  + recipient);
-                }
+            let id = req.query.id;
 
-                if (donor !== null) {
-                    console.log("Donated on " + donor.date_of_donation
-                                + ".\nStatus: " + is_completed_string);
-                }
-                console.log();
-            }
-            console.log("End of READ query from model\n=====================\n");
+            DB(TABLE)
+                .select('id', 'donor', 'who_to_notify', 'recipient', 'book', 'is_completed')
+                .orderBy('created', 'desc')
+                .modify(function(queryBuilder) {
+                    if (is_completed === 'true' || is_completed === 'false'
+                        || is_completed === '0' || is_completed === '1') {
+                        // convert from string to boolean
+                        is_completed = is_completed === 'true' || is_completed === '1';
+                        console.log("is_completed = " + is_completed + "\n");
 
-            callback({
-                status: 200,
-                message: 'Records retrieved.',
-                data: data
-            });
+                        queryBuilder.where({
+                            is_completed: is_completed
+                        })
+                    } else {
+                        console.log("No where clause because is_completed = "
+                                    + is_completed + "\n");
+                    }
+                })
+                .modify(function(queryBuilder) {
+                    if (typeof id !== 'undefined') {
+                        console.log("id = " + id + ", so adding to SQL query\n");
 
-        })
-        .catch(function (error) {
-            LOGGER.module().fatal('FATAL: Unable to read record ' + error);
-            throw 'FATAL: Unable to read record ' + error;
-        });
+                        queryBuilder.where({
+                            id: id
+                        })
+                    } else {
+                        console.log("id = " + id + ", so no adjustment to SQL query\n");
+                    }
+                })
+                .then(function (data) {
+                    /** The Knex query returns a JSON object containing the query results.
+                     *  Why does Postman return the JSON object with escaped quotes \"
+                     *  and newlines in the callback? Is this okay? This could be
+                     *  problematic. Keep an eye on this.
+                     */
+                    for (let i = 0; i < data.length; i++) {
+                        // Is is ok to make 'donor' a constant? Yes.
+                        const donor = JSON.parse(data[i].donor);
+                        const recipient = JSON.parse(data[i].recipient);
+                        let is_completed_string = data[i].is_completed
+                                                  ? "completed"
+                                                  : "in the queue";
+                        if (donor !== null) {
+                            console.log("Tracking ID = " + data[i].id + " from " +
+                                        donor.title + " " + donor.first_name +
+                                        " " + donor.last_name);
+                        } else {
+                            console.log("Donor field of " + data[i].id + " is "
+                                        + donor);
+                        }
+
+                        if (recipient !== null) {
+                            console.log(recipient.donation_type + " " + recipient.title
+                                        + " " + recipient.first_name + " "
+                                        + recipient.last_name);
+                        } else {
+                            console.log("Recipient field of " + data[i].id + " is "
+                                          + recipient);
+                        }
+
+                        if (donor !== null) {
+                            console.log("Donated on " + donor.date_of_donation
+                                        + ".\nStatus: " + is_completed_string);
+                        }
+                        console.log();
+                    }
+                    console.log("End of READ query from model\n=====================\n");
+
+                    callback({
+                        status: 200,
+                        message: 'Records retrieved.',
+                        data: data
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log('Inside catch function of tbl_donations case');
+                    LOGGER.module().fatal('FATAL: Unable to read record ' + error);
+                    throw 'FATAL: Unable to read record ' + error;
+                });
+            break;
+        }
+        case "tbl_titles_lookup": {
+            /**
+             * tbl_titles_lookup query URL:
+             * GET all active title records: SITE_URL/api/app?tbl=tbl_titles_lookup&is_active=true&api_key=API_KEY
+             */
+            let is_active = typeof req.query.is_active === 'undefined'
+                            ? ""
+                            : req.query.is_active.toLowerCase();
+
+            DB(tbl)
+                .select('title')
+                .orderBy('title_id')
+                .modify(function(queryBuilder) {
+                    if (is_active === 'true' || is_active === 'false'
+                        || is_active === '0' || is_active === '1') {
+                        // convert from string to boolean
+                        is_active = is_active === 'true' || is_active === '1';
+                        console.log("is_active = " + is_active + "\n");
+
+                        queryBuilder.where({
+                            is_active: is_active
+                        })
+                    } else {
+                        console.log("No where clause because is_active = "
+                                    + is_active + "\n");
+                    }
+                })
+                .then(function (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        console.log("title[" + i + "] = " + data[i].title);
+                    }
+                    console.log("\nEnd of READ query from model\n=====================\n");
+
+                    callback({
+                        status: 200,
+                        message: 'Records retrieved.',
+                        data: data
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log('Inside catch function of tbl_titles_lookup case');
+                    LOGGER.module().fatal('FATAL: Unable to read record ' + error);
+                    throw 'FATAL: Unable to read record ' + error;
+                });
+            break;
+        } // end of tbl_titles_lookup case
+        default: {
+            LOGGER.module().fatal('FATAL: tbl = ' + tbl + '. Unable to read from this table.');
+            throw 'FATAL: tbl = ' + tbl + '. Unable to read from this table.';
+        }
+    } // end of switch
 };
 
 /**
