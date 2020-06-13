@@ -8,10 +8,13 @@
  * University of Denver, June 2020
  */
 
+const TITLES_TABLE = 'tbl_titles_lookup',
+      STATES_TABLE = 'tbl_states_lookup',
+      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup';
+
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
     const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
-    const titles_table = 'tbl_titles_lookup';
 
     hide_table_header_and_content();
 
@@ -37,7 +40,7 @@ function create_donation() {
                  + 'class="form-label-text">Title:'
                  + '</label>'
                  + '<select class="input-medium" id="donor_title_dropdown" '
-                 + 'name="donor_title">';
+                 + 'name="donor_title">'
                  + '</select>'
                  + '</td>';
 
@@ -114,35 +117,72 @@ function create_donation() {
     donor_title_dropdown.add(default_title_option);
     donor_title_dropdown.selectedIndex = 0;
 
-    // fetch titles from database to build title dropdown menu
-    fetch(api_base_url + '?tbl=' + titles_table + '&is_active=true'
-          + '&api_key=' + api_key)
+    let titles_url = api_base_url + '?tbl=' + TITLES_TABLE + '&is_active=true'
+                     + '&api_key=' + api_key;
+    populate_dropdown_menu(TITLES_TABLE, titles_url, donor_title_dropdown);
+}
+
+/**
+ * Populates the html_element's dropdown menu by fetching values from the
+ * lookup table indicated by table_name.
+ * @param table_name    the lookup table whose values will populate the dropdown
+ * @param url           the url of the API being queried
+ * @param html_element  the html_element being populated (i.e. the <select> tag)
+ */
+function populate_dropdown_menu(table_name, url, html_element) {
+
+    let field_name; // name of the database field we need to reference
+    let label_name; // name of the values being fetched
+
+    switch(table_name) {
+        case TITLES_TABLE:
+            field_name = 'title', label_name = 'titles';
+            break;
+        case STATES_TABLE:
+            field_name = 'state_full', label_name = 'states';
+            break;
+        case RELATIONSHIPS_TABLE:
+            field_name = 'relationship', label_name = 'relationships';
+            break;
+        default:
+            console.log(table_name + " is not a lookup table. Cannot populate "
+                        + "dropdown menu.")
+            return false;
+    }
+
+    fetch(url)
         .then(function(response) {
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem with fetching ' +
-                             'titles. Status Code: ' + response.status);
+                console.warn('Looks like there was a problem fetching the '
+                             + label_name + '. Status Code: '
+                             + response.status);
                 return;
             }
 
             response.json().then(function(data) {
-                console.log("Inside Titles fetch");
+                console.log("Inside " + label_name + " fetch");
 
                 let option;
 
                 for (let i = 0; i < data.length; i++) {
-                    console.log("data[" + i + "].title = " + data[i].title);
+                    console.log("data[" + i + "]." + field_name + " = "
+                                + data[i][field_name]);
 
                     option = document.createElement('option');
-                    option.text = data[i].title;
-                    option.value = data[i].title;
-                    donor_title_dropdown.add(option);
+                    option.text = data[i][field_name];
+                    option.value = data[i][field_name];
+                    html_element.add(option);
                 }
             });
         })
         .catch(function(error) {
-            LOGGER.module().error('FATAL: [create_donation] Unable to fetch titles ' + error);
-            throw 'FATAL: [create_donation] Unable to fetch titles ' + error;
+            LOGGER.module().error('FATAL: [create_donation] Unable to fetch '
+                                  + label_name + ' ' + error);
+            throw 'FATAL: [create_donation] Unable to fetch ' + label_name + ' '
+                  + error;
         });
+
+    return true;
 }
 
 function get_donations(is_completed) {
