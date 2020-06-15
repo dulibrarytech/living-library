@@ -225,18 +225,45 @@ exports.read = function (req, callback) {
                 });
             break;
         }
-        case "tbl_titles_lookup": {
+        case "tbl_titles_lookup":
+        case "tbl_states_lookup":
+        case "tbl_relationships_lookup":
+        case "tbl_subject_areas_lookup": {
             /**
-             * tbl_titles_lookup query URL:
+             * Lookup table query URLs:
              * GET all active title records: SITE_URL/api/app?tbl=tbl_titles_lookup&is_active=true&api_key=API_KEY
+             * GET all active state records: SITE_URL/api/app?tbl=tbl_states_lookup&is_active=true&api_key=API_KEY
+             * GET all active relationship records: SITE_URL/api/app?tbl=tbl_relationships_lookup&is_active=true&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/app?tbl=tbl_subject_areas_lookup&is_active=true&api_key=API_KEY
              */
             let is_active = typeof req.query.is_active === 'undefined'
                             ? ""
                             : req.query.is_active.toLowerCase();
 
+            let display_field, sort_field;
+
+            switch(tbl) {
+                case "tbl_titles_lookup": {
+                    display_field = 'title', sort_field = 'title_id';
+                    break;
+                }
+                case "tbl_states_lookup": {
+                    display_field = 'state_full', sort_field = 'state_id';
+                    break;
+                }
+                case "tbl_relationships_lookup": {
+                    display_field = 'relationship', sort_field = 'relationship_id';
+                    break;
+                }
+                case "tbl_subject_areas_lookup": {
+                    display_field = 'subject', sort_field = 'subject_id';
+                    break;
+                }
+            }
+
             DB(tbl)
-                .select('title')
-                .orderBy('title_id')
+                .select(display_field)
+                .orderBy(sort_field)
                 .modify(function(queryBuilder) {
                     if (is_active === 'true' || is_active === 'false'
                         || is_active === '0' || is_active === '1') {
@@ -254,7 +281,7 @@ exports.read = function (req, callback) {
                 })
                 .then(function (data) {
                     for (let i = 0; i < data.length; i++) {
-                        console.log("title[" + i + "] = " + data[i].title);
+                        console.log(display_field + "[" + i + "] = " + data[i][display_field]);
                     }
                     console.log("\nEnd of READ query from model\n=====================\n");
 

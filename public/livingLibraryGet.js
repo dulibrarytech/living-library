@@ -10,7 +10,8 @@
 
 const TITLES_TABLE = 'tbl_titles_lookup',
       STATES_TABLE = 'tbl_states_lookup',
-      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup';
+      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
+      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup';
 
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
@@ -26,12 +27,11 @@ function create_donation() {
 
     let form_html = '<form id="donor-input-form" method="post">';
 
+    // Donor table
     form_html += '<table class="table">';
 
     form_html += '<tr>';
-    form_html += '<td><h4>Person making donation</h4></td>';
-    form_html += '<td></td>';
-    form_html += '<td></td>';
+    form_html += '<td colspan="3"><h4>Person making donation</h4></td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
@@ -63,25 +63,265 @@ function create_donation() {
 
     form_html += '<tr>';
     form_html += '<td>'
-                 + '<label for="bibliographic_number_input_box" '
-                 + 'class="form-label-text">Bibliographic Number:'
+                 + '<label for="donor_address_input_box" '
+                 + 'class="form-label-text">Address:'
                  + '</label>'
                  + '<input type="text" '
-                 + 'id="bibliographic_number_input_box" '
+                 + 'id="donor_address_input_box" '
                  + 'class="input_form-default" '
-                 + 'name="bibliographic_number"/>'
+                 + 'name="donor_address"/>'
                  + '</td>';
 
     form_html += '<td>'
-                 + '<label for="call_number_input_box" '
-                 + 'class="form-label-text">Call Number:'
+                 + '<label for="donor_city_input_box" '
+                 + 'class="form-label-text">City:'
                  + '</label>'
-                 + '<input type="text" id="call_number_input_box" '
-                 + 'class="input_form-default" name="call_number"/>'
+                 + '<input type="text" id="donor_city_input_box" '
+                 + 'class="input_form-default" name="donor_city"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_state_dropdown" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default" '
+                 + 'id="donor_state_dropdown" name="donor_state">'
+                 + '</select>'
                  + '</td>';
     form_html += '</tr>';
 
-    form_html += '</table>'; // close table with text input boxes
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<label for="donor_zip_input_box" '
+                 + 'class="form-label-text">Zip:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="donor_zip_input_box" '
+                 + 'class="input-medium" '
+                 + 'name="donor_zip"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Donor table
+
+    // Who To Notify table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Person(s) to be notified of donation</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_title_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium" id="notify_title_dropdown" '
+                 + 'name="notify_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" id="notify_first_name_input_box" '
+                 + 'class="input_form-default" name="notify_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+              + '<label for="notify_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="notify_last_name_input_box" '
+              + 'class="input_form-default" name="notify_last_name"/>'
+              + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_address_input_box" '
+                 + 'class="form-label-text">Address:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_address_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify_address"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_city_input_box" '
+                 + 'class="form-label-text">City:'
+                 + '</label>'
+                 + '<input type="text" id="notify_city_input_box" '
+                 + 'class="input_form-default" name="notify_city"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_state_dropdown" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default" '
+                 + 'id="notify_state_dropdown" name="notify_state">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_zip_input_box" '
+                 + 'class="form-label-text">Zip:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_zip_input_box" '
+                 + 'class="input-medium" '
+                 + 'name="notify_zip"/>'
+                 + '</td>';
+
+    form_html += '<td colspan="2">'
+                 + '<label for="notify_relation_to_donor_dropdown" '
+                 + 'class="form-label-text">Relation to Donor:'
+                 + '</label>'
+                 + '<select class="input_form-default" '
+                 + 'id="notify_relation_to_donor_dropdown" name="notify_state">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Who To Notify table
+
+    // Recipient table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Person receiving donation</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="recipient_title_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium" id="recipient_title_dropdown" '
+                 + 'name="recipient_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="recipient_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" id="recipient_first_name_input_box" '
+                 + 'class="input_form-default" name="recipient_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+              + '<label for="recipient_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="recipient_last_name_input_box" '
+              + 'class="input_form-default" name="recipient_last_name"/>'
+              + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<div>'
+                 + '<label for="recipient_donation_type_radio_choice1" '
+                 + 'class="radio inline">'
+                 + '<input type="radio" '
+                 + 'id="recipient_donation_type_radio_choice1" '
+                 + 'name="recipient_donation_type" checked/>In Honor of'
+                 + '</label>'
+                 + '</div>'
+                 + '<div>'
+                 + '<label for="recipient_donation_type_radio_choice2" '
+                 + 'class="radio inline">'
+                 + '<input type="radio" '
+                 + 'id="recipient_donation_type_radio_choice2" '
+                 + 'name="recipient_donation_type"/>In Memory of'
+                 + '</label>'
+                 + '</div>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Recipient table
+
+    // Donation Info table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Donation information</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="donor_amount_of_donation_input_box" '
+                 + 'class="form-label-text">Amount of Donation (e.g. 100.00):'
+                 + '</label>'
+                 + '<input type="text" id="donor_amount_of_donation_input_box" '
+                 + 'class="input_form-default" name="donor_amount_of_donation"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="gift-date-box" '
+                 + 'class="form-label-text">Donation Date:'
+                 + '</label>'
+                 + '<input type="text" id="gift-date-box" '
+                 + 'class="input_form-default" name="donor_date_of_donation"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_notes_textarea" '
+                 + 'class="form-label-text">Notes:'
+                 + '</label>'
+                 + '<textarea id="donor_notes_textarea" '
+                 + 'class="input_form-default" name="donor_notes"></textarea>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Donation Info table
+
+    // Subject Areas table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="2"><h4>Subject areas</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="inlineCheckbox1" class="checkbox inline">'
+                 + '<input type="checkbox" id="inlineCheckbox1" '
+                 + 'value="option1"/>Information Science'
+                 + '</label>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="inlineCheckbox2" class="checkbox inline">'
+                 + '<input type="checkbox" id="inlineCheckbox2" '
+                 + 'value="option2"/>Computer Science'
+                 + '</label>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="inlineCheckbox3" class="checkbox inline">'
+                 + '<input type="checkbox" id="inlineCheckbox3" '
+                 + 'value="option3"/>Geography'
+                 + '</label>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="inlineCheckbox4" class="checkbox inline">'
+                 + '<input type="checkbox" id="inlineCheckbox4" '
+                 + 'value="option4"/>Political Science/International Relations'
+                 + '</label>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Subject Areas table
 
     form_html += '<input type="hidden" id="donation_id_hidden_box" '
                  + 'name="donation_id" value=""/>';
@@ -90,8 +330,8 @@ function create_donation() {
                  + '<tr>'
                  + '<td class="span1">'
                  + '<button type="submit" '
-                 + 'class="btn-grey" id="save_book_plate_button" '
-                 + 'onclick="save_book_plate(event);">Save Book Plate'
+                 + 'class="btn-grey" id="save_donation_button" '
+                 + 'onclick="save_book_plate(event);">Send to Queue'
                  + '</button>'
                  + '</td>'
                  + '</tr>'
@@ -106,20 +346,19 @@ function create_donation() {
         form_content_element.innerHTML = form_html;
     }
 
+    // Populate donor_title_dropdown menu
     let donor_title_dropdown = document.querySelector('#donor_title_dropdown');
-    donor_title_dropdown.length = 0;
-
-    let default_title_option = document.createElement('option');
-    default_title_option.text = '--Select a title--';
-    default_title_option.setAttribute('value', '');
-    default_title_option.setAttribute('selected', '');
-
-    donor_title_dropdown.add(default_title_option);
-    donor_title_dropdown.selectedIndex = 0;
-
     let titles_url = api_base_url + '?tbl=' + TITLES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
-    populate_dropdown_menu(TITLES_TABLE, titles_url, donor_title_dropdown);
+    populate_dropdown_menu(TITLES_TABLE, titles_url, donor_title_dropdown,
+                           '--Select a title--');
+
+    // Populate donor_state_dropdown menu
+    let donor_state_dropdown = document.querySelector('#donor_state_dropdown');
+    let states_url = api_base_url + '?tbl=' + STATES_TABLE + '&is_active=true'
+                     + '&api_key=' + api_key;
+    populate_dropdown_menu(STATES_TABLE, states_url, donor_state_dropdown,
+                           '--Select a state--');
 }
 
 /**
@@ -127,9 +366,21 @@ function create_donation() {
  * lookup table indicated by table_name.
  * @param table_name    the lookup table whose values will populate the dropdown
  * @param url           the url of the API being queried
- * @param html_element  the html_element being populated (i.e. the <select> tag)
+ * @param html_element  the html element being populated (i.e. the <select> tag)
+ * @param text_for_default_option   the option the dropdown menu displays by
+ *                                  default
  */
-function populate_dropdown_menu(table_name, url, html_element) {
+function populate_dropdown_menu(table_name, url, html_element,
+                                text_for_default_option) {
+    html_element.length = 0;
+
+    let default_option = document.createElement('option');
+    default_option.text = text_for_default_option;
+    default_option.setAttribute('value', '');
+    default_option.setAttribute('selected', '');
+
+    html_element.add(default_option);
+    html_element.selectedIndex = 0;
 
     let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
