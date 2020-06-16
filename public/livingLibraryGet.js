@@ -363,13 +363,13 @@ function create_donation() {
 }
 
 /**
- * Populates the dropdown menu of each node in html_elements by fetching values
- * from the lookup table indicated by table_name.
- * @param table_name     the lookup table whose values will populate each node's
- *                       dropdown menu
+ * Populates the dropdown menu of each element in html_elements by fetching
+ * values from the lookup table indicated by table_name.
+ * @param table_name     the lookup table whose values will populate each
+ *                       element's dropdown menu
  * @param url            the url of the API being queried
- * @param html_elements  a NodeList of the html elements to populate (i.e. the
- *                       <select> tags)
+ * @param html_elements  the dropdown menus to be populated (i.e. the <select>
+ *                       tags)
  * @param text_for_default_option   the option each dropdown menu should display
  *                                  by default
  */
@@ -388,16 +388,20 @@ function populate_dropdown_menu(table_name, url, html_elements,
 
     let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
+    let dropdown_class_name; // class name of the dropdown menus to be populated
 
     switch(table_name) {
         case TITLES_TABLE:
             field_name = 'title', label_name = 'titles';
+            dropdown_class_name = 'title_dropdown';
             break;
         case STATES_TABLE:
             field_name = 'state_full', label_name = 'states';
+            dropdown_class_name = 'state_dropdown';
             break;
         case RELATIONSHIPS_TABLE:
             field_name = 'relationship', label_name = 'relationships';
+            dropdown_class_name = 'relationship_dropdown';
             break;
         default:
             console.log(table_name + " is not a lookup table. Cannot populate "
@@ -430,38 +434,38 @@ function populate_dropdown_menu(table_name, url, html_elements,
                     select.add(option);
                     console.log("select: last child's inner html = " + select.lastElementChild.innerHTML);
                 }
+
+                // Replace all relevant elements with this newly-populated <select> element
+                console.log("====Checking select: last child's inner html = " + select.lastElementChild.innerHTML);
+                for (let node of html_elements) {
+                    console.log("\nselect:");
+                    console.log("  Tag name of select = " + select.tagName);
+                    console.log("  class attr = " + select.getAttribute('class'));
+                    console.log("  id attr = " + select.getAttribute('id'));
+                    console.log("  name attr = " + select.getAttribute('name'));
+                    console.log("  last child's inner html = " + select.lastElementChild.innerHTML);
+                    let select_copy = select.cloneNode(true);
+                    console.log("\nselect_copy:");
+                    console.log("  Tag name of select_copy = " + select_copy.tagName);
+                    console.log("  class attr = " + select_copy.getAttribute('class'));
+                    console.log("  id attr = " + select_copy.getAttribute('id'));
+                    console.log("  name attr = " + select_copy.getAttribute('name'));
+                    console.log("\nBefore replacement:");
+                    console.log("  Tag name of node = " + node.tagName);
+                    console.log("  class attr = " + node.getAttribute('class'));
+                    select_copy.setAttribute('class', node.getAttribute('class'));
+                    console.log("  id attr = " + node.getAttribute('id'));
+                    select_copy.setAttribute('id', node.getAttribute('id'));
+                    console.log("  name attr = " + node.getAttribute('name'));
+                    select_copy.setAttribute('name', node.getAttribute('name'));
+                    node.parentNode.replaceChild(select_copy, node);
+                    console.log("\nAfter replacement:");
+                    console.log("  Tag name of node = " + node.tagName);
+                    console.log("  class attr = " + node.getAttribute('class'));
+                    console.log("  id attr = " + node.getAttribute('id'));
+                    console.log("  name attr = " + node.getAttribute('name'));
+                }
             });
-        }).then(function () {
-            // Replace all relevant elements with this newly-populated <select> element
-            console.log("====Checking select: last child's inner html = " + select.lastElementChild.innerHTML);
-            for (let node of html_elements) {
-                console.log("\nselect:");
-                console.log("  Tag name of select = " + select.tagName);
-                console.log("  class attr = " + select.getAttribute('class'));
-                console.log("  id attr = " + select.getAttribute('id'));
-                console.log("  name attr = " + select.getAttribute('name'));
-                console.log("  last child's inner html = " + select.lastElementChild.innerHTML);
-                let select_copy = select.cloneNode(true);
-                console.log("\nselect_copy:");
-                console.log("  Tag name of select_copy = " + select_copy.tagName);
-                console.log("  class attr = " + select_copy.getAttribute('class'));
-                console.log("  id attr = " + select_copy.getAttribute('id'));
-                console.log("  name attr = " + select_copy.getAttribute('name'));
-                console.log("\nBefore replacement:");
-                console.log("  Tag name of node = " + node.tagName);
-                console.log("  class attr = " + node.getAttribute('class'));
-                select_copy.setAttribute('class', node.getAttribute('class'));
-                console.log("  id attr = " + node.getAttribute('id'));
-                select_copy.setAttribute('id', node.getAttribute('id'));
-                console.log("  name attr = " + node.getAttribute('name'));
-                select_copy.setAttribute('name', node.getAttribute('name'));
-                node.parentNode.replaceChild(select_copy, node);
-                console.log("\nAfter replacement:");
-                console.log("  Tag name of node = " + node.tagName);
-                console.log("  class attr = " + node.getAttribute('class'));
-                console.log("  id attr = " + node.getAttribute('id'));
-                console.log("  name attr = " + node.getAttribute('name'));
-            }
         })
         .catch(function(error) {
             /* LOGGER is not defined
