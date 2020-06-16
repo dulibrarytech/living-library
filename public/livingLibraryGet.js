@@ -11,7 +11,9 @@
 const TITLES_TABLE = 'tbl_titles_lookup',
       STATES_TABLE = 'tbl_states_lookup',
       RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
-      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup';
+      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup',
+      SUBJECT_AREA_COLS = 3; // how many columns to use when displaying
+                             // subject area checkboxes
 
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
@@ -284,42 +286,11 @@ function create_donation() {
     form_html += '</table>'; // close Donation Info table
 
     // Subject Areas table
-    form_html += '<table class="table">';
+    form_html += '<table class="table" id="subject_areas">';
 
     form_html += '<tr>';
-    form_html += '<td colspan="2"><h4>Subject areas</h4></td>';
-    form_html += '</tr>';
-
-    form_html += '<tr>';
-    form_html += '<td>'
-                 + '<label for="inlineCheckbox1" class="checkbox inline">'
-                 + '<input type="checkbox" id="inlineCheckbox1" '
-                 + 'value="option1"/>Information Science'
-                 + '</label>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="inlineCheckbox2" class="checkbox inline">'
-                 + '<input type="checkbox" id="inlineCheckbox2" '
-                 + 'value="option2"/>Computer Science'
-                 + '</label>'
-                 + '</td>';
-    form_html += '</tr>';
-
-    form_html += '<tr>';
-    form_html += '<td>'
-                 + '<label for="inlineCheckbox3" class="checkbox inline">'
-                 + '<input type="checkbox" id="inlineCheckbox3" '
-                 + 'value="option3"/>Geography'
-                 + '</label>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="inlineCheckbox4" class="checkbox inline">'
-                 + '<input type="checkbox" id="inlineCheckbox4" '
-                 + 'value="option4"/>Political Science/International Relations'
-                 + '</label>'
-                 + '</td>';
+    form_html += '<td colspan="' + SUBJECT_AREA_COLS
+                 + '"><h4>Subject areas</h4></td>';
     form_html += '</tr>';
 
     form_html += '</table>'; // close Subject Areas table
@@ -367,6 +338,75 @@ function create_donation() {
     populate_dropdown_menu(RELATIONSHIPS_TABLE, relationships_url,
                            document.getElementsByClassName('relationship_dropdown'),
                            '--Select a relation to donor--');
+
+    // Add Subject Area checkboxes
+    fetch(api_base_url + '?tbl=' + SUBJECT_AREAS_TABLE + '&is_active=true'
+          + '&api_key=' + api_key)
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem fetching the '
+                             + 'subject areas. Status Code: '
+                             + response.status);
+                return false;
+            }
+
+            response.json().then(function(data) {
+                console.log("Inside subject areas fetch");
+
+                // Add checkboxes to <table>
+                let checkbox_html = '';
+
+                if (data.length === 0) {
+                    checkbox_html += '<tr>';
+                    checkbox_html += '<td colspan="' + SUBJECT_AREA_COLS
+                                 + '">No subject areas found.</td>';
+                    checkbox_html += '</tr>';
+                }
+
+                let table = document.querySelector('#subject_areas');
+                for (let i = 0; i < data.length; i++) {
+                    console.log("data[" + i + "].subject = "
+                                + data[i].subject);
+
+                    let checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = 'checkbox_' + i;
+                    checkbox.name = 'subject_areas[]';
+                    checkbox.value = data[i].subject;
+                    console.log("checkbox.id = " + checkbox.id);
+
+                    let label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.className = 'checkbox inline';
+                    // label.setAttribute('class', 'checkbox inline');
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(checkbox.value));
+                    // label.innerHTML = checkbox.value;
+
+                    let td = document.createElement('td');
+                    td.appendChild(label);
+
+                    if (i % SUBJECT_AREA_COLS == 0) {
+                        let newRow = document.createElement('tr');
+                        newRow.appendChild(td);
+                        table.appendChild(newRow);
+                    } else {
+                        let lastRow = table.rows[table.rows.length - 1];
+                        lastRow.appendChild(td);
+                    }
+                }
+            });
+        })
+        .catch(function(error) {
+            /* LOGGER is not defined
+            LOGGER.module().error('FATAL: [create_donation] Unable to fetch '
+                                  + label_name + ' ' + error);
+            */
+            console.log('FATAL: [create_donation] Unable to fetch subject '
+                        + 'areas ' + error);
+            throw 'FATAL: [create_donation] Unable to fetch subject areas '
+                  + error;
+        });
 }
 
 /**
