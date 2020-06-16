@@ -346,18 +346,21 @@ function create_donation() {
         form_content_element.innerHTML = form_html;
     }
 
-    // Populate donor_title_dropdown menu
-    let donor_title_dropdown = document.querySelector('#donor_title_dropdown');
+    // Populate Title dropdown menus
     let titles_url = api_base_url + '?tbl=' + TITLES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
-    populate_dropdown_menu(TITLES_TABLE, titles_url, donor_title_dropdown,
+    populate_dropdown_menu(TITLES_TABLE, titles_url,
+                           document.querySelector('#donor_title_dropdown'),
+                           '--Select a title--');
+    populate_dropdown_menu(TITLES_TABLE, titles_url,
+                           document.querySelector('#notify_title_dropdown'),
                            '--Select a title--');
 
     // Populate donor_state_dropdown menu
-    let donor_state_dropdown = document.querySelector('#donor_state_dropdown');
     let states_url = api_base_url + '?tbl=' + STATES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
-    populate_dropdown_menu(STATES_TABLE, states_url, donor_state_dropdown,
+    populate_dropdown_menu(STATES_TABLE, states_url,
+                           document.querySelector('#donor_state_dropdown'),
                            '--Select a state--');
 }
 
