@@ -354,12 +354,19 @@ function create_donation() {
                            document.getElementsByClassName('title_dropdown'),
                            '--Select a title--');
 
-    // Populate donor_state_dropdown menu
+    // Populate State dropdown menus
     let states_url = api_base_url + '?tbl=' + STATES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
     populate_dropdown_menu(STATES_TABLE, states_url,
                            document.getElementsByClassName('state_dropdown'),
                            '--Select a state--');
+
+    // Populate Relation to Donor dropdown menu
+    let relationships_url = api_base_url + '?tbl=' + RELATIONSHIPS_TABLE
+                     + '&is_active=true' + '&api_key=' + api_key;
+    populate_dropdown_menu(RELATIONSHIPS_TABLE, relationships_url,
+                           document.getElementsByClassName('relationship_dropdown'),
+                           '--Select a relation to donor--');
 }
 
 /**
@@ -432,8 +439,20 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 /* Replace all relevant dropdown menus with the newly-populated
                  * <select> element
                  */
+                let need_to_clone = false;
                 for (let node of html_elements) {
-                    let select_copy = select.cloneNode(true);
+                    /* Can only use a given <select> element once in the DOM.
+                     * So clone it if it's needed for more than one dropdown
+                     * menu.
+                     */
+                    let select_copy;
+                    if (need_to_clone) {
+                        select_copy = select.cloneNode(true);
+                    } else {
+                        select_copy = select;
+                        need_to_clone = true;
+                    }
+
                     select_copy.setAttribute('class', node.getAttribute('class'));
                     select_copy.setAttribute('id', node.getAttribute('id'));
                     select_copy.setAttribute('name', node.getAttribute('name'));
