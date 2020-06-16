@@ -39,8 +39,8 @@ function create_donation() {
                  + '<label for="donor_title_dropdown" '
                  + 'class="form-label-text">Title:'
                  + '</label>'
-                 + '<select class="input-medium" id="donor_title_dropdown" '
-                 + 'name="donor_title">'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="donor_title_dropdown" name="donor_title">'
                  + '</select>'
                  + '</td>';
 
@@ -84,7 +84,7 @@ function create_donation() {
                  + '<label for="donor_state_dropdown" '
                  + 'class="form-label-text">State:'
                  + '</label>'
-                 + '<select class="input_form-default" '
+                 + '<select class="input_form-default state_dropdown" '
                  + 'id="donor_state_dropdown" name="donor_state">'
                  + '</select>'
                  + '</td>';
@@ -116,8 +116,8 @@ function create_donation() {
                  + '<label for="notify_title_dropdown" '
                  + 'class="form-label-text">Title:'
                  + '</label>'
-                 + '<select class="input-medium" id="notify_title_dropdown" '
-                 + 'name="notify_title">'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="notify_title_dropdown" name="notify_title">'
                  + '</select>'
                  + '</td>';
 
@@ -161,7 +161,7 @@ function create_donation() {
                  + '<label for="notify_state_dropdown" '
                  + 'class="form-label-text">State:'
                  + '</label>'
-                 + '<select class="input_form-default" '
+                 + '<select class="input_form-default state_dropdown" '
                  + 'id="notify_state_dropdown" name="notify_state">'
                  + '</select>'
                  + '</td>';
@@ -182,8 +182,9 @@ function create_donation() {
                  + '<label for="notify_relation_to_donor_dropdown" '
                  + 'class="form-label-text">Relation to Donor:'
                  + '</label>'
-                 + '<select class="input_form-default" '
-                 + 'id="notify_relation_to_donor_dropdown" name="notify_state">'
+                 + '<select class="input_form-default relationship_dropdown" '
+                 + 'id="notify_relation_to_donor_dropdown" '
+                 + 'name="notify_relation_to_donor">'
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
@@ -202,8 +203,8 @@ function create_donation() {
                  + '<label for="recipient_title_dropdown" '
                  + 'class="form-label-text">Title:'
                  + '</label>'
-                 + '<select class="input-medium" id="recipient_title_dropdown" '
-                 + 'name="recipient_title">'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="recipient_title_dropdown" name="recipient_title">'
                  + '</select>'
                  + '</td>';
 
@@ -350,40 +351,40 @@ function create_donation() {
     let titles_url = api_base_url + '?tbl=' + TITLES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
     populate_dropdown_menu(TITLES_TABLE, titles_url,
-                           document.querySelector('#donor_title_dropdown'),
-                           '--Select a title--');
-    populate_dropdown_menu(TITLES_TABLE, titles_url,
-                           document.querySelector('#notify_title_dropdown'),
+                           document.querySelectorAll('.title_dropdown'),
                            '--Select a title--');
 
     // Populate donor_state_dropdown menu
     let states_url = api_base_url + '?tbl=' + STATES_TABLE + '&is_active=true'
                      + '&api_key=' + api_key;
     populate_dropdown_menu(STATES_TABLE, states_url,
-                           document.querySelector('#donor_state_dropdown'),
+                           document.querySelectorAll('.state_dropdown'),
                            '--Select a state--');
 }
 
 /**
- * Populates the html_element's dropdown menu by fetching values from the
- * lookup table indicated by table_name.
- * @param table_name    the lookup table whose values will populate the dropdown
- * @param url           the url of the API being queried
- * @param html_element  the html element being populated (i.e. the <select> tag)
- * @param text_for_default_option   the option the dropdown menu displays by
- *                                  default
+ * Populates the dropdown menu of each node in html_elements by fetching values
+ * from the lookup table indicated by table_name.
+ * @param table_name     the lookup table whose values will populate each node's
+ *                       dropdown menu
+ * @param url            the url of the API being queried
+ * @param html_elements  a NodeList of the html elements to populate (i.e. the
+ *                       <select> tags)
+ * @param text_for_default_option   the option each dropdown menu should display
+ *                                  by default
  */
-function populate_dropdown_menu(table_name, url, html_element,
+function populate_dropdown_menu(table_name, url, html_elements,
                                 text_for_default_option) {
-    html_element.length = 0;
-
+    // Create new <select> element and add its default option
+    let select = document.createElement('select');
     let default_option = document.createElement('option');
+
     default_option.text = text_for_default_option;
     default_option.setAttribute('value', '');
     default_option.setAttribute('selected', '');
 
-    html_element.add(default_option);
-    html_element.selectedIndex = 0;
+    select.add(default_option);
+    select.selectedIndex = 0;
 
     let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
@@ -404,13 +405,14 @@ function populate_dropdown_menu(table_name, url, html_element,
             return false;
     }
 
+    // Fetch dropdown menu options from database and add to <select> element
     fetch(url)
         .then(function(response) {
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching the '
                              + label_name + '. Status Code: '
                              + response.status);
-                return;
+                return false;
             }
 
             response.json().then(function(data) {
@@ -425,7 +427,7 @@ function populate_dropdown_menu(table_name, url, html_element,
                     option = document.createElement('option');
                     option.text = data[i][field_name];
                     option.value = data[i][field_name];
-                    html_element.add(option);
+                    select.add(option);
                 }
             });
         })
@@ -435,6 +437,25 @@ function populate_dropdown_menu(table_name, url, html_element,
             throw 'FATAL: [create_donation] Unable to fetch ' + label_name + ' '
                   + error;
         });
+
+    // Replace all relevant elements with this newly-populated <select> element
+    for (let node of html_elements) {
+        let select_copy = select.cloneNode(true);
+        console.log("\nBefore replacement:");
+        console.log("  Tag name of node = " + node.tagName);
+        console.log("  class attr = " + node.getAttribute('class'));
+        select_copy.setAttribute('class', node.getAttribute('class'));
+        console.log("  id attr = " + node.getAttribute('id'));
+        select_copy.setAttribute('id', node.getAttribute('id'));
+        console.log("  name attr = " + node.getAttribute('name'));
+        select_copy.setAttribute('name', node.getAttribute('name'));
+        node.parentNode.replaceChild(select_copy, node);
+        console.log("\nAfter replacement:");
+        console.log("  Tag name of node = " + node.tagName);
+        console.log("  class attr = " + node.getAttribute('class'));
+        console.log("  id attr = " + node.getAttribute('id'));
+        console.log("  name attr = " + node.getAttribute('name'));
+    }
 
     return true;
 }
