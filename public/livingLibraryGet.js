@@ -565,24 +565,24 @@ function get_donations(is_completed) {
 
                     if (donor !== null) {
                         console.log("Tracking ID = " + data[i].id + " from " +
-                                    donor.title + " " + donor.first_name +
-                                    " " + donor.last_name);
+                                    donor.donor_title + " " + donor.donor_first_name +
+                                    " " + donor.donor_last_name);
                     } else {
                         console.log("Donor field of " + data[i].id + " is "
                                     + donor);
                     }
 
                     if (recipient !== null) {
-                        console.log(recipient.donation_type + " " + recipient.title
-                                    + " " + recipient.first_name + " "
-                                    + recipient.last_name);
+                        console.log(recipient.recipient_donation_type + " " + recipient.recipient_title
+                                    + " " + recipient.recipient_first_name + " "
+                                    + recipient.recipient_last_name);
                     } else {
                         console.log("Recipient field of " + data[i].id + " is "
                                       + recipient);
                     }
 
                     if (donor !== null) {
-                        console.log("Donated on " + donor.date_of_donation
+                        console.log("Donated on " + donor.donor_date_of_donation
                                     + ".\nStatus: " + is_completed_string);
                     }
                     console.log();
@@ -609,21 +609,22 @@ function get_donations(is_completed) {
 
                     html += '<td class="span4 name-cell4">';
                     if (donor !== null) {
-                        html += donor.title + ' ' + donor.first_name + ' '
-                                + donor.last_name;
+                        html += donor.donor_title + ' ' + donor.donor_first_name
+                                + ' ' + donor.donor_last_name;
                     }
                     html += '</td>';
 
                     html += '<td class="span4 name-cell4">';
                     if (recipient !== null) {
-                        html += recipient.title + ' ' + recipient.first_name
-                                + ' ' + recipient.last_name;
+                        html += recipient.recipient_title + ' '
+                                + recipient.recipient_first_name
+                                + ' ' + recipient.recipient_last_name;
                     }
                     html += '</td>';
 
                     html += '<td style="text-align: center">';
                     if (donor !== null) {
-                        html += donor.date_of_donation;
+                        html += donor.donor_date_of_donation;
                     }
                     html += '</td>';
 
@@ -685,19 +686,19 @@ function get_completed_donation(url) {
                 html += '<h4>Person making donation</h4>';
                 html += '<dl>';
                 html += '<dt>Title: </dt>'
-                        + '<dd>' + donor.title + '</dd>';
+                        + '<dd>' + donor.donor_title + '</dd>';
                 html += '<dt>First Name: </dt>'
-                        + '<dd>' + donor.first_name + '</dd>';
+                        + '<dd>' + donor.donor_first_name + '</dd>';
                 html += '<dt>Last Name: </dt>'
-                        + '<dd>' + donor.last_name + '</dd>';
+                        + '<dd>' + donor.donor_last_name + '</dd>';
                 html += '<dt>Address: </dt>'
-                        + '<dd>' + donor.address + '</dd>';
+                        + '<dd>' + donor.donor_address + '</dd>';
                 html += '<dt>City: </dt>'
-                        + '<dd>' + donor.city + '</dd>';
+                        + '<dd>' + donor.donor_city + '</dd>';
                 html += '<dt>State: </dt>'
-                        + '<dd>' + donor.state + '</dd>';
+                        + '<dd>' + donor.donor_state + '</dd>';
                 html += '<dt>Zip: </dt>'
-                        + '<dd>' + donor.zip + '</dd>';
+                        + '<dd>' + donor.donor_zip + '</dd>';
                 html += '</dl>';
             }
 
@@ -708,21 +709,21 @@ function get_completed_donation(url) {
                 for (let i = 0; i < who_to_notify.length; i++) {
                     html += '<dl class="name_address_block">';
                     html += '<dt>Title: </dt>'
-                            + '<dd>' + who_to_notify[i].title + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_title + '</dd>';
                     html += '<dt>First Name: </dt>'
-                            + '<dd>' + who_to_notify[i].first_name + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_first_name + '</dd>';
                     html += '<dt>Last Name: </dt>'
-                            + '<dd>' + who_to_notify[i].last_name + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_last_name + '</dd>';
                     html += '<dt>Address: </dt>'
-                            + '<dd>' + who_to_notify[i].address + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_address + '</dd>';
                     html += '<dt>City: </dt>'
-                            + '<dd>' + who_to_notify[i].city + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_city + '</dd>';
                     html += '<dt>State: </dt>'
-                            + '<dd>' + who_to_notify[i].state + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_state + '</dd>';
                     html += '<dt>Zip: </dt>'
-                            + '<dd>' + who_to_notify[i].zip + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_zip + '</dd>';
                     html += '<dt>Relation to Donor: </dt>'
-                            + '<dd>' + who_to_notify[i].relation_to_donor + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_relation_to_donor + '</dd>';
                     html += '</dl>';
                 }
             }
@@ -733,13 +734,13 @@ function get_completed_donation(url) {
                 html += '<h4>Person receiving donation</h4>';
                 html += '<dl>';
                 html += '<dt>Title: </dt>'
-                        + '<dd>' + recipient.title + '</dd>';
+                        + '<dd>' + recipient.recipient_title + '</dd>';
                 html += '<dt>First Name: </dt>'
-                        + '<dd>' + recipient.first_name + '</dd>';
+                        + '<dd>' + recipient.recipient_first_name + '</dd>';
                 html += '<dt>Last Name: </dt>'
-                        + '<dd>' + recipient.last_name + '</dd>';
+                        + '<dd>' + recipient.recipient_last_name + '</dd>';
                 html += '<dt>Donation Type: </dt>'
-                        + '<dd>' + recipient.donation_type + '</dd>';
+                        + '<dd>' + recipient.recipient_donation_type + '</dd>';
                 html += '</dl>';
             }
 
@@ -749,9 +750,9 @@ function get_completed_donation(url) {
                 html += '<h4>Donation Information</h4>';
                 html += '<dl>';
                 html += '<dt>Amount of Donation: </dt>'
-                        + '<dd>' + donor.amount_of_donation + '</dd>';
+                        + '<dd>' + donor.donor_amount_of_donation + '</dd>';
                 html += '<dt>Date of Donation: </dt>'
-                        + '<dd>' + donor.date_of_donation + '</dd>';
+                        + '<dd>' + donor.donor_date_of_donation + '</dd>';
                 html += '</dl>';
             }
 
@@ -761,13 +762,13 @@ function get_completed_donation(url) {
                 html += '<h4>Book Information</h4>';
                 html += '<dl>';
                 html += '<dt>Author Name: </dt>'
-                        + '<dd>' + book.author_name + '</dd>';
+                        + '<dd>' + book.book_author_name + '</dd>';
                 html += '<dt>Book Title: </dt>'
                         + '<dd>' + book.book_title + '</dd>';
                 html += '<dt>Bibliographic Number: </dt>'
-                        + '<dd>' + book.bibliographic_number + '</dd>';
+                        + '<dd>' + book.book_bibliographic_number + '</dd>';
                 html += '<dt>Call Number: </dt>'
-                        + '<dd>' + book.call_number + '</dd>';
+                        + '<dd>' + book.book_call_number + '</dd>';
                 html += '</dl>';
             }
 
@@ -805,12 +806,12 @@ function get_queued_donation(url) {
                         + '<dd></dd>';
             } else {
                 html += '<dt>Person making donation: </dt>'
-                        + '<dd>' + donor.title + ' ' + donor.first_name + ' '
-                        + donor.last_name + '</dd>';
+                        + '<dd>' + donor.donor_title + ' ' + donor.donor_first_name + ' '
+                        + donor.donor_last_name + '</dd>';
 
-                if (donor.notes !== null) {
+                if (donor.donor_notes !== null) {
                     html += '<dt>Notes: </dt>'
-                            + '<dd>' + donor.notes + '</dd>';
+                            + '<dd>' + donor.donor_notes + '</dd>';
                 }
             }
 
@@ -823,9 +824,9 @@ function get_queued_donation(url) {
                 for (let i = 0; i < who_to_notify.length; i++) {
                     if (i > 0)
                         html += '; ';
-                    html += who_to_notify[i].title + ' '
-                            + who_to_notify[i].first_name + ' '
-                            + who_to_notify[i].last_name;
+                    html += who_to_notify[i].notify_title + ' '
+                            + who_to_notify[i].notify_first_name + ' '
+                            + who_to_notify[i].notify_last_name;
                 }
                 html += '</dd>';
             }
@@ -835,9 +836,9 @@ function get_queued_donation(url) {
                         + '<dd></dd>';
             } else {
                 html += '<dt>Person receiving donation: </dt>'
-                        + '<dd>' + recipient.title + ' ' + recipient.first_name
-                        + ' ' + recipient.last_name + ' ('
-                        + recipient.donation_type + ')</dd>';
+                        + '<dd>' + recipient.recipient_title + ' ' + recipient.recipient_first_name
+                        + ' ' + recipient.recipient_last_name + ' ('
+                        + recipient.recipient_donation_type + ')</dd>';
             }
 
             if (donor === null) {
@@ -845,20 +846,20 @@ function get_queued_donation(url) {
                         + '<dd></dd>';
             } else {
                 html += '<dt>Date of donation: </dt>'
-                        + '<dd>' + donor.date_of_donation + '</dd>';
+                        + '<dd>' + donor.donor_date_of_donation + '</dd>';
             }
 
-            if (donor === null || donor.subject_areas === null
-                || donor.subject_areas.length === 0) {
+            if (donor === null || donor.donor_subject_areas === null
+                || donor.donor_subject_areas.length === 0) {
                 html += '<dt>No subject areas selected.</dt>'
                         + '<dd></dd>';
             } else {
                 html += '<dt>Selected subject areas: </dt>';
                 html += '<dd>';
-                for (let i = 0; i < donor.subject_areas.length; i++) {
+                for (let i = 0; i < donor.donor_subject_areas.length; i++) {
                     if (i > 0)
                         html += '; ';
-                    html += donor.subject_areas[i];
+                    html += donor.donor_subject_areas[i];
                 }
                 html += '</dd>';
             }
@@ -883,11 +884,11 @@ function get_queued_donation(url) {
 
             form_html += '<tr>';
             form_html += '<td>'
-                         + '<label for="author_name_input_box" '
+                         + '<label for="book_author_name_input_box" '
                          + 'class="form-label-text">Author Name:'
                          + '</label>'
-                         + '<input type="text" id="author_name_input_box" '
-                         + 'class="input_form-default" name="author_name"/>'
+                         + '<input type="text" id="book_author_name_input_box" '
+                         + 'class="input_form-default" name="book_author_name"/>'
                          + '</td>';
 
             form_html += '<td>'
@@ -901,21 +902,21 @@ function get_queued_donation(url) {
 
             form_html += '<tr>';
             form_html += '<td>'
-                         + '<label for="bibliographic_number_input_box" '
+                         + '<label for="book_bibliographic_number_input_box" '
                          + 'class="form-label-text">Bibliographic Number:'
                          + '</label>'
                          + '<input type="text" '
-                         + 'id="bibliographic_number_input_box" '
+                         + 'id="book_bibliographic_number_input_box" '
                          + 'class="input_form-default" '
-                         + 'name="bibliographic_number"/>'
+                         + 'name="book_bibliographic_number"/>'
                          + '</td>';
 
             form_html += '<td>'
-                         + '<label for="call_number_input_box" '
+                         + '<label for="book_call_number_input_box" '
                          + 'class="form-label-text">Call Number:'
                          + '</label>'
-                         + '<input type="text" id="call_number_input_box" '
-                         + 'class="input_form-default" name="call_number"/>'
+                         + '<input type="text" id="book_call_number_input_box" '
+                         + 'class="input_form-default" name="book_call_number"/>'
                          + '</td>';
             form_html += '</tr>';
 

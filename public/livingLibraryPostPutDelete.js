@@ -66,8 +66,9 @@ const save_donation = function (event) {
 const save_book_plate = function (event) {
     console.log("Inside save_book_plate function");
 
-    const BOOK_PLATE_FORM_FIELDS = ["author_name", "book_title",
-                                    "bibliographic_number", "call_number"];
+    const BOOK_PLATE_FORM_FIELDS = ["book_author_name", "book_title",
+                                    "book_bibliographic_number",
+                                    "book_call_number"];
 
     // Stop the form from submitting the default way
     event.preventDefault();
