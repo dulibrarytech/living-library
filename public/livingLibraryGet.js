@@ -353,17 +353,16 @@ function create_donation() {
             response.json().then(function(data) {
                 console.log("Inside subject areas fetch");
 
-                // Add checkboxes to <table>
-                let checkbox_html = '';
+                let table = document.querySelector('#subject_areas');
 
                 if (data.length === 0) {
-                    checkbox_html += '<tr>';
-                    checkbox_html += '<td colspan="' + SUBJECT_AREA_COLS
-                                 + '">No subject areas found.</td>';
-                    checkbox_html += '</tr>';
+                    let row = table.insertRow();
+                    let cell = row.insertCell();
+                    cell.colSpan = SUBJECT_AREA_COLS;
+                    cell.innerHTML = 'No subject areas found.';
+                    return;
                 }
 
-                let table = document.querySelector('#subject_areas');
                 for (let i = 0; i < data.length; i++) {
                     console.log("data[" + i + "].subject = "
                                 + data[i].subject);
@@ -378,22 +377,14 @@ function create_donation() {
                     let label = document.createElement('label');
                     label.htmlFor = checkbox.id;
                     label.className = 'checkbox inline';
-                    // label.setAttribute('class', 'checkbox inline');
                     label.appendChild(checkbox);
                     label.appendChild(document.createTextNode(checkbox.value));
-                    // label.innerHTML = checkbox.value;
 
-                    let td = document.createElement('td');
-                    td.appendChild(label);
-
-                    if (i % SUBJECT_AREA_COLS == 0) {
-                        let newRow = document.createElement('tr');
-                        newRow.appendChild(td);
-                        table.appendChild(newRow);
-                    } else {
-                        let lastRow = table.rows[table.rows.length - 1];
-                        lastRow.appendChild(td);
-                    }
+                    // decide where to insert cell
+                    let row = i % SUBJECT_AREA_COLS == 0
+                              ? table.insertRow()
+                              : table.rows[table.rows.length - 1];
+                    row.insertCell().appendChild(label);
                 }
             });
         })
