@@ -17,7 +17,7 @@ const save_donation = function (event) {
                           'donor_city', 'donor_state', 'donor_zip',
                           'donor_amount_of_donation',
                           'donor_date_of_donation', 'donor_notes',
-                          'donor_subject_areas[]'];
+                          'donor_subject_areas'];
 
     const NOTIFY_FIELDS = ['notify_title', 'notify_first_name',
                            'notify_last_name', 'notify_address',
@@ -33,6 +33,9 @@ const save_donation = function (event) {
     let form_data = document.getElementById('donor-input-form').elements;
 
     let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
+    if (typeof donor_data_as_JSON.donor_subject_areas === 'undefined') {
+        donor_data_as_JSON.donor_subject_areas = [];
+    }
     console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
 
     let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
@@ -105,9 +108,23 @@ const save_book_plate = function (event) {
  */
 const form_to_JSON = function (expected_form_fields, form_elements) {
     return [].reduce.call(form_elements, (data, element) => {
-        if (expected_form_fields.includes(element.name)) {
-            data[element.name] = element.value;
+        if (isValidElement(element.name, expected_form_fields) &&
+            isValidValue(element)) {
+            if (element.type === 'checkbox') {
+                data[element.name] = (data[element.name] || [])
+                                     .concat(element.value);
+            } else {
+                data[element.name] = element.value;
+            }
         }
         return data;
     }, {});
+};
+
+const isValidElement = function (element_name, valid_form_fields) {
+    return valid_form_fields.includes(element_name);
+};
+
+const isValidValue = function (element) {
+    return (!['checkbox', 'radio'].includes(element.type) || element.checked);
 };

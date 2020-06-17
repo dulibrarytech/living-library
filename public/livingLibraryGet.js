@@ -234,7 +234,8 @@ function create_donation() {
                  + 'class="radio inline">'
                  + '<input type="radio" '
                  + 'id="recipient_donation_type_radio_choice1" '
-                 + 'name="recipient_donation_type" checked/>In Honor of'
+                 + 'name="recipient_donation_type" '
+                 + 'value="In Honor of" checked/>In Honor of'
                  + '</label>'
                  + '</div>'
                  + '<div>'
@@ -242,7 +243,8 @@ function create_donation() {
                  + 'class="radio inline">'
                  + '<input type="radio" '
                  + 'id="recipient_donation_type_radio_choice2" '
-                 + 'name="recipient_donation_type"/>In Memory of'
+                 + 'name="recipient_donation_type" '
+                 + 'value="In Memory of"/>In Memory of'
                  + '</label>'
                  + '</div>'
                  + '</td>';
@@ -367,7 +369,7 @@ function create_donation() {
                     let checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.id = 'checkbox_' + i;
-                    checkbox.name = 'donor_subject_areas[]';
+                    checkbox.name = 'donor_subject_areas';
                     checkbox.value = data[i].subject;
                     console.log("checkbox.id = " + checkbox.id);
 
