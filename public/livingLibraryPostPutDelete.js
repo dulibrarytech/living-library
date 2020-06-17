@@ -7,6 +7,58 @@
  *
  * University of Denver, June 2020
  */
+const API_KEY = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+
+const save_donation = function (event) {
+    console.log("Inside save_donation function");
+
+    const DONOR_FIELDS = ['donor_title', 'donor_first_name',
+                          'donor_last_name', 'donor_address',
+                          'donor_city', 'donor_state', 'donor_zip',
+                          'donor_amount_of_donation',
+                          'donor_date_of_donation', 'donor_notes',
+                          'donor_subject_areas[]'];
+
+    const NOTIFY_FIELDS = ['notify_title', 'notify_first_name',
+                           'notify_last_name', 'notify_address',
+                           'notify_city', 'notify_state', 'notify_zip',
+                           'notify_relation_to_donor'];
+
+    const RECIPIENT_FIELDS = ['recipient_title', 'recipient_first_name',
+                              'recipient_last_name', 'recipient_donation_type'];
+
+    // Stop the form from submitting the default way
+    event.preventDefault();
+
+    let form_data = document.getElementById('donor-input-form').elements;
+
+    let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
+    console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
+
+    let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
+    console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
+
+    let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
+    console.log("recipient_data_as_JSON = " + JSON.stringify(recipient_data_as_JSON));
+
+    let donation_data = new URLSearchParams();
+    donation_data.append('donor', JSON.stringify(donor_data_as_JSON));
+    donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
+    donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
+
+    const url = 'http://localhost:8000/api/v1/living-library/donations?api_key='
+                + API_KEY;
+
+    console.log("url = " + url);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: donation_data
+    });
+};
 
 const save_book_plate = function (event) {
     console.log("Inside save_book_plate function");
@@ -31,7 +83,7 @@ const save_book_plate = function (event) {
 
     const url = 'http://localhost:8000/api/v1/living-library/donations?id='
                 + form_data.donation_id.value
-                + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+                + '&api_key=' + API_KEY;
 
     console.log("url = " + url);
 
@@ -42,7 +94,6 @@ const save_book_plate = function (event) {
         },
         body: book_field
     });
-
 };
 
 /**

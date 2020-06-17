@@ -295,15 +295,12 @@ function create_donation() {
 
     form_html += '</table>'; // close Subject Areas table
 
-    form_html += '<input type="hidden" id="donation_id_hidden_box" '
-                 + 'name="donation_id" value=""/>';
-
     form_html += '<table class="table lower_controls">'
                  + '<tr>'
                  + '<td class="span1">'
                  + '<button type="submit" '
                  + 'class="btn-grey" id="save_donation_button" '
-                 + 'onclick="save_book_plate(event);">Send to Queue'
+                 + 'onclick="save_donation(event);">Send to Queue'
                  + '</button>'
                  + '</td>'
                  + '</tr>'
@@ -370,7 +367,7 @@ function create_donation() {
                     let checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.id = 'checkbox_' + i;
-                    checkbox.name = 'subject_areas[]';
+                    checkbox.name = 'donor_subject_areas[]';
                     checkbox.value = data[i].subject;
                     console.log("checkbox.id = " + checkbox.id);
 
