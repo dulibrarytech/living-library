@@ -42,7 +42,8 @@ const save_donation = function (event) {
     console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
     let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
-    console.log("recipient_data_as_JSON = " + JSON.stringify(recipient_data_as_JSON));
+    console.log("recipient_data_as_JSON = "
+                + JSON.stringify(recipient_data_as_JSON));
 
     let donation_data = new URLSearchParams();
     donation_data.append('donor', JSON.stringify(donor_data_as_JSON));

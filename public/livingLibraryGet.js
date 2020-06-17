@@ -110,7 +110,8 @@ function create_donation() {
     form_html += '<table class="table">';
 
     form_html += '<tr>';
-    form_html += '<td colspan="3"><h4>Person(s) to be notified of donation</h4></td>';
+    form_html += '<td colspan="3"><h4>Person(s) to be notified of donation</h4>'
+                 + '</td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
@@ -509,7 +510,7 @@ function get_donations(is_completed) {
 
     const base_url = 'http://localhost/donordb/';
     const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
-                + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+                    + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
     fetch(api_url)
         .then(response => {
@@ -564,21 +565,23 @@ function get_donations(is_completed) {
                                               : 'in the queue';
 
                     if (donor !== null) {
-                        console.log("Tracking ID = " + data[i].id + " from " +
-                                    donor.donor_title + " " + donor.donor_first_name +
-                                    " " + donor.donor_last_name);
+                        console.log("Tracking ID = " + data[i].id + " from "
+                                    + donor.donor_title + " "
+                                    + donor.donor_first_name
+                                    + " " + donor.donor_last_name);
                     } else {
                         console.log("Donor field of " + data[i].id + " is "
                                     + donor);
                     }
 
                     if (recipient !== null) {
-                        console.log(recipient.recipient_donation_type + " " + recipient.recipient_title
-                                    + " " + recipient.recipient_first_name + " "
+                        console.log(recipient.recipient_donation_type + " "
+                                    + recipient.recipient_title + " "
+                                    + recipient.recipient_first_name + " "
                                     + recipient.recipient_last_name);
                     } else {
                         console.log("Recipient field of " + data[i].id + " is "
-                                      + recipient);
+                                    + recipient);
                     }
 
                     if (donor !== null) {
@@ -711,11 +714,14 @@ function get_completed_donation(url) {
                     html += '<dt>Title: </dt>'
                             + '<dd>' + who_to_notify[i].notify_title + '</dd>';
                     html += '<dt>First Name: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_first_name + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_first_name
+                            + '</dd>';
                     html += '<dt>Last Name: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_last_name + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_last_name
+                            + '</dd>';
                     html += '<dt>Address: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_address + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_address
+                            + '</dd>';
                     html += '<dt>City: </dt>'
                             + '<dd>' + who_to_notify[i].notify_city + '</dd>';
                     html += '<dt>State: </dt>'
@@ -723,7 +729,8 @@ function get_completed_donation(url) {
                     html += '<dt>Zip: </dt>'
                             + '<dd>' + who_to_notify[i].notify_zip + '</dd>';
                     html += '<dt>Relation to Donor: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_relation_to_donor + '</dd>';
+                            + '<dd>' + who_to_notify[i].notify_relation_to_donor
+                            + '</dd>';
                     html += '</dl>';
                 }
             }
@@ -836,8 +843,9 @@ function get_queued_donation(url) {
                         + '<dd></dd>';
             } else {
                 html += '<dt>Person receiving donation: </dt>'
-                        + '<dd>' + recipient.recipient_title + ' ' + recipient.recipient_first_name
-                        + ' ' + recipient.recipient_last_name + ' ('
+                        + '<dd>' + recipient.recipient_title + ' '
+                        + recipient.recipient_first_name + ' '
+                        + recipient.recipient_last_name + ' ('
                         + recipient.recipient_donation_type + ')</dd>';
             }
 
