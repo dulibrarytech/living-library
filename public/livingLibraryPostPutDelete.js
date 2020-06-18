@@ -30,6 +30,8 @@ const save_donation = function (event) {
     // Stop the form from submitting the default way
     event.preventDefault();
 
+    console.log("event = " + event);
+
     let form_data = document.getElementById('donor-input-form').elements;
 
     for (element of form_data) {
@@ -42,8 +44,27 @@ const save_donation = function (event) {
     }
     console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
 
-    let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
-    console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
+    /*
+    let notify_persons_data;
+    while (notify_persons_data ) = document.getElementsByClassName('notify_person_1');
+
+    let i = 1, notify_persons_data;
+    do {
+        notify_persons_data = document.getElementsByClassName('notify_person_'
+                                                              + i);
+    } while (notify_persons_data.length !== 0);
+    */
+    let notify_data_as_JSON = [];
+    for (let i = 1,
+         notify_persons_data = document.getElementsByClassName('notify_person_1');
+         notify_persons_data.length !== 0;
+         notify_persons_data = document.getElementsByClassName('notify_person_'
+                                                               + (++i))) {
+        notify_data_as_JSON.push(form_to_JSON(NOTIFY_FIELDS, notify_persons_data));
+    }
+
+    // let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
+    console.log("FINAL notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
     let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
     console.log("recipient_data_as_JSON = "
@@ -107,8 +128,13 @@ const save_book_plate = function (event) {
 
 /**
  * Retrieves input data from a form and returns it as a JSON object.
- * @param  {HTMLFormControlsCollection} form_elements  the form elements
- * @return {Object}                                    form data as an object literal
+ * @param  {Array}            expected_form_fields  the form fields that will be
+ *                                                  matched
+ * @param  {HTMLCollection}   form_elements         the form elements (i.e the
+ *                                                  data input by the user); can
+ *                                                  also be an
+ *                                                  HTMLFormControlsCollection
+ * @return {Object}                                 form data as an object literal
  *
  * Adapted from: https://www.learnwithjason.dev/blog/get-form-values-as-json/
  */
