@@ -111,6 +111,8 @@ function create_donation() {
     // Who To Notify table
     form_html += '<table class="table">';
 
+    form_html += '<div id="notify_section_1">';
+
     form_html += '<tr>';
     form_html += '<td colspan="3"><h4>Person <span id="notify_person_1"></span>'
                  + 'to be notified of donation</h4>'
@@ -119,81 +121,183 @@ function create_donation() {
 
     form_html += '<tr>';
     form_html += '<td>'
-                 + '<label for="notify_title_dropdown" '
+                 + '<label for="notify[1][notify_title]_dropdown" '
                  + 'class="form-label-text">Title:'
                  + '</label>'
                  + '<select class="input-medium title_dropdown" '
-                 + 'id="notify_title_dropdown" name="notify_title">'
+                 + 'id="notify[1][notify_title]_dropdown" '
+                 + 'name="notify[1][notify_title]">'
                  + '</select>'
                  + '</td>';
 
     form_html += '<td>'
-                 + '<label for="notify_first_name_input_box" '
+                 + '<label for="notify[1][notify_first_name]_input_box" '
                  + 'class="form-label-text">First Name:'
                  + '</label>'
-                 + '<input type="text" id="notify_first_name_input_box" '
-                 + 'class="input_form-default" name="notify_first_name"/>'
+                 + '<input type="text" '
+                 + 'id="notify[1][notify_first_name]_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify[1][notify_first_name]"/>'
                  + '</td>';
 
     form_html += '<td>'
-              + '<label for="notify_last_name_input_box" '
-              + 'class="form-label-text">Last Name:'
-              + '</label>'
-              + '<input type="text" id="notify_last_name_input_box" '
-              + 'class="input_form-default" name="notify_last_name"/>'
-              + '</td>';
+                 + '<label for="notify[1][notify_last_name]_input_box" '
+                 + 'class="form-label-text">Last Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify[1][notify_last_name]_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify[1][notify_last_name]"/>'
+                 + '</td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
     form_html += '<td>'
-                 + '<label for="notify_address_input_box" '
+                 + '<label for="notify[1][notify_address]_input_box" '
                  + 'class="form-label-text">Address:'
                  + '</label>'
                  + '<input type="text" '
-                 + 'id="notify_address_input_box" '
+                 + 'id="notify[1][notify_address]_input_box" '
                  + 'class="input_form-default" '
-                 + 'name="notify_address"/>'
+                 + 'name="notify[1][notify_address]"/>'
                  + '</td>';
 
     form_html += '<td>'
-                 + '<label for="notify_city_input_box" '
+                 + '<label for="notify[1][notify_city]_input_box" '
                  + 'class="form-label-text">City:'
                  + '</label>'
-                 + '<input type="text" id="notify_city_input_box" '
-                 + 'class="input_form-default" name="notify_city"/>'
+                 + '<input type="text" id="notify[1][notify_city]_input_box" '
+                 + 'class="input_form-default" name="notify[1][notify_city]"/>'
                  + '</td>';
 
     form_html += '<td>'
-                 + '<label for="notify_state_dropdown" '
+                 + '<label for="notify[1][notify_state]_input_box" '
                  + 'class="form-label-text">State:'
                  + '</label>'
                  + '<select class="input_form-default state_dropdown" '
-                 + 'id="notify_state_dropdown" name="notify_state">'
+                 + 'id="notify[1][notify_state]_input_box" '
+                 + 'name="notify[1][notify_state]">'
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
     form_html += '<td>'
-                 + '<label for="notify_zip_input_box" '
+                 + '<label for="notify[1][notify_zip]_input_box" '
                  + 'class="form-label-text">Zip:'
                  + '</label>'
                  + '<input type="text" '
-                 + 'id="notify_zip_input_box" '
+                 + 'id="notify[1][notify_zip]_input_box" '
                  + 'class="input-medium" '
-                 + 'name="notify_zip"/>'
+                 + 'name="notify[1][notify_zip]"/>'
                  + '</td>';
 
     form_html += '<td colspan="2">'
-                 + '<label for="notify_relation_to_donor_dropdown" '
+                 + '<label for="notify[1][notify_relation_to_donor]_input_box" '
                  + 'class="form-label-text">Relation to Donor:'
                  + '</label>'
                  + '<select class="input_form-default relationship_dropdown" '
-                 + 'id="notify_relation_to_donor_dropdown" '
-                 + 'name="notify_relation_to_donor">'
+                 + 'id="notify[1][notify_relation_to_donor]_input_box" '
+                 + 'name="notify[1][notify_relation_to_donor]">'
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
+
+    form_html += '</div>'; // close notify_section_1 div
+
+    form_html += '<div id="notify_section_2">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Person <span id="notify_person_2">2 </span>'
+                 + 'to be notified of donation</h4>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_title]_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="notify[2][notify_title]_dropdown" '
+                 + 'name="notify[2][notify_title]">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_first_name]_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify[2][notify_first_name]_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify[2][notify_first_name]"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_last_name]_input_box" '
+                 + 'class="form-label-text">Last Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify[2][notify_last_name]_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify[2][notify_last_name]"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_address]_input_box" '
+                 + 'class="form-label-text">Address:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify[2][notify_address]_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="notify[2][notify_address]"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_city]_input_box" '
+                 + 'class="form-label-text">City:'
+                 + '</label>'
+                 + '<input type="text" id="notify[2][notify_city]_input_box" '
+                 + 'class="input_form-default" name="notify[2][notify_city]"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_state]_input_box" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default state_dropdown" '
+                 + 'id="notify[2][notify_state]_input_box" '
+                 + 'name="notify[2][notify_state]">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify[2][notify_zip]_input_box" '
+                 + 'class="form-label-text">Zip:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify[2][notify_zip]_input_box" '
+                 + 'class="input-medium" '
+                 + 'name="notify[2][notify_zip]"/>'
+                 + '</td>';
+
+    form_html += '<td colspan="2">'
+                 + '<label for="notify[2][notify_relation_to_donor]_input_box" '
+                 + 'class="form-label-text">Relation to Donor:'
+                 + '</label>'
+                 + '<select class="input_form-default relationship_dropdown" '
+                 + 'id="notify[2][notify_relation_to_donor]_input_box" '
+                 + 'name="notify[2][notify_relation_to_donor]">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</div>'; // close notify_section_2 div
 
     form_html += '<tr id="add_person_to_notify_row">';
     form_html += '<td class="span1" colspan="3">'

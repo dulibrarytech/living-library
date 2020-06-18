@@ -32,6 +32,10 @@ const save_donation = function (event) {
 
     let form_data = document.getElementById('donor-input-form').elements;
 
+    for (element of form_data) {
+        console.log(element.name + " = " + element.value);
+    }
+
     let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
     if (typeof donor_data_as_JSON.donor_subject_areas === 'undefined') {
         donor_data_as_JSON.donor_subject_areas = [];
