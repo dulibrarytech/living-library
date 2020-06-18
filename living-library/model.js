@@ -187,24 +187,26 @@ exports.read = function (req, callback) {
                                                   : "in the queue";
                         if (donor !== null) {
                             console.log("Tracking ID = " + data[i].id + " from " +
-                                        donor.title + " " + donor.first_name +
-                                        " " + donor.last_name);
+                                        donor.donor_title + " " +
+                                        donor.donor_first_name + " " +
+                                        donor.donor_last_name);
                         } else {
                             console.log("Donor field of " + data[i].id + " is "
                                         + donor);
                         }
 
                         if (recipient !== null) {
-                            console.log(recipient.donation_type + " " + recipient.title
-                                        + " " + recipient.first_name + " "
-                                        + recipient.last_name);
+                            console.log(recipient.recipient_donation_type + " "
+                                        + recipient.recipient_title + " "
+                                        + recipient.recipient_first_name + " "
+                                        + recipient.recipient_last_name);
                         } else {
                             console.log("Recipient field of " + data[i].id + " is "
                                           + recipient);
                         }
 
                         if (donor !== null) {
-                            console.log("Donated on " + donor.date_of_donation
+                            console.log("Donated on " + donor.donor_date_of_donation
                                         + ".\nStatus: " + is_completed_string);
                         }
                         console.log();
