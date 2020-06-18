@@ -17,15 +17,15 @@
 	<!-- App title text -->
 	<link href='https://fonts.googleapis.com/css?family=Lusitana' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
-	<link rel="stylesheet" href="http://localhost/donordb/assets/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/main.css" />
+	<link rel="stylesheet" href="http://localhost/donordb_old/assets/css/jquery-ui.css" />
 
 	<!-- DU Sheild favicon -->
-	<link rel="shortcut icon" href="http://localhost/donordb/img/kwak_favicon.ico" />
+	<link rel="shortcut icon" href="http://localhost/donordb_old/img/kwak_favicon.ico" />
 
 	<!-- Add fancyBox -->
-	<link rel="stylesheet" href="http://localhost/donordb/libs/fancyBox/source/jquery.fancybox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://localhost/donordb_old/libs/fancyBox/source/jquery.fancybox.css" type="text/css" media="screen" />
 
 	<!-- end of head-partial.php -->
 
@@ -54,8 +54,8 @@
 	<head>
 	<title>| 5</title>
 
-		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
-		<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/main.css" />
 
 		<!-- Added for the Living Library integration -->
 		<!-- needed for dropdown navbar menu -->
@@ -72,7 +72,7 @@
 	        <div class="navbar navbar-fixed-top">
 	            <div class="navbar-inner" id="header-bar-base">
 	                <div class="container">
-	                    <img alt="du logo full" id="logo" width="140" height="40" src="http://localhost/donordb/img/du-logo.gif" />
+	                    <img alt="du logo full" id="logo" width="140" height="40" src="http://localhost/donordb_old/img/du-logo.gif" />
 						<span class="pull-right smalltext" style="text-align: right;" />
 	                </div> <!-- /container -->
 	            </div>
@@ -109,8 +109,8 @@
 		<head>
 		<title>| 5</title>
 
-			<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/bootstrap.css" />
-			<link rel="stylesheet" type="text/css" href="http://localhost/donordb/assets/css/main.css" />
+			<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/bootstrap.css" />
+			<link rel="stylesheet" type="text/css" href="http://localhost/donordb_old/assets/css/main.css" />
 
 		</head>
 
@@ -119,15 +119,15 @@
 		    <div class="container bannersNav" id="nav-bar">
 		        <!--section id="page-banners"-->
 		        <ul class="nav nav-tabs">
-		            <li class="navbar-item"><a class="active" title="Application Home" href="http://localhost/donordb/index.php/search">Search</a></li>
+		            <li class="navbar-item"><a class="active" title="Application Home" href="http://localhost/donordb_old/index.php/search">Search</a></li>
 
-		            <li class="navbar-item"><a title="Browse Donors" href="http://localhost/donordb/index.php/search/browseDonors">Browse Donors</a></li>
+		            <li class="navbar-item"><a title="Browse Donors" href="http://localhost/donordb_old/index.php/search/browseDonors">Browse Donors</a></li>
 
-		            <li class="navbar-item"><a title="" href="http://localhost/donordb/index.php/edit/addDonorView">Add Donor Info</a></li>
+		            <li class="navbar-item"><a title="" href="http://localhost/donordb_old/index.php/edit/addDonorView">Add Donor Info</a></li>
 
-		            <li class="navbar-item"><a title="New Gift" href="http://localhost/donordb/index.php/edit/addGiftView/1">Anonymous Gift</a></li>
+		            <li class="navbar-item"><a title="New Gift" href="http://localhost/donordb_old/index.php/edit/addGiftView/1">Anonymous Gift</a></li>
 
-		            <li class="navbar-item"><a title="Statistics" href="http://localhost/donordb/index.php/search/statisticsView">Statistics</a></li>
+		            <li class="navbar-item"><a title="Statistics" href="http://localhost/donordb_old/index.php/search/statisticsView">Statistics</a></li>
 
 								<!-- Added for the Living Library integration -->
 								<li class="navbar-item dropdown">
@@ -398,7 +398,8 @@
 
 							<tr>
 								<!--<td class="span1" colspan"3"><input type="button" class="btn btn-light btn-bold" value="Add person to be notified" onclick="add_person_to_notify(event)"/></td>-->
-								<td class="span1" colspan="3"><button class="btn-grey" style="background-color: Gainsboro; border: 1px solid DarkGrey" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
+								<td class="span1" colspan="3"><button class="btn btn-light btn-bold" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
+								<!--<td class="span1" colspan="3"><button class="btn-add-form-elements" onclick="add_person_to_notify(event);">Add person to be notified</button>-->
 							</tr>
 
 						</table>
@@ -597,30 +598,30 @@
 	<!--?php $this->load->view("../application/views/partials/javascript-partial.php"); ?>-->
 
 	<!-- JQuery -->
-	<script src="http://localhost/donordb/assets/js/jquery-1.9.1.js"></script>
-	<script src="http://localhost/donordb/assets/js/jquery-ui.js"></script>
-	<script src="http://localhost/donordb/assets/js/jquery.js"></script>
-	<script src="http://localhost/donordb/assets/js/jquery.validate.js"></script>
-	<script src="http://localhost/donordb/assets/js/jquery-scrollto.js"></script>
-	<script src="http://localhost/donordb/assets/js/jquery-migrate-1.2.1.js"></script>
-	<script src="http://localhost/donordb/libs/jquery.scrollTo-1.4.3.1-min.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery-1.9.1.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery-ui.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery.validate.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery-scrollto.js"></script>
+	<script src="http://localhost/donordb_old/assets/js/jquery-migrate-1.2.1.js"></script>
+	<script src="http://localhost/donordb_old/libs/jquery.scrollTo-1.4.3.1-min.js"></script>
 
 	<!-- Site Operations -->
-	<script src="http://localhost/donordb/libs/donorDB/config.urls.js"></script>
-	<script src="http://localhost/donordb/libs/donorDB/utils.js"></script>
-	<script src="http://localhost/donordb/libs/donorDB/loginForm.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/config.urls.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/utils.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/loginForm.js"></script>
 
 	<!--script src="<?php //echo base_url();?>libs/donorDB/tables.js"></script-->
 	<!--script src="<?php //echo base_url();?>libs/donorDB/authentication.js"></script>-->
-	<script src="http://localhost/donordb/libs/donorDB/letter.js"></script>
-	<script src="http://localhost/donordb/libs/donorDB/form.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/letter.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/form.js"></script>
 
 	<!-- Page Load Scripts -->
-	<script src="http://localhost/donordb/libs/donorDB/views.js"></script>
+	<script src="http://localhost/donordb_old/libs/donorDB/views.js"></script>
 
 	<!-- External Libs -->
-	<script src="http://localhost/donordb/libs/dateUtils.js"></script>
-	<script type="text/javascript" src="http://localhost/donordb/libs/fancyBox/source/jquery.fancybox.pack.js"></script>
+	<script src="http://localhost/donordb_old/libs/dateUtils.js"></script>
+	<script type="text/javascript" src="http://localhost/donordb_old/libs/fancyBox/source/jquery.fancybox.pack.js"></script>
 
 	<!-- end of javascript-partial.php -->
 
