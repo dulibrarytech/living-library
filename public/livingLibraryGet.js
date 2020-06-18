@@ -15,6 +15,8 @@ const TITLES_TABLE = 'tbl_titles_lookup',
       SUBJECT_AREA_COLS = 3; // how many columns to use when displaying
                              // subject area checkboxes
 
+let add_person_to_notify_counter = 1;
+
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
     const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
@@ -110,7 +112,8 @@ function create_donation() {
     form_html += '<table class="table">';
 
     form_html += '<tr>';
-    form_html += '<td colspan="3"><h4>Person(s) to be notified of donation</h4>'
+    form_html += '<td colspan="3"><h4>Person <span id="notify_person_1"></span>'
+                 + 'to be notified of donation</h4>'
                  + '</td>';
     form_html += '</tr>';
 
@@ -189,6 +192,15 @@ function create_donation() {
                  + 'id="notify_relation_to_donor_dropdown" '
                  + 'name="notify_relation_to_donor">'
                  + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr id="add_person_to_notify_row">';
+    form_html += '<td class="span1" colspan="3">'
+                 + '<button class="btn btn-light btn-bold" '
+                 + 'onclick="add_person_to_notify(event);">'
+                 + 'Add person to be notified'
+                 + '</button>'
                  + '</td>';
     form_html += '</tr>';
 
@@ -398,6 +410,20 @@ function create_donation() {
             throw 'FATAL: [create_donation] Unable to fetch subject areas '
                   + error;
         });
+}
+
+function add_person_to_notify(event) {
+    console.log("Inside add_person_to_notify function");
+
+    // Stop the form from submitting the default way
+    event.preventDefault();
+
+    // add_person_to_notify_counter
+
+    let notify_person_1_element = document.getElementById("notify_person_1");
+    if (notify_person_1_element.innerHTML == '') {
+        notify_person_1_element.innerHTML = '1 ';
+    }
 }
 
 /**

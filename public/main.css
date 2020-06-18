@@ -434,6 +434,13 @@ a:not([href]) {
   	color: #515155;
 }
 
+/* Added for the Living Library integration */
+.btn-bold {
+	color: #515155;
+	font-weight: bold;
+	border: 1px solid DarkGrey;
+}
+
 .donor-list-item {
 
 	width: 538px;
