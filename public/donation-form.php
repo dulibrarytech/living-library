@@ -239,7 +239,7 @@
 						<table class="table">
 
 							<tr>
-								<td><h4>Person(s) to be notified of donation</h4></td>
+								<td><h4>Person 1 to be notified of donation</h4></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -317,6 +317,96 @@
 								<td></td>
 							</tr>
 
+							<tr>
+								<td><h4>Person 2 to be notified of donation</h4></td>
+								<td></td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td>
+									<!-- all the title labels have id="title-lable" - either make this a class or a unique id -->
+									<label for="notify_title_dropdown" class="form-label-text" id="title-label">Title:</label>
+
+									<!-- delete this div if you're not going to use it - note that the id is not unique -->
+									<div id="dropdown-box"></div>
+
+									<select class='input-medium' id='notify_title_dropdown' name='notify_title'>
+										<option value=''>Select a title</option>
+										<option value='Ms.'>Ms.</option>
+										<option value='Mr.'>Mr.</option>
+									</select>
+								</td>
+
+								<td>
+									<label for="notify_first_name_input_box" class="form-label-text">First Name:</label>
+									<input type="text" id="notify_first_name_input_box" class="input_form-default" name="notify_first_name"/>
+								</td>
+
+								<td>
+									<label for="notify_last_name_input_box" class="form-label-text">Last Name:</label>
+									<input type="text" id="notify_last_name_input_box" class="input_form-default" name="notify_last_name"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<label for="notify_address_input_box" class="form-label-text">Address:</label>
+									<input type="text" id="notify_address_input_box" class="input_form-default" name="notify_address"/>
+								</td>
+
+								<td>
+									<label for="notify_city_input_box" class="form-label-text">City:</label>
+									<input type="text" id="notify_city_input_box" class="input_form-default" name="notify_city"/>
+								</td>
+
+								<td>
+									<label for="notify_state_dropdown" class="form-label-text" id="state-label">State:</label>
+
+									<!-- delete this div if you're not going to use it - note that the id is not unique -->
+									<div id="dropdown-box"></div>
+
+									<select class='input-medium' id='notify_state_dropdown' name='notify_state'>
+										<option value=''>Select a state</option>
+										<option value='Ms.'>CA</option>
+										<option value='Mr.'>CO</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<label for="notify_zip_input_box" class="form-label-text">Zip:</label>
+									<input type="text" id="notify_zip_input_box" class="input_form-default" name="notify_zip"/>
+								</td>
+
+								<td>
+									<label for="notify_relation_to_donor_dropdown" class="form-label-text" id="state-label">Relation to Donor:</label>
+
+									<!-- delete this div if you're not going to use it - note that the id is not unique -->
+									<div id="dropdown-box"></div>
+
+									<select class='input_form-default' id='notify_relation_to_donor_dropdown' name='notify_relation_to_donor'>
+										<option value=''>Select a relation to donor</option>
+										<option value='Ms.'>CA</option>
+										<option value='Mr.'>CO</option>
+									</select>
+								</td>
+
+								<td></td>
+							</tr>
+
+							<tr>
+								<!--<td class="span1" colspan"3"><input type="button" class="btn btn-light btn-bold" value="Add person to be notified" onclick="add_person_to_notify(event)"/></td>-->
+								<td class="span1" colspan="3"><button class="btn-grey" style="background-color: Gainsboro; border: 1px solid DarkGrey" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
+							</tr>
+
+						</table>
+
+						<table class="table lower_controls">
+							<tr>
+								<td class="span1"><button class="btn-grey" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
+							</tr>
 						</table>
 
 						<table class="table">
