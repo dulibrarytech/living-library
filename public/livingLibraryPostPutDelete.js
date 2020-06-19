@@ -54,17 +54,20 @@ const save_donation = function (event) {
                                                               + i);
     } while (notify_persons_data.length !== 0);
     */
-    let notify_data_as_JSON = [];
-    for (let i = 1,
-         notify_persons_data = document.getElementsByClassName('notify_person_1');
-         notify_persons_data.length !== 0;
-         notify_persons_data = document.getElementsByClassName('notify_person_'
-                                                               + (++i))) {
-        notify_data_as_JSON.push(form_to_JSON(NOTIFY_FIELDS, notify_persons_data));
+    let notify_data_as_JSON = [],
+        notify_persons_data = document.getElementsByClassName('notify_person_1'),
+        i = 1;
+    while(notify_persons_data.length !== 0) {
+        // let notify_data = form_to_JSON(NOTIFY_FIELDS, notify_persons_data);
+        if (containsNonEmptyElementValue(notify_persons_data)) {
+            notify_data_as_JSON.push(form_to_JSON(NOTIFY_FIELDS, notify_persons_data));
+        }
+        notify_persons_data = document.getElementsByClassName('notify_person_'
+                                                              + (++i));
     }
 
     // let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
-    console.log("FINAL notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
+    console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
     let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
     console.log("recipient_data_as_JSON = "
@@ -87,6 +90,22 @@ const save_donation = function (event) {
         },
         body: donation_data
     });
+};
+
+/**
+ * Determines whether the given HTMLCollection contains any non-empty element
+ * values.
+ * @param  {HTMLCollection}   form_elements    the elements to be checked
+ * @return {Boolean}                           true if exists >= 1 non-empty
+ *                                             element
+ */
+const containsNonEmptyElementValue = function (form_elements) {
+    for (element of form_elements) {
+        if (element.value.trim().length > 0) {
+            return true;
+        }
+    }
+    return false;
 };
 
 const save_book_plate = function (event) {
@@ -140,23 +159,23 @@ const save_book_plate = function (event) {
  */
 const form_to_JSON = function (expected_form_fields, form_elements) {
     return [].reduce.call(form_elements, (data, element) => {
-        if (isValidElement(element.name, expected_form_fields) &&
-            isValidValue(element)) {
+        if (is_valid_element(element.name, expected_form_fields) &&
+            is_valid_value(element)) {
             if (element.type === 'checkbox') {
                 data[element.name] = (data[element.name] || [])
-                                     .concat(element.value);
+                                     .concat(element.value.trim());
             } else {
-                data[element.name] = element.value;
+                data[element.name] = element.value.trim();
             }
         }
         return data;
     }, {});
 };
 
-const isValidElement = function (element_name, valid_form_fields) {
+const is_valid_element = function (element_name, valid_form_fields) {
     return valid_form_fields.includes(element_name);
 };
 
-const isValidValue = function (element) {
+const is_valid_value = function (element) {
     return (!['checkbox', 'radio'].includes(element.type) || element.checked);
 };
