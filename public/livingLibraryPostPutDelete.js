@@ -30,13 +30,7 @@ const save_donation = function (event) {
     // Stop the form from submitting the default way
     event.preventDefault();
 
-    console.log("event = " + event);
-
     let form_data = document.getElementById('donor-input-form').elements;
-
-    for (element of form_data) {
-        console.log(element.name + " = " + element.value);
-    }
 
     let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
     if (typeof donor_data_as_JSON.donor_subject_areas === 'undefined') {
@@ -44,29 +38,16 @@ const save_donation = function (event) {
     }
     console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
 
-    /*
-    let notify_persons_data;
-    while (notify_persons_data ) = document.getElementsByClassName('notify_person_1');
-
-    let i = 1, notify_persons_data;
-    do {
-        notify_persons_data = document.getElementsByClassName('notify_person_'
-                                                              + i);
-    } while (notify_persons_data.length !== 0);
-    */
     let notify_data_as_JSON = [],
         notify_persons_data = document.getElementsByClassName('notify_person_1'),
         i = 1;
     while(notify_persons_data.length !== 0) {
-        // let notify_data = form_to_JSON(NOTIFY_FIELDS, notify_persons_data);
         if (containsNonEmptyElementValue(notify_persons_data)) {
             notify_data_as_JSON.push(form_to_JSON(NOTIFY_FIELDS, notify_persons_data));
         }
         notify_persons_data = document.getElementsByClassName('notify_person_'
                                                               + (++i));
     }
-
-    // let notify_data_as_JSON = form_to_JSON(NOTIFY_FIELDS, form_data);
     console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
     let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
