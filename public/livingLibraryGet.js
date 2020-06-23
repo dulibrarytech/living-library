@@ -452,98 +452,102 @@ function add_person_to_notify(event) {
         }
     }
 
-    let section_1_div_element = document.querySelector("#notify_section_1");
-    console.log("section_1_div_element = ");
-    console.log(section_1_div_element);
-    // innerHTML produces an empty string here
-    console.log("section_1_div_element.innerHTML = " + section_1_div_element.innerHTML);
+    // let section_1_div_element = document.querySelector("#notify_section_1");
 
-    let section_1_div_children = section_1_div_element.childNodes;
-    // this outputs 0
-    console.log("section_1_div_children.length = " + section_1_div_children.length);
-
-    /* So why is this not working?
-     * I would expect the section_1_div_element to have a non-empty subtree. But
-     * apparently the subtree is exmpty, since innerHTML() returns an empty
-     * string and childNodes() returns an empty array.
-     */
-
-    // the form element does have a subtree
-    let form_element = document.querySelector("#donor-input-form");
-    // this outputs 60
-    console.log("form_element.length = " + form_element.length);
-    /* innerHTML works too:
-    console.log("form_element.innerHTML = " + form_element.innerHTML);
-    */
-    // I can find the span element too:
-    console.log("span.id (by searching form_element) = "
-                + form_element.querySelector("#notify_person_heading_num_1").id);
-
-    // This works because I'm searching the DOM
-    let section_1_span_element_from_document = document
-                                               .querySelector("#notify_person_heading_num_1");
-    console.log("section_1_span_element_from_document = ");
-    console.log(section_1_span_element_from_document);
-    console.log("section_1_span_element_from_document.id = " + section_1_span_element_from_document.id);
-
-    /* For some reason, running querySelector on section_1_div_element returns
-     * null. This demonstrates that section_1_div_element has an empty subtree.
-     */
-    let section_1_span_element = section_1_div_element
-                                 .querySelector("#notify_person_heading_num_1");
-    console.log("section_1_span_element = " + section_1_span_element);
-    // Since section_1_span_element is null, this generates a TypeError: Cannot read property 'id' of null
-    console.log("section_1_span_element.id = " + section_1_span_element.id);
-
-    let new_div_element = section_1_div_element.cloneNode(true);
+    let new_div_element = document.querySelector("#notify_section_1")
+                                  .cloneNode(true);
+    console.log("new_div_element = ");
     console.log(new_div_element);
-    console.log("new_div_element.innerHTML = " + new_div_element.innerHTML);
     console.log("Before updating div id: new_div_element.id = " + new_div_element.id);
     new_div_element.id = 'notify_section_' + add_person_to_notify_counter;
     console.log("After updating div id: new_div_element.id = " + new_div_element.id);
-    /* Raises an error: Cannot read property 'id' of null
-     *
+
     let notify_heading_span_element = new_div_element
                                       .querySelector("#notify_person_heading_num_1");
     console.log("Before updating span id: span.id = " + notify_heading_span_element.id);
     notify_heading_span_element.id = 'notify_person_heading_num_'
                                      + add_person_to_notify_counter;
     console.log("After updating span id: span.id = " + notify_heading_span_element.id);
+    notify_heading_span_element.innerHTML = add_person_to_notify_counter + ' ';
+
+    /*
+    console.log("Before updating title label, for = "
+                + new_div_element.querySelector('label[for="notify_title_dropdown_1"]').for);
+    new_div_element.querySelector('label[for="notify_title_dropdown_1"]').for =
+        'notify_title_dropdown_' + add_person_to_notify_counter;
     */
-    let span_elements = new_div_element.getElementsByTagName("span");
-    console.log(span_elements);
-    console.log("span_elements.length = " + span_elements.length);
-    for (let element of span_elements) {
-        console.log("element.id = " + element.id);
-    }
-    console.log("Before updating span id: span.id = " + span_elements[0].id);
-    span_elements[0].id = 'notify_person_heading_num_'
-                          + add_person_to_notify_counter;
-    span_elements[0].innerHTML = add_person_to_notify_counter + ' ';
-    console.log("After updating span id: span.id = " + span_elements[0].id);
 
-/*
-    let form_html = '<tr>';
-    form_html += '<td colspan="3">'
-                 + '<h4>Person <span id="notify_person_heading_num_'
-                 + add_person_to_notify_counter + '">';
-    if (add_person_to_notify_counter > 1) {
-        form_html += add_person_to_notify_counter + ' ';
-    }
-    form_html += '</span>'
-                 + 'to be notified of donation</h4>'
-                 + '</td>';
-    form_html += '</tr>';
+    /* This works, but will be very tedious to do for every element:
+     *
+    let title_dropdown_label_element = new_div_element
+                                       .querySelector('label[for="notify_title_dropdown_1"]');
+    console.log("Before updating title label, for = "
+                + title_dropdown_label_element.htmlFor);
+    title_dropdown_label_element.htmlFor = 'notify_title_dropdown_'
+                                       + add_person_to_notify_counter;
+    console.log("After updating title label, for = "
+                + title_dropdown_label_element.htmlFor);
+    */
 
-    form_html += '<tr>';
+    let label_elements = new_div_element.querySelectorAll('label[for$="_1"]');
+    console.log("label_elements = " + label_elements);
+    console.log("label_elements.length = " + label_elements.length);
+    for (let label_element of label_elements) {
+        console.log("Before updating label, for = "
+                    + label_element.htmlFor);
+        label_element.htmlFor = label_element.htmlFor
+                                .substring(0,
+                                           label_element.htmlFor
+                                           .lastIndexOf('_1'))
+                                + '_' + add_person_to_notify_counter;
+        console.log("After updating label, for = "
+                    + label_element.htmlFor);
+    }
+
+    let elements_with_numbered_class = new_div_element.querySelectorAll('[class$="_1"]');
+    console.log("elements_with_numbered_class = " + elements_with_numbered_class);
+    console.log("elements_with_numbered_class.length = " + elements_with_numbered_class.length);
+    for (let element_with_numbered_class of elements_with_numbered_class) {
+        console.log("Before updating element, "
+                    + element_with_numbered_class.tagName + "'s class = "
+                    + element_with_numbered_class.className);
+        element_with_numbered_class.className =
+            element_with_numbered_class.className
+                                       .substring(0,
+                                                  element_with_numbered_class
+                                                  .className.lastIndexOf('_1'))
+            + '_' + add_person_to_notify_counter;
+        console.log("After updating element, "
+                    + element_with_numbered_class.tagName + "'s class = "
+                    + element_with_numbered_class.className);
+    }
+
+    let elements_with_numbered_id = new_div_element.querySelectorAll('[id$="_1"]');
+    console.log("elements_with_numbered_id = " + elements_with_numbered_id);
+    console.log("elements_with_numbered_id.length = " + elements_with_numbered_id.length);
+    for (let element_with_numbered_id of elements_with_numbered_id) {
+        console.log("Before updating element, "
+                    + element_with_numbered_id.tagName + "'s id = "
+                    + element_with_numbered_id.id);
+        element_with_numbered_id.id =
+            element_with_numbered_id.id
+                                    .substring(0,
+                                               element_with_numbered_id
+                                               .id.lastIndexOf('_1'))
+            + '_' + add_person_to_notify_counter;
+        console.log("After updating element, "
+                    + element_with_numbered_id.tagName + "'s id = "
+                    + element_with_numbered_id.id);
+    }
+
+    /*
     form_html += '<td>'
-                 + '<label for="notify_title_dropdown_'
-                 + add_person_to_notify_counter + '" '
+                 + '<label for="notify_title_dropdown_1" '
                  + 'class="form-label-text">Title:'
                  + '</label>'
                  + '<select class="input-medium title_dropdown '
-                 + 'id="notify_title_dropdown_' + add_person_to_notify_counter
-                 + '" '
+                 + 'notify_person_1" '
+                 + 'id="notify_title_dropdown_1" '
                  + 'name="notify_title">'
                  + '</select>'
                  + '</td>';
@@ -642,7 +646,7 @@ function add_person_to_notify(event) {
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
-*/
+    */
 
     let last_row_element = document.querySelector('#add_person_to_notify_row');
 
