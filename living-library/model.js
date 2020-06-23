@@ -347,11 +347,8 @@ exports.update = function (req, callback) {
             id: id
         })
         .update({
-            donor: request_body.donor,
-            who_to_notify: request_body.who_to_notify,
-            recipient: request_body.recipient,
             book: request_body.book,
-            is_completed: request_body.is_completed
+            is_completed: 1
         })
         .then(function (data) {
 
@@ -362,6 +359,11 @@ exports.update = function (req, callback) {
                     status: 200,
                     message: 'Record updated.'
                 });
+            } else {
+              callback({
+                  status: 404,
+                  message: 'Record not found.'
+              });
             }
 
         })
