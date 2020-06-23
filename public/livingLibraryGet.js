@@ -434,6 +434,12 @@ function create_donation() {
         });
 }
 
+/**
+ * Adds additional form fields to donation form (so that user can add another
+ * person to be notified of donation)
+ * @param event   the event triggered by clicking the "Add person to be
+ *                nofified" button
+ */
 function add_person_to_notify(event) {
     console.log("Inside add_person_to_notify function");
     console.log("add_person_to_notify_counter = " + add_person_to_notify_counter);
@@ -452,8 +458,6 @@ function add_person_to_notify(event) {
         }
     }
 
-    // let section_1_div_element = document.querySelector("#notify_section_1");
-
     let new_div_element = document.querySelector("#notify_section_1")
                                   .cloneNode(true);
     console.log("new_div_element = ");
@@ -470,25 +474,7 @@ function add_person_to_notify(event) {
     console.log("After updating span id: span.id = " + notify_heading_span_element.id);
     notify_heading_span_element.innerHTML = add_person_to_notify_counter + ' ';
 
-    /*
-    console.log("Before updating title label, for = "
-                + new_div_element.querySelector('label[for="notify_title_dropdown_1"]').for);
-    new_div_element.querySelector('label[for="notify_title_dropdown_1"]').for =
-        'notify_title_dropdown_' + add_person_to_notify_counter;
-    */
-
-    /* This works, but will be very tedious to do for every element:
-     *
-    let title_dropdown_label_element = new_div_element
-                                       .querySelector('label[for="notify_title_dropdown_1"]');
-    console.log("Before updating title label, for = "
-                + title_dropdown_label_element.htmlFor);
-    title_dropdown_label_element.htmlFor = 'notify_title_dropdown_'
-                                       + add_person_to_notify_counter;
-    console.log("After updating title label, for = "
-                + title_dropdown_label_element.htmlFor);
-    */
-
+    // Update labels (i.e. the 'for' attributes)
     let label_elements = new_div_element.querySelectorAll('label[for$="_1"]');
     console.log("label_elements = " + label_elements);
     console.log("label_elements.length = " + label_elements.length);
@@ -504,6 +490,7 @@ function add_person_to_notify(event) {
                     + label_element.htmlFor);
     }
 
+    // Update class attributes
     let elements_with_numbered_class = new_div_element.querySelectorAll('[class$="_1"]');
     console.log("elements_with_numbered_class = " + elements_with_numbered_class);
     console.log("elements_with_numbered_class.length = " + elements_with_numbered_class.length);
@@ -522,6 +509,7 @@ function add_person_to_notify(event) {
                     + element_with_numbered_class.className);
     }
 
+    // Update id attributes
     let elements_with_numbered_id = new_div_element.querySelectorAll('[id$="_1"]');
     console.log("elements_with_numbered_id = " + elements_with_numbered_id);
     console.log("elements_with_numbered_id.length = " + elements_with_numbered_id.length);
@@ -529,6 +517,13 @@ function add_person_to_notify(event) {
         console.log("Before updating element, "
                     + element_with_numbered_id.tagName + "'s id = "
                     + element_with_numbered_id.id);
+
+        // Remove cloned values from input tags
+        if (element_with_numbered_id.tagName == 'INPUT') {
+            element_with_numbered_id.value = '';
+        }
+
+        // Update ids
         element_with_numbered_id.id =
             element_with_numbered_id.id
                                     .substring(0,
@@ -540,113 +535,7 @@ function add_person_to_notify(event) {
                     + element_with_numbered_id.id);
     }
 
-    /*
-    form_html += '<td>'
-                 + '<label for="notify_title_dropdown_1" '
-                 + 'class="form-label-text">Title:'
-                 + '</label>'
-                 + '<select class="input-medium title_dropdown '
-                 + 'notify_person_1" '
-                 + 'id="notify_title_dropdown_1" '
-                 + 'name="notify_title">'
-                 + '</select>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="notify_first_name_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">First Name:'
-                 + '</label>'
-                 + '<input type="text" '
-                 + 'id="notify_first_name_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="input_form-default notify_person_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_first_name"/>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="notify_last_name_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">Last Name:'
-                 + '</label>'
-                 + '<input type="text" '
-                 + 'id="notify_last_name_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="input_form-default notify_person_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_last_name"/>'
-                 + '</td>';
-    form_html += '</tr>';
-
-    form_html += '<tr>';
-    form_html += '<td>'
-                 + '<label for="notify_address_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">Address:'
-                 + '</label>'
-                 + '<input type="text" '
-                 + 'id="notify_address_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="input_form-default notify_person_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_address"/>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="notify_city_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">City:'
-                 + '</label>'
-                 + '<input type="text" id="notify_city_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="input_form-default notify_person_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_city"/>'
-                 + '</td>';
-
-    form_html += '<td>'
-                 + '<label for="notify_state_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">State:'
-                 + '</label>'
-                 + '<select class="input_form-default state_dropdown '
-                 + 'notify_person_' + add_person_to_notify_counter + '" '
-                 + 'id="notify_state_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_state">'
-                 + '</select>'
-                 + '</td>';
-    form_html += '</tr>';
-
-    form_html += '<tr>';
-    form_html += '<td>'
-                 + '<label for="notify_zip_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">Zip:'
-                 + '</label>'
-                 + '<input type="text" '
-                 + 'id="notify_zip_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="input-medium notify_person_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_zip"/>'
-                 + '</td>';
-
-    form_html += '<td colspan="2">'
-                 + '<label for="notify_relation_to_donor_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'class="form-label-text">Relation to Donor:'
-                 + '</label>'
-                 + '<select class="input_form-default relationship_dropdown '
-                 + 'notify_person_' + add_person_to_notify_counter + '" '
-                 + 'id="notify_relation_to_donor_input_box_'
-                 + add_person_to_notify_counter + '" '
-                 + 'name="notify_relation_to_donor">'
-                 + '</select>'
-                 + '</td>';
-    form_html += '</tr>';
-    */
+    console.log(new_div_element);
 
     let last_row_element = document.querySelector('#add_person_to_notify_row');
 
