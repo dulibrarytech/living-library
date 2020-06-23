@@ -236,7 +236,9 @@
 
 						</table>
 
-						<table class="table">
+						<div id="notify_section" class="table">
+
+						<table>
 
 							<tr>
 								<td><h4>Person 1 to be notified of donation</h4></td>
@@ -317,6 +319,10 @@
 								<td></td>
 							</tr>
 
+						</table>
+
+						<table>
+
 							<tr>
 								<td><h4>Person 2 to be notified of donation</h4></td>
 								<td></td>
@@ -396,13 +402,19 @@
 								<td></td>
 							</tr>
 
+						</table>
+
+						<table>
+
 							<tr>
 								<!--<td class="span1" colspan"3"><input type="button" class="btn btn-light btn-bold" value="Add person to be notified" onclick="add_person_to_notify(event)"/></td>-->
-								<td class="span1" colspan="3"><button class="btn btn-light btn-bold" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
+								<td><button class="btn btn-light btn-bold" onclick="add_person_to_notify(event);">Add person to be notified</button></td>
 								<!--<td class="span1" colspan="3"><button class="btn-add-form-elements" onclick="add_person_to_notify(event);">Add person to be notified</button>-->
 							</tr>
 
 						</table>
+
+					</div> <!-- close notify section div -->
 
 						<table class="table lower_controls">
 							<tr>

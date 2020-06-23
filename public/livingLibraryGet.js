@@ -18,7 +18,7 @@ const TITLES_TABLE = 'tbl_titles_lookup',
 /* The number of "person to be notified of donation" form field groups that
  * are present on the donation form (the user can add more as needed)
  */
-let add_person_to_notify_counter = 0;
+let add_person_to_notify_counter = 1;
 
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
@@ -112,12 +112,111 @@ function create_donation() {
     form_html += '</table>'; // close Donor table
 
     // Who To Notify table
-    form_html += '<table class="table">';
+    form_html += '<div class="table">';
 
-    //
+    form_html += '<table id="notify_section_1">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<h4>Person <span id="notify_person_heading_num_1"></span>'
+                 + 'to be notified of donation</h4>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_title_dropdown_1" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium title_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_title_dropdown_1" '
+                 + 'name="notify_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_first_name_input_box_1" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_first_name_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_last_name_input_box_1" '
+                 + 'class="form-label-text">Last Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_last_name_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_last_name"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_address_input_box_1" '
+                 + 'class="form-label-text">Address:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_address_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_address"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_city_input_box_1" '
+                 + 'class="form-label-text">City:'
+                 + '</label>'
+                 + '<input type="text" id="notify_city_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_city"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_state_input_box_1" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default state_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_state_input_box_1" '
+                 + 'name="notify_state">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_zip_input_box_1" '
+                 + 'class="form-label-text">Zip:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_zip_input_box_1" '
+                 + 'class="input-medium notify_person_1" '
+                 + 'name="notify_zip"/>'
+                 + '</td>';
+
+    form_html += '<td colspan="2">'
+                 + '<label for="notify_relation_to_donor_input_box_1" '
+                 + 'class="form-label-text">Relation to Donor:'
+                 + '</label>'
+                 + '<select class="input_form-default relationship_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_relation_to_donor_input_box_1" '
+                 + 'name="notify_relation_to_donor">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close notify_section_1 table
+
+    form_html += '<table>'; // open add_person_to_notify table
 
     form_html += '<tr id="add_person_to_notify_row">';
-    form_html += '<td class="span1" colspan="3">'
+    form_html += '<td>'
                  + '<button class="btn btn-light btn-bold" '
                  + 'onclick="add_person_to_notify(event);">'
                  + 'Add person to be notified'
@@ -125,7 +224,9 @@ function create_donation() {
                  + '</td>';
     form_html += '</tr>';
 
-    form_html += '</table>'; // close Who To Notify table
+    form_html += '</table>'; // close add_person_to_notify table
+
+    form_html += '</div>'; // close Who To Notify div
 
     // Recipient table
     form_html += '<table class="table">';
@@ -340,7 +441,10 @@ function add_person_to_notify(event) {
     // Stop the form from submitting the default way
     event.preventDefault();
 
-    if (add_person_to_notify_counter == 1) {
+    // Increment counter since we're adding a person
+    add_person_to_notify_counter++;
+
+    if (add_person_to_notify_counter == 2) {
         let notify_person_1_element = document
                                       .getElementById("notify_person_heading_num_1");
         if (notify_person_1_element.innerHTML == '') {
@@ -348,9 +452,77 @@ function add_person_to_notify(event) {
         }
     }
 
-    // Increment counter since we're adding a person
-    add_person_to_notify_counter++;
+    let section_1_div_element = document.querySelector("#notify_section_1");
+    console.log("section_1_div_element = ");
+    console.log(section_1_div_element);
+    // innerHTML produces an empty string here
+    console.log("section_1_div_element.innerHTML = " + section_1_div_element.innerHTML);
 
+    let section_1_div_children = section_1_div_element.childNodes;
+    // this outputs 0
+    console.log("section_1_div_children.length = " + section_1_div_children.length);
+
+    /* So why is this not working?
+     * I would expect the section_1_div_element to have a non-empty subtree. But
+     * apparently the subtree is exmpty, since innerHTML() returns an empty
+     * string and childNodes() returns an empty array.
+     */
+
+    // the form element does have a subtree
+    let form_element = document.querySelector("#donor-input-form");
+    // this outputs 60
+    console.log("form_element.length = " + form_element.length);
+    /* innerHTML works too:
+    console.log("form_element.innerHTML = " + form_element.innerHTML);
+    */
+    // I can find the span element too:
+    console.log("span.id (by searching form_element) = "
+                + form_element.querySelector("#notify_person_heading_num_1").id);
+
+    // This works because I'm searching the DOM
+    let section_1_span_element_from_document = document
+                                               .querySelector("#notify_person_heading_num_1");
+    console.log("section_1_span_element_from_document = ");
+    console.log(section_1_span_element_from_document);
+    console.log("section_1_span_element_from_document.id = " + section_1_span_element_from_document.id);
+
+    /* For some reason, running querySelector on section_1_div_element returns
+     * null. This demonstrates that section_1_div_element has an empty subtree.
+     */
+    let section_1_span_element = section_1_div_element
+                                 .querySelector("#notify_person_heading_num_1");
+    console.log("section_1_span_element = " + section_1_span_element);
+    // Since section_1_span_element is null, this generates a TypeError: Cannot read property 'id' of null
+    console.log("section_1_span_element.id = " + section_1_span_element.id);
+
+    let new_div_element = section_1_div_element.cloneNode(true);
+    console.log(new_div_element);
+    console.log("new_div_element.innerHTML = " + new_div_element.innerHTML);
+    console.log("Before updating div id: new_div_element.id = " + new_div_element.id);
+    new_div_element.id = 'notify_section_' + add_person_to_notify_counter;
+    console.log("After updating div id: new_div_element.id = " + new_div_element.id);
+    /* Raises an error: Cannot read property 'id' of null
+     *
+    let notify_heading_span_element = new_div_element
+                                      .querySelector("#notify_person_heading_num_1");
+    console.log("Before updating span id: span.id = " + notify_heading_span_element.id);
+    notify_heading_span_element.id = 'notify_person_heading_num_'
+                                     + add_person_to_notify_counter;
+    console.log("After updating span id: span.id = " + notify_heading_span_element.id);
+    */
+    let span_elements = new_div_element.getElementsByTagName("span");
+    console.log(span_elements);
+    console.log("span_elements.length = " + span_elements.length);
+    for (let element of span_elements) {
+        console.log("element.id = " + element.id);
+    }
+    console.log("Before updating span id: span.id = " + span_elements[0].id);
+    span_elements[0].id = 'notify_person_heading_num_'
+                          + add_person_to_notify_counter;
+    span_elements[0].innerHTML = add_person_to_notify_counter + ' ';
+    console.log("After updating span id: span.id = " + span_elements[0].id);
+
+/*
     let form_html = '<tr>';
     form_html += '<td colspan="3">'
                  + '<h4>Person <span id="notify_person_heading_num_'
@@ -470,10 +642,7 @@ function add_person_to_notify(event) {
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
-
-    let new_div_element = document.createElement('div');
-    new_div_element.id = 'notify_section_' + add_person_to_notify_counter;
-    new_div_element.innerHTML = form_html;
+*/
 
     let last_row_element = document.querySelector('#add_person_to_notify_row');
 
