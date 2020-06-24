@@ -101,7 +101,12 @@ const save_book_plate = function (event) {
                                     "book_bibliographic_number",
                                     "book_call_number"];
 
-    // Stop the form from submitting the default way
+    /* Stop the form from submitting the default way
+     * - commenting this out allows the error to display if a required form
+     *   field is blank, but the form still gets submitted (and a new
+     *   record is still created in the DB) because this function is called
+     *   whenever the 'Save Book Plate' button is clicked
+     */
     event.preventDefault();
 
     let form_data = document.getElementById('donor-input-form').elements;

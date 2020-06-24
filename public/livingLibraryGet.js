@@ -71,7 +71,10 @@ function create_donation() {
     form_html += '</tr>';
 
     form_html += '<tr>';
-    form_html += '<td colspan="3"><p>( <abbr class="required" title="required">*</abbr> indicates required field )</p></td>';
+    form_html += '<td colspan="3">'
+                 + '<p>( <abbr class="required" title="required">*'
+                 + '</abbr> indicates required field )</p>'
+                 + '</td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
@@ -1011,6 +1014,14 @@ function get_completed_donation(url) {
 }
 
 function get_queued_donation(url) {
+    // The id attributes of all required form fields
+    const REQUIRED_FORM_FIELD_IDS = ['book_title_input_box',
+                                     'book_bibliographic_number_input_box',
+                                     'book_call_number_input_box'];
+
+    // The 'for' attributes of all required form field label tags
+    const REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES = REQUIRED_FORM_FIELD_IDS;
+
     fetch(url)
         .then(response => {
             return response.json();
@@ -1109,6 +1120,13 @@ function get_queued_donation(url) {
             form_html += '<table class="table">';
 
             form_html += '<tr>';
+            form_html += '<td colspan="2">'
+                         + '<p>( <abbr class="required" title="required">*'
+                         + '</abbr> indicates required field )</p>'
+                         + '</td>';
+            form_html += '</tr>';
+
+            form_html += '<tr>';
             form_html += '<td>'
                          + '<label for="book_author_name_input_box" '
                          + 'class="form-label-text">Author Name:'
@@ -1179,10 +1197,18 @@ function get_queued_donation(url) {
                 donation_id_hidden_box.setAttribute('value', data[0].id);
             }
         })
+        .then(() => {
+            console.log("book_call_number_input_box = ");
+            console.log(document.getElementById('book_call_number_input_box'));
+            update_required_fields_in_form(REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES,
+                                           REQUIRED_FORM_FIELD_IDS);
+        })
         .catch((error) => {
             console.log('In the catch block');
             console.log(error);
         });
+
+    //
 }
 
 /**
