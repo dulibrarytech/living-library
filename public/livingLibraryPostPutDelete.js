@@ -27,7 +27,12 @@ const save_donation = function (event) {
     const RECIPIENT_FIELDS = ['recipient_title', 'recipient_first_name',
                               'recipient_last_name', 'recipient_donation_type'];
 
-    // Stop the form from submitting the default way
+    /* Stop the form from submitting the default way
+     * - commenting this out allows the error to display if a required form
+     *   field is blank, but the form still gets submitted (and a new
+     *   record is still created in the DB) because this function is called
+     *   whenever the 'Send to Queue' button is clicked
+     */
     event.preventDefault();
 
     let form_data = document.getElementById('donor-input-form').elements;

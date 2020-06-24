@@ -12,8 +12,9 @@ const TITLES_TABLE = 'tbl_titles_lookup',
       STATES_TABLE = 'tbl_states_lookup',
       RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
       SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup',
-      SUBJECT_AREA_COLS = 3; // how many columns to use when displaying
-                             // subject area checkboxes
+
+      // How many columns to use when displaying subject area checkboxes
+      SUBJECT_AREA_COLS = 3;
 
 /* The number of "person to be notified of donation" form field groups that
  * are present on the donation form (the user can add more as needed)
@@ -23,6 +24,34 @@ let add_person_to_notify_counter = 1;
 function create_donation() {
     const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
     const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+
+    // The id attributes of all required form fields
+    const REQUIRED_FORM_FIELD_IDS = ['donor_first_name_input_box',
+                                     'donor_last_name_input_box',
+                                     'donor_address_input_box',
+                                     'donor_city_input_box',
+                                     'donor_state_dropdown',
+                                     'donor_zip_input_box',
+                                     'recipient_first_name_input_box',
+                                     'recipient_last_name_input_box',
+                                     'recipient_donation_type_radio_choice1',
+                                     'recipient_donation_type_radio_choice2',
+                                     'donor_amount_of_donation_input_box',
+                                     'gift-date-box'];
+
+    // The 'for' attributes of all required form field label tags
+    const REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES =
+                                    ['donor_first_name_input_box',
+                                     'donor_last_name_input_box',
+                                     'donor_address_input_box',
+                                     'donor_city_input_box',
+                                     'donor_state_dropdown',
+                                     'donor_zip_input_box',
+                                     'recipient_first_name_input_box',
+                                     'recipient_last_name_input_box',
+                                     'recipient_donation_type',
+                                     'donor_amount_of_donation_input_box',
+                                     'gift-date-box'];
 
     hide_table_header_and_content();
 
@@ -39,6 +68,10 @@ function create_donation() {
 
     form_html += '<tr>';
     form_html += '<td colspan="3"><h4>Person making donation</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><p>( <abbr class="required" title="required">*</abbr> indicates required field )</p></td>';
     form_html += '</tr>';
 
     form_html += '<tr>';
@@ -265,6 +298,8 @@ function create_donation() {
     form_html += '<tr>';
     form_html += '<td colspan="3">'
                  + '<div>'
+                 + '<label for="recipient_donation_type">'
+                 + '</label>'
                  + '<label for="recipient_donation_type_radio_choice1" '
                  + 'class="radio inline">'
                  + '<input type="radio" '
@@ -432,6 +467,9 @@ function create_donation() {
             throw 'FATAL: [create_donation] Unable to fetch subject areas '
                   + error;
         });
+
+    update_required_fields_in_form(REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES,
+                                   REQUIRED_FORM_FIELD_IDS);
 }
 
 /**
@@ -544,6 +582,40 @@ function add_person_to_notify(event) {
 
     console.log("End of func: add_person_to_notify_counter = "
                 + add_person_to_notify_counter);
+}
+
+/**
+ * Updates HTML for all required form fields
+ * @param {Array} label_for_attributes   the 'for' attributes of the label
+ *                                       tags that need to be updated
+ * @param {Array} input_field_ids        the id attributes of the input tags
+ *                                       that need to be updated
+ */
+function update_required_fields_in_form(label_for_attributes, input_field_ids) {
+    console.log("Inside update_required_fields_in_form");
+
+    for (let element of label_for_attributes) {
+        let label_element = document.querySelector(`label[for="${element}"]`);
+        console.log(label_element.tagName);
+        console.log(label_element.htmlFor);
+
+        console.log("innerHTML before change: " + label_element.innerHTML);
+        label_element.innerHTML = '<abbr class="required" title="required">* '
+                                   + '</abbr>' + label_element.innerHTML;
+        console.log("innerHTML after change: " + label_element.innerHTML);
+
+        console.log(label_element);
+    }
+
+    for (let element of input_field_ids) {
+        let form_element = document.querySelector(`#${element}`);
+        console.log(form_element.tagName);
+        console.log(form_element.id);
+
+        form_element.required = true;
+
+        console.log(form_element);
+    }
 }
 
 /**
