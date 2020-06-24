@@ -21,6 +21,7 @@
 const LOGGER = require('../libs/log4'),
       ASYNC = require('async'),
       DB = require('../config/db')(),
+      MOMENT = require('moment'),
       TABLE = 'tbl_donations';
 
 /**
@@ -340,14 +341,45 @@ exports.update = function (req, callback) {
      *    the database.
      */
 
+    console.log("request_body.book = " + request_body.book);
+    console.log("typeof request_body.book = " + typeof request_body.book);
+
+    let book = typeof request_body.book === 'undefined'
+               ? ""
+               : request_body.book;
+
     // Validate the request body
+
+    // Add fields to book object
+    if (book != "") {
+        console.log("book is not empty");
+
+        console.log("\nbook before adding fields: ");
+        console.log(book);
+
+        let book_obj = JSON.parse(book);
+
+        /**
+         * These are legacy fields from original living library implementation
+         * and thus have empty values for new book plate records.
+         */
+        book_obj.book_publisher = "";
+        book_obj.book_date_published = "";
+
+        book_obj.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+        console.log("\nbook_timestamp = " + book_obj.book_timestamp);
+
+        book = JSON.stringify(book_obj);
+        console.log("\nbook after adding fields: ");
+        console.log(book);
+    }
 
     DB(TABLE)
         .where({
             id: id
         })
         .update({
-            book: request_body.book,
+            book: book,
             is_completed: 1
         })
         .then(function (data) {
