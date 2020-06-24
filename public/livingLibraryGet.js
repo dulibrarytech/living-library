@@ -1103,10 +1103,6 @@ function get_queued_donation(url) {
 
             html += '</dl>';
 
-            html += '<br>';
-
-            html += '<h4>Book Plate Information</h4>';
-
             console.log(html);
             let record_content_element = document.querySelector('#record-content');
 
@@ -1118,6 +1114,10 @@ function get_queued_donation(url) {
             let form_html = '<form id="donor-input-form" method="post">';
 
             form_html += '<table class="table">';
+
+            form_html += '<tr>';
+            form_html += '<td colspan="2"><h4>Book Plate Information</h4></td>';
+            form_html += '</tr>';
 
             form_html += '<tr>';
             form_html += '<td colspan="2">'
