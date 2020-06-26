@@ -8,50 +8,15 @@
  * University of Denver, June 2020
  */
 
-const TITLES_TABLE = 'tbl_titles_lookup',
-      STATES_TABLE = 'tbl_states_lookup',
-      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
-      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup',
-
-      // How many columns to use when displaying subject area checkboxes
-      SUBJECT_AREA_COLS = 3;
-
 /* The number of "person to be notified of donation" form field groups that
  * are present on the donation form (the user can add more as needed)
  */
 let add_person_to_notify_counter = 1;
 
 function create_donation() {
-    const api_base_url = 'http://localhost:8000/api/v1/living-library/donations';
-    const api_key = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
 
-    // The id attributes of all required form fields
-    const REQUIRED_FORM_FIELD_IDS = ['donor_first_name_input_box',
-                                     'donor_last_name_input_box',
-                                     'donor_address_input_box',
-                                     'donor_city_input_box',
-                                     'donor_state_dropdown',
-                                     'donor_zip_input_box',
-                                     'recipient_first_name_input_box',
-                                     'recipient_last_name_input_box',
-                                     'recipient_donation_type_radio_choice1',
-                                     'recipient_donation_type_radio_choice2',
-                                     'donor_amount_of_donation_input_box',
-                                     'gift-date-box'];
-
-    // The 'for' attributes of all required form field label tags
-    const REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES =
-                                    ['donor_first_name_input_box',
-                                     'donor_last_name_input_box',
-                                     'donor_address_input_box',
-                                     'donor_city_input_box',
-                                     'donor_state_dropdown',
-                                     'donor_zip_input_box',
-                                     'recipient_first_name_input_box',
-                                     'recipient_last_name_input_box',
-                                     'recipient_donation_type',
-                                     'donor_amount_of_donation_input_box',
-                                     'gift-date-box'];
+    // How many columns to use when displaying subject area checkboxes
+    const SUBJECT_AREA_COLS = 3;
 
     hide_table_header_and_content();
 
@@ -391,29 +356,38 @@ function create_donation() {
     }
 
     // Populate Title dropdown menus
-    let titles_url = api_base_url + '?tbl=' + TITLES_TABLE + '&is_active=true'
-                     + '&api_key=' + api_key;
-    populate_dropdown_menu(TITLES_TABLE, titles_url,
+    let titles_url = living_library_config.get_api() +
+                     '?tbl=' + living_library_config.get_titles_table() +
+                     '&is_active=true' +
+                     '&api_key=' + living_library_config.get_api_key();
+    populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
                            document.getElementsByClassName('title_dropdown'),
                            '--Select a title--');
 
     // Populate State dropdown menus
-    let states_url = api_base_url + '?tbl=' + STATES_TABLE + '&is_active=true'
-                     + '&api_key=' + api_key;
-    populate_dropdown_menu(STATES_TABLE, states_url,
+    let states_url = living_library_config.get_api() +
+                     '?tbl=' + living_library_config.get_states_table() +
+                     '&is_active=true' +
+                     '&api_key=' + living_library_config.get_api_key();
+    populate_dropdown_menu(living_library_config.get_states_table(), states_url,
                            document.getElementsByClassName('state_dropdown'),
                            '--Select a state--');
 
     // Populate Relation to Donor dropdown menu
-    let relationships_url = api_base_url + '?tbl=' + RELATIONSHIPS_TABLE
-                     + '&is_active=true' + '&api_key=' + api_key;
-    populate_dropdown_menu(RELATIONSHIPS_TABLE, relationships_url,
+    let relationships_url = living_library_config.get_api() + '?tbl=' +
+                            living_library_config.get_relationships_table() +
+                            '&is_active=true' +
+                            '&api_key=' + living_library_config.get_api_key();
+    populate_dropdown_menu(living_library_config.get_relationships_table(),
+                           relationships_url,
                            document.getElementsByClassName('relationship_dropdown'),
                            '--Select a relation to donor--');
 
     // Add Subject Area checkboxes
-    fetch(api_base_url + '?tbl=' + SUBJECT_AREAS_TABLE + '&is_active=true'
-          + '&api_key=' + api_key)
+    fetch(living_library_config.get_api() +
+          '?tbl=' + living_library_config.get_subject_areas_table() +
+          '&is_active=true' +
+          '&api_key=' + living_library_config.get_api_key())
         .then(function(response) {
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching the '
@@ -471,8 +445,8 @@ function create_donation() {
                   + error;
         });
 
-    update_required_fields_in_form(REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES,
-                                   REQUIRED_FORM_FIELD_IDS);
+    update_required_fields_in_form(living_library_config
+                                   .get_required_donation_form_fields());
 }
 
 /**
@@ -589,15 +563,19 @@ function add_person_to_notify(event) {
 
 /**
  * Updates HTML for all required form fields
- * @param {Array} label_for_attributes   the 'for' attributes of the label
- *                                       tags that need to be updated
- * @param {Array} input_field_ids        the id attributes of the input tags
- *                                       that need to be updated
+ * @param {Object} required_fields   an object containing the following
+ *                                   properties:
+ *                                   - required_label_for_attributes =
+ *                                     the 'for' attributes of the label tags
+ *                                     that need to be updated
+ *                                   - required_ids =
+ *                                     the id attributes of the input tags that
+ *                                     need to be updated
  */
-function update_required_fields_in_form(label_for_attributes, input_field_ids) {
+function update_required_fields_in_form(required_fields) {
     console.log("Inside update_required_fields_in_form");
 
-    for (let element of label_for_attributes) {
+    for (let element of required_fields.required_label_for_attributes) {
         let label_element = document.querySelector(`label[for="${element}"]`);
         console.log(label_element.tagName);
         console.log(label_element.htmlFor);
@@ -610,7 +588,7 @@ function update_required_fields_in_form(label_for_attributes, input_field_ids) {
         console.log(label_element);
     }
 
-    for (let element of input_field_ids) {
+    for (let element of required_fields.required_ids) {
         let form_element = document.querySelector(`#${element}`);
         console.log(form_element.tagName);
         console.log(form_element.id);
@@ -648,13 +626,13 @@ function populate_dropdown_menu(table_name, url, html_elements,
     let label_name; // name of the values being fetched
 
     switch(table_name) {
-        case TITLES_TABLE:
+        case living_library_config.get_titles_table():
             field_name = 'title', label_name = 'titles';
             break;
-        case STATES_TABLE:
+        case living_library_config.get_states_table():
             field_name = 'state_full', label_name = 'states';
             break;
-        case RELATIONSHIPS_TABLE:
+        case living_library_config.get_relationships_table():
             field_name = 'relationship', label_name = 'relationships';
             break;
         default:
@@ -729,11 +707,8 @@ function populate_dropdown_menu(table_name, url, html_elements,
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
-    const base_url = 'http://localhost/donordb/';
-    const api_url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
-                    + is_completed + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
-
-    fetch(api_url)
+    fetch(living_library_config.get_api() + '?is_completed=' + is_completed +
+          '&api_key=' + living_library_config.get_api_key())
         .then(response => {
             return response.json();
         })
@@ -818,10 +793,10 @@ function get_donations(is_completed) {
                     html += '<tr>';
 
                     html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="' + base_url + 'index.php/livinglibrary/'
+                            + '<a href="' + baseUrl + 'index.php/livinglibrary/'
                             + 'getDonation/' + donation_status + '/'
                             + data[i].id + '">'
-                            + '<img src="' + base_url
+                            + '<img src="' + baseUrl
                             + (data[i].is_completed
                               ? 'img/living_library_application_view_list.png" />'
                               : 'img/living_library_application_form.png" />')
@@ -873,9 +848,10 @@ function get_donations(is_completed) {
 
 function get_donation(is_completed, id) {
     is_completed = validate_is_completed_parameter(is_completed);
-    const url = 'http://localhost:8000/api/v1/living-library/donations?is_completed='
-                + is_completed + '&id=' + id
-                + '&api_key=5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
+    const url = living_library_config.get_api() +
+                '?is_completed='+ is_completed +
+                '&id=' + id +
+                '&api_key=' + living_library_config.get_api_key();
 
     hide_table_header_and_content();
 
@@ -1014,13 +990,6 @@ function get_completed_donation(url) {
 }
 
 function get_queued_donation(url) {
-    // The id attributes of all required form fields
-    const REQUIRED_FORM_FIELD_IDS = ['book_title_input_box',
-                                     'book_bibliographic_number_input_box',
-                                     'book_call_number_input_box'];
-
-    // The 'for' attributes of all required form field label tags
-    const REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES = REQUIRED_FORM_FIELD_IDS;
 
     fetch(url)
         .then(response => {
@@ -1200,8 +1169,8 @@ function get_queued_donation(url) {
         .then(() => {
             console.log("book_call_number_input_box = ");
             console.log(document.getElementById('book_call_number_input_box'));
-            update_required_fields_in_form(REQUIRED_FORM_FIELD_LABEL_FOR_ATTRIBUTES,
-                                           REQUIRED_FORM_FIELD_IDS);
+            update_required_fields_in_form(living_library_config
+                                           .get_required_book_plate_form_fields());
         })
         .catch((error) => {
             console.log('In the catch block');

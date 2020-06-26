@@ -7,8 +7,6 @@
  *
  * University of Denver, June 2020
  */
-const API_KEY = '5JdEkElWVdscN61BIdFGg2G2yt8x5aCR';
-
 const save_donation = function (event) {
     console.log("Inside save_donation function");
 
@@ -64,12 +62,8 @@ const save_donation = function (event) {
     donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
     donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
 
-    const url = 'http://localhost:8000/api/v1/living-library/donations?api_key='
-                + API_KEY;
-
-    console.log("url = " + url);
-
-    fetch(url, {
+    fetch(living_library_config.get_api() +
+          '?api_key=' + living_library_config.get_api_key(), {
         method: 'POST',
         headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -121,13 +115,9 @@ const save_book_plate = function (event) {
     let book_field = new URLSearchParams();
     book_field.append('book', JSON.stringify(form_as_JSON));
 
-    const url = 'http://localhost:8000/api/v1/living-library/donations?id='
-                + form_data.donation_id.value
-                + '&api_key=' + API_KEY;
-
-    console.log("url = " + url);
-
-    fetch(url, {
+    fetch(living_library_config.get_api() +
+          '?id=' + form_data.donation_id.value +
+          '&api_key=' + living_library_config.get_api_key(), {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

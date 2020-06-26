@@ -19,9 +19,11 @@
 
 <!-- Page Load Scripts -->
 <script src="<?php echo base_url();?>libs/donorDB/views.js"></script>
-<!-- Added for the Living Library integration -->
-<script src="<?php echo base_url();?>libs/donorDB/livingLibraryGet.js"></script>
-<script src="<?php echo base_url();?>libs/donorDB/livingLibraryPostPutDelete.js"></script>
+
+<!-- Living Library integration -->
+<script src="<?php echo base_url();?>libs/livingLibrary/config.js"></script>
+<script src="<?php echo base_url();?>libs/livingLibrary/get.js"></script>
+<script src="<?php echo base_url();?>libs/livingLibrary/postPutDelete.js"></script>
 
 <!-- External Libs -->
 <script src="<?php echo base_url();?>libs/dateUtils.js"></script>
