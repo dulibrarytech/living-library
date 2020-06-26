@@ -1,7 +1,7 @@
 /*
  * Donor Application
  *
- * Living Library config
+ * Living Library config file
  *
  * Author: Scott Salvaggio
  *

@@ -25,14 +25,6 @@ const save_donation = function (event) {
     const RECIPIENT_FIELDS = ['recipient_title', 'recipient_first_name',
                               'recipient_last_name', 'recipient_donation_type'];
 
-    /* Stop the form from submitting the default way
-     * - commenting this out allows the error to display if a required form
-     *   field is blank, but the form still gets submitted (and a new
-     *   record is still created in the DB) because this function is called
-     *   whenever the 'Send to Queue' button is clicked
-     */
-    event.preventDefault();
-
     let form_data = document.getElementById('donor-input-form').elements;
 
     let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
@@ -94,14 +86,6 @@ const save_book_plate = function (event) {
     const BOOK_PLATE_FORM_FIELDS = ["book_author_name", "book_title",
                                     "book_bibliographic_number",
                                     "book_call_number"];
-
-    /* Stop the form from submitting the default way
-     * - commenting this out allows the error to display if a required form
-     *   field is blank, but the form still gets submitted (and a new
-     *   record is still created in the DB) because this function is called
-     *   whenever the 'Save Book Plate' button is clicked
-     */
-    event.preventDefault();
 
     let form_data = document.getElementById('donor-input-form').elements;
 

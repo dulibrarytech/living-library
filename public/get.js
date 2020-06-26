@@ -26,7 +26,8 @@ function create_donation() {
         page_label_element.innerHTML = 'Living Library: Donation Form';
     }
 
-    let form_html = '<form id="donor-input-form" method="post">';
+    let form_html = '<form id="donor-input-form" method="post" '
+                    + 'onsubmit="save_donation(event);">';
 
     // Donor table
     form_html += '<table class="table">';
@@ -339,8 +340,8 @@ function create_donation() {
                  + '<tr>'
                  + '<td class="span1">'
                  + '<button type="submit" '
-                 + 'class="btn-grey" id="save_donation_button" '
-                 + 'onclick="save_donation(event);">Send to Queue'
+                 + 'class="btn-grey" id="save_donation_button">'
+                 + 'Send to Queue'
                  + '</button>'
                  + '</td>'
                  + '</tr>'
@@ -1080,7 +1081,8 @@ function get_queued_donation(url) {
             }
 
             /* Add book plate form */
-            let form_html = '<form id="donor-input-form" method="post">';
+            let form_html = '<form id="donor-input-form" method="post" '
+                            + 'onsubmit="save_book_plate(event);">';
 
             form_html += '<table class="table">';
 
@@ -1142,8 +1144,8 @@ function get_queued_donation(url) {
                          + '<tr>'
                          + '<td class="span1">'
                          + '<button type="submit" '
-                         + 'class="btn-grey" id="save_book_plate_button" '
-                         + 'onclick="save_book_plate(event);">Save Book Plate'
+                         + 'class="btn-grey" id="save_book_plate_button">'
+                         + 'Save Book Plate'
                          + '</button>'
                          + '</td>'
                          + '</tr>'
