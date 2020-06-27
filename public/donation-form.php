@@ -217,7 +217,7 @@
 									<div id="dropdown-box"></div>
 
 									<select class='input-medium' id='donor_state_dropdown' name='donor_state'>
-										<option value=''>Select a state</option>
+										<option value>Select a state</option>
 										<option value='Ms.'>CA</option>
 										<option value='Mr.'>CO</option>
 									</select>
@@ -586,7 +586,8 @@
 						</table>
 
 						<table class="table lower_controls"><tr>
-							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate(event);">Send to Queue</button></td>
+							<!--<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button" onclick="save_book_plate(event);">Send to Queue</button></td>-->
+							<td class="span1"><button type="submit" class="btn-grey" id="save_book_plate_button">Send to Queue</button></td>
 						</table>
 
 					</form>
@@ -648,5 +649,10 @@
 	<script src="post-form-data.js"></script>
 
 	<script>//authentication.validateSession();</script>
+
+	<script>
+	let select = document.getElementById('donor_state_dropdown');
+	select.required = true;
+	</script>
 
 </footer>

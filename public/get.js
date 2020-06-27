@@ -95,6 +95,7 @@ function create_donation() {
                  + '</label>'
                  + '<select class="input_form-default state_dropdown" '
                  + 'id="donor_state_dropdown" name="donor_state">'
+                 // + '<option value="" selected>--Select a state--</option>'
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
@@ -356,6 +357,10 @@ function create_donation() {
         form_content_element.innerHTML = form_html;
     }
 
+    // Set required fields
+    update_required_fields_in_form(living_library_config
+                                   .get_required_donation_form_fields());
+
     // Populate Title dropdown menus
     let titles_url = living_library_config.get_api() +
                      '?tbl=' + living_library_config.get_titles_table() +
@@ -370,6 +375,14 @@ function create_donation() {
                      '?tbl=' + living_library_config.get_states_table() +
                      '&is_active=true' +
                      '&api_key=' + living_library_config.get_api_key();
+
+    /*
+    populate_dropdown_menu(living_library_config.get_states_table(), states_url,
+                           document.getElementsByClassName('state_dropdown'),
+                           document.getElementById('donor_state_dropdown')
+                           .firstChild);
+    */
+
     populate_dropdown_menu(living_library_config.get_states_table(), states_url,
                            document.getElementsByClassName('state_dropdown'),
                            '--Select a state--');
@@ -446,8 +459,11 @@ function create_donation() {
                   + error;
         });
 
-    update_required_fields_in_form(living_library_config
-                                   .get_required_donation_form_fields());
+    console.log("testing donor state dropdown: required = ");
+    console.log(document.querySelector('#donor_state_dropdown').required);
+
+    console.log("testing notify state dropdown: required = ");
+    console.log(document.querySelector('#notify_state_input_box_1').required);
 }
 
 /**
@@ -591,6 +607,7 @@ function update_required_fields_in_form(required_fields) {
 
     for (let element of required_fields.required_ids) {
         let form_element = document.querySelector(`#${element}`);
+        console.log("check here:")
         console.log(form_element.tagName);
         console.log(form_element.id);
 
@@ -614,14 +631,34 @@ function populate_dropdown_menu(table_name, url, html_elements,
                                 text_for_default_option) {
     // Create new <select> element and add its default option
     let select = document.createElement('select');
+
+    /*
+    console.log("typeof text_for_default_option = " + typeof text_for_default_option);
+
+    if (typeof text_for_default_option != 'string') {
+        console.log("default option tag before cloning");
+        console.log(text_for_default_option);
+        let default_option = text_for_default_option.cloneNode(true);
+        console.log("default option tag after cloning");
+        console.log(default_option);
+
+        // select.required = true;
+        select.add(default_option);
+    */
+
     let default_option = document.createElement('option');
 
+    default_option.value = '';
     default_option.text = text_for_default_option;
-    default_option.setAttribute('value', '');
+    // default_option.selected = true;
+    // default_option.setAttribute('value', '');
     default_option.setAttribute('selected', '');
 
     select.add(default_option);
     select.selectedIndex = 0;
+
+    console.log("Select tag before being populated");
+    console.log(select);
 
     let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
@@ -673,21 +710,32 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 let need_to_clone = false;
                 for (let node of html_elements) {
                     /* Can only use a given <select> element once in the DOM.
-                     * So clone it if it's needed for more than one dropdown
-                     * menu.
+                     * So we clone it. The parameter 'true' clones the subtree
+                     * as well.
                      */
-                    let select_copy;
-                    if (need_to_clone) {
-                        select_copy = select.cloneNode(true);
-                    } else {
-                        select_copy = select;
-                        need_to_clone = true;
-                    }
+                    let select_copy = select.cloneNode(true);
 
                     select_copy.setAttribute('class', node.getAttribute('class'));
                     select_copy.setAttribute('id', node.getAttribute('id'));
                     select_copy.setAttribute('name', node.getAttribute('name'));
+
+                    console.log("inside populate_dropdown_menu for node:");
+                    console.log(node);
+                    console.log("node.hasAttribute('required') =");
+                    console.log(node.hasAttribute('required'));
+                    console.log("select_copy looks like this:");
+                    console.log(select_copy);
+                    console.log("select_copy.hasAttribute('required') =");
+                    console.log(select_copy.hasAttribute('required'));
+                    if (node.hasAttribute('required')) {
+                        select_copy.required = node.required;
+                        console.log("node.required = " + node.required);
+                        console.log("select_copy.required = " + select_copy.required);
+                    }
+
                     node.parentNode.replaceChild(select_copy, node);
+                    console.log("Just replaced dropdown menu:");
+                    console.log(select_copy);
                 }
             });
         })
