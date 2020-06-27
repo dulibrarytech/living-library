@@ -95,7 +95,6 @@ function create_donation() {
                  + '</label>'
                  + '<select class="input_form-default state_dropdown" '
                  + 'id="donor_state_dropdown" name="donor_state">'
-                 // + '<option value="" selected>--Select a state--</option>'
                  + '</select>'
                  + '</td>';
     form_html += '</tr>';
@@ -350,7 +349,6 @@ function create_donation() {
 
     form_html += '</form>';
 
-    console.log(form_html);
     let form_content_element = document.querySelector('#form-content');
 
     if (form_content_element) {
@@ -375,14 +373,6 @@ function create_donation() {
                      '?tbl=' + living_library_config.get_states_table() +
                      '&is_active=true' +
                      '&api_key=' + living_library_config.get_api_key();
-
-    /*
-    populate_dropdown_menu(living_library_config.get_states_table(), states_url,
-                           document.getElementsByClassName('state_dropdown'),
-                           document.getElementById('donor_state_dropdown')
-                           .firstChild);
-    */
-
     populate_dropdown_menu(living_library_config.get_states_table(), states_url,
                            document.getElementsByClassName('state_dropdown'),
                            '--Select a state--');
@@ -424,15 +414,11 @@ function create_donation() {
                 }
 
                 for (let i = 0; i < data.length; i++) {
-                    console.log("data[" + i + "].subject = "
-                                + data[i].subject);
-
                     let checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.id = 'checkbox_' + i;
                     checkbox.name = 'donor_subject_areas';
                     checkbox.value = data[i].subject;
-                    console.log("checkbox.id = " + checkbox.id);
 
                     let label = document.createElement('label');
                     label.htmlFor = checkbox.id;
@@ -458,12 +444,6 @@ function create_donation() {
             throw 'FATAL: [create_donation] Unable to fetch subject areas '
                   + error;
         });
-
-    console.log("testing donor state dropdown: required = ");
-    console.log(document.querySelector('#donor_state_dropdown').required);
-
-    console.log("testing notify state dropdown: required = ");
-    console.log(document.querySelector('#notify_state_input_box_1').required);
 }
 
 /**
@@ -601,19 +581,18 @@ function update_required_fields_in_form(required_fields) {
         label_element.innerHTML = '<abbr class="required" title="required">* '
                                    + '</abbr>' + label_element.innerHTML;
         console.log("innerHTML after change: " + label_element.innerHTML);
-
-        console.log(label_element);
     }
 
     for (let element of required_fields.required_ids) {
         let form_element = document.querySelector(`#${element}`);
-        console.log("check here:")
         console.log(form_element.tagName);
         console.log(form_element.id);
 
+        console.log("Before change, form_element.required = "
+                    + form_element.required);
         form_element.required = true;
-
-        console.log(form_element);
+        console.log("After change, form_element.required = "
+                    + form_element.required);
     }
 }
 
@@ -631,34 +610,14 @@ function populate_dropdown_menu(table_name, url, html_elements,
                                 text_for_default_option) {
     // Create new <select> element and add its default option
     let select = document.createElement('select');
-
-    /*
-    console.log("typeof text_for_default_option = " + typeof text_for_default_option);
-
-    if (typeof text_for_default_option != 'string') {
-        console.log("default option tag before cloning");
-        console.log(text_for_default_option);
-        let default_option = text_for_default_option.cloneNode(true);
-        console.log("default option tag after cloning");
-        console.log(default_option);
-
-        // select.required = true;
-        select.add(default_option);
-    */
-
     let default_option = document.createElement('option');
 
     default_option.value = '';
-    default_option.text = text_for_default_option;
-    // default_option.selected = true;
-    // default_option.setAttribute('value', '');
     default_option.setAttribute('selected', '');
+    default_option.text = text_for_default_option;
 
     select.add(default_option);
     select.selectedIndex = 0;
-
-    console.log("Select tag before being populated");
-    console.log(select);
 
     let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
@@ -695,9 +654,6 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 // Add dropdown menu options to <select> element
                 let option;
                 for (let i = 0; i < data.length; i++) {
-                    console.log("data[" + i + "]." + field_name + " = "
-                                + data[i][field_name]);
-
                     option = document.createElement('option');
                     option.text = data[i][field_name];
                     option.value = data[i][field_name];
@@ -707,7 +663,6 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 /* Replace all relevant dropdown menus with the newly-populated
                  * <select> element
                  */
-                let need_to_clone = false;
                 for (let node of html_elements) {
                     /* Can only use a given <select> element once in the DOM.
                      * So we clone it. The parameter 'true' clones the subtree
@@ -719,18 +674,8 @@ function populate_dropdown_menu(table_name, url, html_elements,
                     select_copy.setAttribute('id', node.getAttribute('id'));
                     select_copy.setAttribute('name', node.getAttribute('name'));
 
-                    console.log("inside populate_dropdown_menu for node:");
-                    console.log(node);
-                    console.log("node.hasAttribute('required') =");
-                    console.log(node.hasAttribute('required'));
-                    console.log("select_copy looks like this:");
-                    console.log(select_copy);
-                    console.log("select_copy.hasAttribute('required') =");
-                    console.log(select_copy.hasAttribute('required'));
                     if (node.hasAttribute('required')) {
                         select_copy.required = node.required;
-                        console.log("node.required = " + node.required);
-                        console.log("select_copy.required = " + select_copy.required);
                     }
 
                     node.parentNode.replaceChild(select_copy, node);
@@ -764,24 +709,12 @@ function get_donations(is_completed) {
         .then(data => {
             console.log(data);
 
-            /*
-             * Recreating browseDonorsView.initPage() from libs/donorDB/views.js
-             */
-
             $(".content-window").css("height", "770px");
             $(".pre-scrollable").css("max-height", "485px");
 
             $("#page-label").text(is_completed
                                   ? "Living Library: Completed Donations"
                                   : "Living Library: Donation Queue");
-
-            /* Original donordb code for table-header
-             *
-            $("#table-header").html("<thead> <th class='span2'><!--SPACE--></th> <th class='span4'>Last Name / Organization</th> <th class='span4'>First Name</th> <th style='align:right'><!--SPACE--></th> </thead>");
-
-            utils.getDonorDataArray(setQueue);
-            viewUtils.setUserLabel();
-            */
 
             $("#table-header").html("<thead> " +
                                     "<th class='span1_wider'>" +
@@ -1201,7 +1134,6 @@ function get_queued_donation(url) {
 
             form_html += '</form>';
 
-            console.log(form_html);
             let form_content_element = document.querySelector('#form-content');
 
             if (form_content_element) {
