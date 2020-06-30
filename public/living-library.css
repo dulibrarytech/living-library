@@ -1,12 +1,12 @@
 /* The container for the dropdown menu
- * - needed to position the dropdown content
+ * (needed to position the dropdown content)
  */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-/* Dropdown Content (Hidden by Default) */
+/* Dropdown content (hidden by default) */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -26,10 +26,6 @@
 
 /* Remove text decoration when visited */
 .dropdown-content a:visited {
-  /* The style below is not working. Why?
-   * Both a:visited and a:hover should theoretically already have no
-   * text-decoration because it was set in ".dropdown-content a" above.
-   */
   text-decoration: none !important;
 }
 
@@ -67,4 +63,14 @@ abbr[title] {
   border-bottom: none !important;
   cursor: inherit !important;
   text-decoration: none !important;
+}
+
+:invalid + span:after {
+  content: '\2716';
+  padding-left: 5px;
+}
+
+:valid + span:after {
+  content: '\2714';
+  padding-left: 5px;
 }

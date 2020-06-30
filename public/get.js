@@ -593,7 +593,21 @@ function update_required_fields_in_form(required_fields) {
         form_element.required = true;
         console.log("After change, form_element.required = "
                     + form_element.required);
+
+        // create <span> for inline validation and insert after new form_element
+        if (form_element.type != 'radio') {
+            add_inline_validation(form_element);
+        }
     }
+
+    // consider applying inline validation to non-required fields
+
+}
+
+function add_inline_validation(form_element) {
+    let span = document.createElement('span');
+    span.className = 'validity';
+    form_element.parentNode.insertBefore(span, form_element.nextSibling);
 }
 
 /**
