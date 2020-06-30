@@ -112,6 +112,37 @@ const living_library_config = (function () {
         return book_plate_form;
     };
 
+    /**
+     * Returns the hex number for the UTF-8 character used to indicate that a
+     * form field has invalid input
+     * @returns {number}
+     */
+    obj.get_invalid_input_symbol = function () {
+       return 2716;
+    };
+
+    /**
+     * Returns the hex number for the UTF-8 character used to indicate that a
+     * form field has valid input
+     * @returns {number}
+     */
+    obj.get_valid_input_symbol = function () {
+       return 2714;
+    };
+
+    /**
+     * Returns a textual explanation of each form symbol
+     * @returns {string}
+     */
+    obj.get_form_symbol_explanation_text = function () {
+        return '<p>( <abbr class="required" title="required">*'
+               + '</abbr> indicates required field; '
+               + '&#x' + obj.get_invalid_input_symbol() + ' and '
+               + '&#x' + obj.get_valid_input_symbol() + ' indicate invalid or '
+               + 'valid input, respectively )'
+               + '</p>';
+    };
+
     return obj;
 
 }());

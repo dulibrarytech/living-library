@@ -38,8 +38,7 @@ function create_donation() {
 
     form_html += '<tr>';
     form_html += '<td colspan="3">'
-                 + '<p>( <abbr class="required" title="required">*'
-                 + '</abbr> indicates required field )</p>'
+                 + living_library_config.get_form_symbol_explanation_text()
                  + '</td>';
     form_html += '</tr>';
 
@@ -596,18 +595,11 @@ function update_required_fields_in_form(required_fields) {
 
         // create <span> for inline validation and insert after new form_element
         if (form_element.type != 'radio') {
-            add_inline_validation(form_element);
+            let span = document.createElement('span');
+            span.className = 'validity';
+            form_element.parentNode.insertBefore(span, form_element.nextSibling);
         }
     }
-
-    // consider applying inline validation to non-required fields
-
-}
-
-function add_inline_validation(form_element) {
-    let span = document.createElement('span');
-    span.className = 'validity';
-    form_element.parentNode.insertBefore(span, form_element.nextSibling);
 }
 
 /**
@@ -1087,8 +1079,7 @@ function get_queued_donation(url) {
 
             form_html += '<tr>';
             form_html += '<td colspan="2">'
-                         + '<p>( <abbr class="required" title="required">*'
-                         + '</abbr> indicates required field )</p>'
+                         + living_library_config.get_form_symbol_explanation_text()
                          + '</td>';
             form_html += '</tr>';
 
