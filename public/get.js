@@ -101,12 +101,16 @@ function create_donation() {
     form_html += '<tr>';
     form_html += '<td colspan="3">'
                  + '<label for="donor_zip_input_box" '
-                 + 'class="form-label-text">Zip:'
+                 + 'class="form-label-text">'
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_label_text
                  + '</label>'
                  + '<input type="text" '
                  + 'id="donor_zip_input_box" '
                  + 'class="input-medium" '
-                 + 'name="donor_zip"/>'
+                 + 'name="donor_zip" '
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_validation + '/>'
                  + '</td>';
     form_html += '</tr>';
 
@@ -192,12 +196,16 @@ function create_donation() {
     form_html += '<tr>';
     form_html += '<td>'
                  + '<label for="notify_zip_input_box_1" '
-                 + 'class="form-label-text">Zip:'
+                 + 'class="form-label-text">'
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_label_text
                  + '</label>'
                  + '<input type="text" '
                  + 'id="notify_zip_input_box_1" '
                  + 'class="input-medium notify_person_1" '
-                 + 'name="notify_zip"/>'
+                 + 'name="notify_zip" '
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_validation + '/>'
                  + '</td>';
 
     form_html += '<td colspan="2">'
@@ -300,18 +308,22 @@ function create_donation() {
     form_html += '<tr>';
     form_html += '<td>'
                  + '<label for="donor_amount_of_donation_input_box" '
-                 + 'class="form-label-text">Amount of Donation (e.g. 100.00):'
+                 + 'class="form-label-text">Amount of Donation (e.g. 1500.00):'
                  + '</label>'
-                 + '<input type="text" id="donor_amount_of_donation_input_box" '
-                 + 'class="input_form-default" name="donor_amount_of_donation"/>'
+                 + '<input type="number" id="donor_amount_of_donation_input_box" '
+                 + 'class="input_form-default" name="donor_amount_of_donation" '
+                 + living_library_config.get_donation_form_info()
+                                        .dollar_amount_validation + ' />'
                  + '</td>';
 
     form_html += '<td>'
                  + '<label for="gift-date-box" '
-                 + 'class="form-label-text">Donation Date:'
+                 + 'class="form-label-text">Donation Date (YYYY-MM-DD):'
                  + '</label>'
                  + '<input type="text" id="gift-date-box" '
-                 + 'class="input_form-default" name="donor_date_of_donation"/>'
+                 + 'class="input_form-default" name="donor_date_of_donation" '
+                 + living_library_config.get_donation_form_info()
+                                        .date_validation + '/>'
                  + '</td>';
 
     form_html += '<td>'
@@ -356,7 +368,7 @@ function create_donation() {
 
     // Set required fields
     update_required_fields_in_form(living_library_config
-                                   .get_required_donation_form_fields());
+                                   .get_donation_form_info());
 
     // Populate Title dropdown menus
     let titles_url = living_library_config.get_api() +

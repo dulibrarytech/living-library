@@ -57,7 +57,7 @@ const living_library_config = (function () {
         return 'tbl_titles_lookup';
     };
 
-    /* Required form fields */
+    /* Required form fields, validation attributes, etc. */
     let donation_form = {
         // The id attributes of all required form fields
         required_ids: ['donor_first_name_input_box',
@@ -83,7 +83,14 @@ const living_library_config = (function () {
                                         'recipient_last_name_input_box',
                                         'recipient_donation_type',
                                         'donor_amount_of_donation_input_box',
-                                        'gift-date-box']
+                                        'gift-date-box'],
+        // Validation attributes
+        zip_code_validation: 'pattern="^\\d{5}|\\d{5}-\\d{4}"',
+        dollar_amount_validation: 'min=0.01 step=0.01',
+        // -- Date regex taken from http://html5pattern.com/Dates [Full Date Validation (YYYY-MM-DD) by Patrick Denny] --
+        date_validation: 'pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"',
+        // Reusable label text
+        zip_code_label_text: 'Zip (e.g. 80210 or 80210-4711):'
     };
 
     let book_plate_form = {
@@ -100,7 +107,7 @@ const living_library_config = (function () {
      * Returns the donation form's required fields
      * @returns {Object}
      */
-    obj.get_required_donation_form_fields = function () {
+    obj.get_donation_form_info = function () {
         return donation_form;
     };
 
