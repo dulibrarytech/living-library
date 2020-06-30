@@ -593,7 +593,7 @@ function update_required_fields_in_form(required_fields) {
         console.log("After change, form_element.required = "
                     + form_element.required);
 
-        // create <span> for inline validation and insert after new form_element
+        // create <span> for inline validation and insert after form_element
         if (form_element.type != 'radio') {
             let span = document.createElement('span');
             span.className = 'validity';
