@@ -61,7 +61,34 @@ const save_donation = function (event) {
         'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: donation_data
-    });
+    })
+        .then(function (response) {
+            console.log('Inside save_donation fetch: first "then" function');
+            return response.json();
+        })
+        .then(function (data) {
+            console.log('Inside second "then" function');
+            if (data.length > 0) {
+                console.log(data[0]);
+
+                window.location.href = baseUrl + 'index.php/livinglibrary/' +
+                                       'getDonations/queued';
+
+                // alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
+                return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
+            } else {
+                // alert('There was an error submitting the donation form.');
+                return 'There was an error submitting the donation form.';
+            }
+        })
+        .then(function (message) {
+              console.log('Inside third "then" function');
+              alert(message);
+        })
+        .catch(function (error) {
+            console.log('FATAL: [save_donation] Unable to POST ' + ' ' + error);
+            // throw 'FATAL: [create_donation] Unable to POST ' + ' ' + error;
+        });
 };
 
 /**
@@ -129,6 +156,8 @@ const form_to_JSON = function (expected_form_fields, form_elements) {
             if (element.type === 'checkbox') {
                 data[element.name] = (data[element.name] || [])
                                      .concat(element.value.trim());
+            } else if (element.name === 'donor_amount_of_donation') {
+                data[element.name] = parseFloat(element.value);
             } else {
                 data[element.name] = element.value.trim();
             }
