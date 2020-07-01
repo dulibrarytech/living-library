@@ -71,23 +71,27 @@ const save_donation = function (event) {
             if (data.length > 0) {
                 console.log(data[0]);
 
+                /*
                 window.location.href = baseUrl + 'index.php/livinglibrary/' +
                                        'getDonations/queued';
+                */
 
-                // alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
-                return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
+                alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
+                // return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
             } else {
-                // alert('There was an error submitting the donation form.');
-                return 'There was an error submitting the donation form.';
+                alert('There was an error submitting the donation form.');
+                // return 'There was an error submitting the donation form.';
             }
         })
+        /*
         .then(function (message) {
               console.log('Inside third "then" function');
               alert(message);
         })
+        */
         .catch(function (error) {
-            console.log('FATAL: [save_donation] Unable to POST ' + ' ' + error);
-            // throw 'FATAL: [create_donation] Unable to POST ' + ' ' + error;
+            console.log('FATAL: [save_donation] Unable to POST: ' + error);
+            // throw 'FATAL: [create_donation] Unable to POST: ' + error;
         });
 };
 
@@ -119,10 +123,6 @@ const save_book_plate = function (event) {
     let form_as_JSON = form_to_JSON(BOOK_PLATE_FORM_FIELDS, form_data);
     console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
 
-    /* TO-DO: Add the book_timestamp key-value pair with the current time.
-     * (The book fields publisher and date_published are not needed.)
-     */
-
     let book_field = new URLSearchParams();
     book_field.append('book', JSON.stringify(form_as_JSON));
 
@@ -134,7 +134,20 @@ const save_book_plate = function (event) {
         'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: book_field
-    });
+    })
+        .then(function (response) {
+            console.log('Inside save_book_plate fetch: "then" function');
+            console.log(response);
+            if (response.ok) {
+                console.log("Request succeeded: " + response.status);
+            } else {
+                console.log("Response failed: " + response.status)
+            }
+        })
+        .catch(function (error) {
+            console.log('FATAL: [save_book_plate] Unable to PUT: ' + error);
+            // throw 'FATAL: [save_book_plate] Unable to PUT: ' + error;
+        });
 };
 
 /**
