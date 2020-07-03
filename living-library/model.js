@@ -357,19 +357,29 @@ exports.update = function (req, callback) {
         console.log("\nbook before adding fields: ");
         console.log(book);
 
+        console.log("typeof book = " + typeof book);
+
+        /* book is already an object because, although request_body is a string,
+         * request_body.book is still an object. So no need to parse book
         let book_obj = JSON.parse(book);
+        */
 
         /**
          * These are legacy fields from original living library implementation
          * and thus have empty values for new book plate records.
          */
-        book_obj.book_publisher = "";
-        book_obj.book_date_published = "";
+        book.book_publisher = "";
+        book.book_date_published = "";
+        // book_obj.book_publisher = "";
+        // book_obj.book_date_published = "";
 
-        book_obj.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
-        console.log("\nbook_timestamp = " + book_obj.book_timestamp);
+        book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+        console.log("\nbook_timestamp = " + book.book_timestamp);
+        // book_obj.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+        // console.log("\nbook_timestamp = " + book_obj.book_timestamp);
 
-        book = JSON.stringify(book_obj);
+        book = JSON.stringify(book);
+        // book = JSON.stringify(book_obj);
         console.log("\nbook after adding fields: ");
         console.log(book);
     }

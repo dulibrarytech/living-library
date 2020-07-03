@@ -8,6 +8,8 @@
  * University of Denver, June 2020
  */
 const save_donation = function (event) {
+    event.preventDefault();
+
     console.log("Inside save_donation function");
 
     const DONOR_FIELDS = ['donor_title', 'donor_first_name',
@@ -54,14 +56,19 @@ const save_donation = function (event) {
     donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
     donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
 
+    console.log(living_library_config.get_api() +
+          '?api_key=' + living_library_config.get_api_key());
+
     fetch(living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key(), {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: donation_data
-    })
+    }).then(response => console.log(response));
+    // console.log(test);
+/*
         .then(function (response) {
             console.log('Inside save_donation fetch: first "then" function');
             return response.json();
@@ -76,7 +83,7 @@ const save_donation = function (event) {
                                        'getDonations/queued';
                 */
 
-                alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
+/*                alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
                 // return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
             } else {
                 alert('There was an error submitting the donation form.');
@@ -89,11 +96,14 @@ const save_donation = function (event) {
               alert(message);
         })
         */
+/*
         .catch(function (error) {
             console.log('FATAL: [save_donation] Unable to POST: ' + error);
             // throw 'FATAL: [create_donation] Unable to POST: ' + error;
         });
+*/
 };
+
 
 /**
  * Determines whether the given HTMLCollection contains any non-empty element
@@ -112,6 +122,8 @@ const containsNonEmptyElementValue = function (form_elements) {
 };
 
 const save_book_plate = function (event) {
+    event.preventDefault();
+
     console.log("Inside save_book_plate function");
 
     const BOOK_PLATE_FORM_FIELDS = ["book_author_name", "book_title",
@@ -126,6 +138,18 @@ const save_book_plate = function (event) {
     let book_field = new URLSearchParams();
     book_field.append('book', JSON.stringify(form_as_JSON));
 
+    console.log("using application/json for accept and content-type; using mode: 'cors'");
+
+    let book_plate_data = { book: form_as_JSON };
+    console.log("book_plate_data = ");
+    console.log(book_plate_data);
+    console.log("book_plate_data.book = ");
+    console.log(book_plate_data.book);
+    let book_plate_data_string = JSON.stringify(book_plate_data);
+    console.log("JSON.stringify(book_plate_data) = " + book_plate_data_string);
+    console.log("typeof book_plate_data_string = " + typeof book_plate_data_string);
+
+/*
     fetch(living_library_config.get_api() +
           '?id=' + form_data.donation_id.value +
           '&api_key=' + living_library_config.get_api_key(), {
@@ -134,7 +158,25 @@ const save_book_plate = function (event) {
         'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: book_field
-    })
+    }).then(response => console.log(response));
+*/
+
+    fetch(living_library_config.get_api() +
+          '?id=' + form_data.donation_id.value +
+          '&api_key=' + living_library_config.get_api_key(), {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(book_plate_data),
+        mode: 'cors'
+    }).then(response => console.log(response));
+
+    // .toString();
+    // console.log(test);
+    // console.log(test.ok);
+    // console.log(test.statusText);
+/*
         .then(function (response) {
             console.log('Inside save_book_plate fetch: "then" function');
             console.log(response);
@@ -148,6 +190,7 @@ const save_book_plate = function (event) {
             console.log('FATAL: [save_book_plate] Unable to PUT: ' + error);
             // throw 'FATAL: [save_book_plate] Unable to PUT: ' + error;
         });
+*/
 };
 
 /**
