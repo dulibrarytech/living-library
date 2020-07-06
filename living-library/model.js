@@ -179,6 +179,7 @@ exports.read = function (req, callback) {
                      *  and newlines in the callback? Is this okay? This could be
                      *  problematic. Keep an eye on this.
                      */
+                    console.log("Found " + data.length + " record(s).");
                     for (let i = 0; i < data.length; i++) {
                         // Is is ok to make 'donor' a constant? Yes.
                         const donor = JSON.parse(data[i].donor);
@@ -186,6 +187,8 @@ exports.read = function (req, callback) {
                         let is_completed_string = data[i].is_completed
                                                   ? "completed"
                                                   : "in the queue";
+
+                        /*
                         if (donor !== null) {
                             console.log("Tracking ID = " + data[i].id + " from " +
                                         donor.donor_title + " " +
@@ -211,6 +214,7 @@ exports.read = function (req, callback) {
                                         + ".\nStatus: " + is_completed_string);
                         }
                         console.log();
+                        */
                     }
                     console.log("End of READ query from model\n=====================\n");
 
@@ -283,9 +287,13 @@ exports.read = function (req, callback) {
                     }
                 })
                 .then(function (data) {
+                    console.log("Populating " + display_field + " choices. " +
+                                data.length + " choice(s) found.");
+                    /*
                     for (let i = 0; i < data.length; i++) {
                         console.log(display_field + "[" + i + "] = " + data[i][display_field]);
                     }
+                    */
                     console.log("\nEnd of READ query from model\n=====================\n");
 
                     callback({

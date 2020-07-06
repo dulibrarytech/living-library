@@ -725,7 +725,7 @@ function get_donations(is_completed) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            // console.log(data);
 
             $(".content-window").css("height", "770px");
             $(".pre-scrollable").css("max-height", "485px");
@@ -752,6 +752,7 @@ function get_donations(is_completed) {
             if (data.length === 0) {
                 html += '<p class="label">No donation records found.</p>';
             } else {
+                console.log("Found " + data.length + " record(s).");
                 html += '<table class="table table-bordered table-striped">';
                 for (let i = 0; i < data.length; i++) {
                     const donor = JSON.parse(data[i].donor);
@@ -760,6 +761,7 @@ function get_donations(is_completed) {
                                               ? 'completed'
                                               : 'in the queue';
 
+                    /*
                     if (donor !== null) {
                         console.log("Tracking ID = " + data[i].id + " from "
                                     + donor.donor_title + " "
@@ -785,6 +787,7 @@ function get_donations(is_completed) {
                                     + ".\nStatus: " + is_completed_string);
                     }
                     console.log();
+                    */
 
                     let donation_status = data[i].is_completed
                                           ? 'completed'
@@ -831,7 +834,7 @@ function get_donations(is_completed) {
                 }
                 html += '</table>';
             }
-            console.log(html);
+            // console.log(html);
 
             let id = document.querySelector('#table-content');
 
