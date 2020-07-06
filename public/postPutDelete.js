@@ -138,8 +138,6 @@ const save_book_plate = function (event) {
     let book_field = new URLSearchParams();
     book_field.append('book', JSON.stringify(form_as_JSON));
 
-    console.log("using application/json for accept and content-type; using mode: 'cors'");
-
     let book_plate_data = { book: form_as_JSON };
     console.log("book_plate_data = ");
     console.log(book_plate_data);
@@ -148,18 +146,6 @@ const save_book_plate = function (event) {
     let book_plate_data_string = JSON.stringify(book_plate_data);
     console.log("JSON.stringify(book_plate_data) = " + book_plate_data_string);
     console.log("typeof book_plate_data_string = " + typeof book_plate_data_string);
-
-/*
-    fetch(living_library_config.get_api() +
-          '?id=' + form_data.donation_id.value +
-          '&api_key=' + living_library_config.get_api_key(), {
-        method: 'PUT',
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: book_field
-    }).then(response => console.log(response));
-*/
 
     fetch(living_library_config.get_api() +
           '?id=' + form_data.donation_id.value +
@@ -172,11 +158,7 @@ const save_book_plate = function (event) {
         mode: 'cors'
     }).then(response => console.log(response));
 
-    // .toString();
-    // console.log(test);
-    // console.log(test.ok);
-    // console.log(test.statusText);
-/*
+    /*
         .then(function (response) {
             console.log('Inside save_book_plate fetch: "then" function');
             console.log(response);
@@ -190,7 +172,7 @@ const save_book_plate = function (event) {
             console.log('FATAL: [save_book_plate] Unable to PUT: ' + error);
             // throw 'FATAL: [save_book_plate] Unable to PUT: ' + error;
         });
-*/
+    */
 };
 
 /**
