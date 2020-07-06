@@ -1172,7 +1172,7 @@ function get_queued_donation(url) {
             console.log("book_call_number_input_box = ");
             console.log(document.getElementById('book_call_number_input_box'));
             update_required_fields_in_form(living_library_config
-                                           .get_required_book_plate_form_fields());
+                                           .get_book_plate_form_info());
         })
         .catch((error) => {
             console.log('In the catch block');

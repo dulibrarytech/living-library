@@ -12,24 +12,11 @@ const save_donation = function (event) {
 
     console.log("Inside save_donation function");
 
-    const DONOR_FIELDS = ['donor_title', 'donor_first_name',
-                          'donor_last_name', 'donor_address',
-                          'donor_city', 'donor_state', 'donor_zip',
-                          'donor_amount_of_donation',
-                          'donor_date_of_donation', 'donor_notes',
-                          'donor_subject_areas'];
-
-    const NOTIFY_FIELDS = ['notify_title', 'notify_first_name',
-                           'notify_last_name', 'notify_address',
-                           'notify_city', 'notify_state', 'notify_zip',
-                           'notify_relation_to_donor'];
-
-    const RECIPIENT_FIELDS = ['recipient_title', 'recipient_first_name',
-                              'recipient_last_name', 'recipient_donation_type'];
-
     let form_data = document.getElementById('donor-input-form').elements;
 
-    let donor_data_as_JSON = form_to_JSON(DONOR_FIELDS, form_data);
+    let donor_data_as_JSON = form_to_JSON(living_library_config
+                                          .get_donation_form_info().donor_fields,
+                                          form_data);
     if (typeof donor_data_as_JSON.donor_subject_areas === 'undefined') {
         donor_data_as_JSON.donor_subject_areas = [];
     }
@@ -40,14 +27,20 @@ const save_donation = function (event) {
         i = 1;
     while(notify_persons_data.length !== 0) {
         if (containsNonEmptyElementValue(notify_persons_data)) {
-            notify_data_as_JSON.push(form_to_JSON(NOTIFY_FIELDS, notify_persons_data));
+            notify_data_as_JSON.push(form_to_JSON(living_library_config
+                                                  .get_donation_form_info()
+                                                  .notify_fields,
+                                                  notify_persons_data));
         }
         notify_persons_data = document.getElementsByClassName('notify_person_'
                                                               + (++i));
     }
     console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
-    let recipient_data_as_JSON = form_to_JSON(RECIPIENT_FIELDS, form_data);
+    let recipient_data_as_JSON = form_to_JSON(living_library_config
+                                              .get_donation_form_info()
+                                              .recipient_fields,
+                                              form_data);
     console.log("recipient_data_as_JSON = "
                 + JSON.stringify(recipient_data_as_JSON));
 
@@ -126,13 +119,11 @@ const save_book_plate = function (event) {
 
     console.log("Inside save_book_plate function");
 
-    const BOOK_PLATE_FORM_FIELDS = ["book_author_name", "book_title",
-                                    "book_bibliographic_number",
-                                    "book_call_number"];
-
     let form_data = document.getElementById('donor-input-form').elements;
 
-    let form_as_JSON = form_to_JSON(BOOK_PLATE_FORM_FIELDS, form_data);
+    let form_as_JSON = form_to_JSON(living_library_config
+                                    .get_book_plate_form_info().book_fields,
+                                    form_data);
     console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
 
     let book_field = new URLSearchParams();

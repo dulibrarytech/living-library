@@ -37,7 +37,7 @@ const living_library_config = (function () {
      * @returns {string}
      */
     obj.get_api_key = function () {
-        return API_KEY;
+        return ENTER_API_KEY_HERE;
     };
 
     /* Lookup tables */
@@ -57,8 +57,22 @@ const living_library_config = (function () {
         return 'tbl_titles_lookup';
     };
 
-    /* Required form fields, validation attributes, etc. */
+    /* Form field groups, required fields, validation attributes, etc. */
     let donation_form = {
+        // The name attributes of the form fields
+        donor_fields: ['donor_title', 'donor_first_name',
+                       'donor_last_name', 'donor_address',
+                       'donor_city', 'donor_state', 'donor_zip',
+                       'donor_amount_of_donation',
+                       'donor_date_of_donation', 'donor_notes',
+                       'donor_subject_areas'],
+        notify_fields: ['notify_title', 'notify_first_name',
+                        'notify_last_name', 'notify_address',
+                        'notify_city', 'notify_state', 'notify_zip',
+                        'notify_relation_to_donor'],
+        recipient_fields: ['recipient_title', 'recipient_first_name',
+                           'recipient_last_name', 'recipient_donation_type'],
+
         // The id attributes of all required form fields
         required_ids: ['donor_first_name_input_box',
                        'donor_last_name_input_box',
@@ -94,17 +108,21 @@ const living_library_config = (function () {
     };
 
     let book_plate_form = {
+        // The name attributes of the form fields
+        book_fields: ["book_author_name", "book_title",
+                      "book_bibliographic_number", "book_call_number"],
+
         // The id attributes of all required form fields
         required_ids: ['book_title_input_box',
                        'book_bibliographic_number_input_box',
                        'book_call_number_input_box']
-        }
+    };
 
     // The 'for' attributes of all required form field label tags
     book_plate_form.required_label_for_attributes = book_plate_form.required_ids;
 
     /**
-     * Returns the donation form's required fields
+     * Returns the above donation form object
      * @returns {Object}
      */
     obj.get_donation_form_info = function () {
@@ -112,10 +130,10 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the book plate form's required fields
+     * Returns the above book plate form object
      * @returns {Object}
      */
-    obj.get_required_book_plate_form_fields = function () {
+    obj.get_book_plate_form_info = function () {
         return book_plate_form;
     };
 
