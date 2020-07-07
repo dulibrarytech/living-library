@@ -328,6 +328,7 @@ exports.update = function (req, callback) {
     console.log("id = " + id);
     console.log("request_body = ");
     console.log(request_body);
+    console.log("typeof request_body = " + typeof request_body);
 
     /**
      * This updates all fields from the request_body, with newlines included,
@@ -349,11 +350,21 @@ exports.update = function (req, callback) {
      *    the database.
      */
 
-    console.log("\ntypeof request_body.book = " + typeof request_body.book);
+    // let request_body_obj = JSON.parse(request_body);
+
+    // console.log("\ntypeof request_body_obj = " + typeof request_body_obj);
+
+    /*
+    let book = typeof request_body_obj.book === 'undefined'
+               ? ""
+               : request_body_obj.book;
+    */
 
     let book = typeof request_body.book === 'undefined'
-               ? ""
-               : request_body.book;
+           ? ""
+           : request_body.book;
+
+    console.log("\ntypeof book = " + typeof book);
 
     // Validate the request body
 
@@ -365,6 +376,8 @@ exports.update = function (req, callback) {
         console.log(book);
 
         console.log("typeof book = " + typeof book);
+
+        book = JSON.parse(book);
 
         /**
          * These are legacy fields from original living library implementation
@@ -392,13 +405,16 @@ exports.update = function (req, callback) {
         .then(function (data) {
 
             if (data === 1) {
-                console.log("Updated " + id);
+                console.log("Updated donation record with id " + id);
 
                 callback({
                     status: 200,
                     message: 'Record updated.'
                 });
             } else {
+              console.log("Update failed. Couldn't find donation record with id "
+                          + id + '.');
+
               callback({
                   status: 404,
                   message: 'Record not found.'

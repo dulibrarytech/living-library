@@ -94,12 +94,10 @@ const save_donation = function (event) {
         },
         body: JSON.stringify(donation_data),
         mode: 'cors'
-    }).then(response => console.log(response));
-
-
-    /*
+    })
         .then(function (response) {
             console.log('Inside save_donation fetch: first "then" function');
+            console.log(response);
             return response.json();
         })
         .then(function (data) {
@@ -107,30 +105,19 @@ const save_donation = function (event) {
             if (data.length > 0) {
                 console.log(data[0]);
 
-                /*
+                alert('Donation ID ' + data[0].id +
+                      ' added to Donation Queue.');
+
                 window.location.href = baseUrl + 'index.php/livinglibrary/' +
                                        'getDonations/queued';
-                */
-
-    /*          alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
-                // return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
             } else {
-                alert('There was an error submitting the donation form.');
-                // return 'There was an error submitting the donation form.';
+                alert('An error occurred when submitting the donation form.');
             }
         })
-        /*
-        .then(function (message) {
-              console.log('Inside third "then" function');
-              alert(message);
-        })
-        */
-    /*
         .catch(function (error) {
-            console.log('FATAL: [save_donation] Unable to POST: ' + error);
-            // throw 'FATAL: [create_donation] Unable to POST: ' + error;
+            console.log('ERROR: [save_donation] An error occurred during or '
+                        + 'after POST request: ' + error);
         });
-    */
 };
 
 
@@ -165,11 +152,11 @@ const save_book_plate = function (event) {
     let book_field = new URLSearchParams();
     book_field.append('book', JSON.stringify(form_as_JSON));
 
-    let book_plate_data = { book: form_as_JSON };
+    let book_plate_data = { book: JSON.stringify(form_as_JSON) };
     console.log("book_plate_data = ");
     console.log(book_plate_data);
-    console.log("book_plate_data.book = ");
-    console.log(book_plate_data.book);
+    console.log("book_plate_data.book = " + book_plate_data.book);
+    console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
     let book_plate_data_string = JSON.stringify(book_plate_data);
     console.log("JSON.stringify(book_plate_data) = " + book_plate_data_string);
     console.log("typeof book_plate_data_string = " + typeof book_plate_data_string);
@@ -183,23 +170,27 @@ const save_book_plate = function (event) {
         },
         body: JSON.stringify(book_plate_data),
         mode: 'cors'
-    }).then(response => console.log(response));
-
-    /*
+    })
         .then(function (response) {
             console.log('Inside save_book_plate fetch: "then" function');
             console.log(response);
             if (response.ok) {
-                console.log("Request succeeded: " + response.status);
+                alert('Book plate saved for Donation ID ' +
+                      form_data.donation_id.value + '.');
+
+                window.location.href = baseUrl + 'index.php/livinglibrary/' +
+                                       'getDonation/completed/' +
+                                       form_data.donation_id.value;
             } else {
-                console.log("Response failed: " + response.status)
+                alert('An error occurred when saving the book plate. Could not '
+                      + 'find Donation ID ' + form_data.donation_id.value
+                      + '.');
             }
         })
         .catch(function (error) {
-            console.log('FATAL: [save_book_plate] Unable to PUT: ' + error);
-            // throw 'FATAL: [save_book_plate] Unable to PUT: ' + error;
+            console.log('ERROR: [save_book_plate] An error occurred during or '
+                        + 'after PUT request: ' + error);
         });
-    */
 };
 
 /**
