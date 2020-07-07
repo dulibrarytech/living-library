@@ -63,7 +63,7 @@ exports.create = function (req, callback) {
         DB(TABLE)
             .insert(request_body)
             .then(function (data) {
-                console.log("Added " + data);
+                console.log("Added donation record with id " + data);
                 obj.id = data;
                 callback(null, obj);
                 return false;
@@ -366,33 +366,60 @@ exports.update = function (req, callback) {
 
     console.log("\ntypeof book = " + typeof book);
 
-    // Validate the request body
+    // Check for valid JSON string
+    try {
+        book = JSON.parse(book);
+    } catch (error) {
+        console.log("Error parsing JSON: " + error);
+
+        callback({
+            status: 400,
+            message: 'Invalid syntax in request body.'
+        });
+
+        return false;
+    }
+
+    // Check for required fields
+    const book_fields = ['book_author_name',
+                         'book_title',
+                         'book_bibliographic_number',
+                         'book_call_number'];
+
+    let book_keys = Object.keys(book);
+    console.log("book_keys = ");
+    console.log(book_keys);
+    console.log("book_keys.length = " + book_keys.length);
+    if (!arrays_match(book_keys, book_fields)) {
+        console.log('Request body is valid JSON, but does not exclusively ' +
+                    'contain these properties:\n' + book_fields.join('\n'));
+        callback({
+            status: 400,
+            message: 'Request body does not contain the expected properties.'
+        });
+
+        return false;
+    }
 
     // Add fields to book object
-    if (book != "") {
-        console.log("book is not empty");
+    console.log("\nbook before adding fields: ");
+    console.log(book);
 
-        console.log("\nbook before adding fields: ");
-        console.log(book);
+    console.log("typeof book = " + typeof book);
 
-        console.log("typeof book = " + typeof book);
+    /**
+     * These are legacy fields from original living library implementation
+     * and thus have empty values for new book plate records.
+     */
+    book.book_publisher = "";
+    book.book_date_published = "";
 
-        book = JSON.parse(book);
+    book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+    console.log("\nbook_timestamp = " + book.book_timestamp);
 
-        /**
-         * These are legacy fields from original living library implementation
-         * and thus have empty values for new book plate records.
-         */
-        book.book_publisher = "";
-        book.book_date_published = "";
-
-        book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
-        console.log("\nbook_timestamp = " + book.book_timestamp);
-
-        book = JSON.stringify(book);
-        console.log("\nbook after adding fields: ");
-        console.log(book);
-    }
+    book = JSON.stringify(book);
+    console.log("\nbook after adding fields: ");
+    console.log(book);
 
     DB(TABLE)
         .where({
@@ -412,13 +439,13 @@ exports.update = function (req, callback) {
                     message: 'Record updated.'
                 });
             } else {
-              console.log("Update failed. Couldn't find donation record with id "
-                          + id + '.');
+                console.log("Update failed. Couldn't find donation record with "
+                            + "id " + id + '.');
 
-              callback({
-                  status: 404,
-                  message: 'Record not found.'
-              });
+                callback({
+                    status: 404,
+                    message: 'Record not found.'
+                });
             }
 
         })
@@ -469,4 +496,31 @@ exports.delete = function (req, callback) {
             LOGGER.module().fatal('FATAL: Unable to delete record ' + error);
             throw 'FATAL: Unable to delete record ' + error;
         });
+};
+
+/**
+ * Returns
+ * @param req
+ * @param callback
+ */
+const is_valid_json_string = function (json_string) {
+    // TODO
+};
+
+/**
+ * Returns true if array1 and array2 contain the same elements
+ * @param   {Array}         array1  the first array
+ * @param   {Array}         array2  the second array
+ * @return  {boolean value}         true if the arrays match; false otherwise
+ */
+const arrays_match = function (array1, array2) {
+    if (array1.length !== array2.length)
+        return false;
+
+    for (let i = 0; i < array1.length; i++) {
+        if (array1[i] !== array2[i])
+            return false;
+    }
+
+    return true;
 };
