@@ -44,14 +44,20 @@ const save_donation = function (event) {
     console.log("recipient_data_as_JSON = "
                 + JSON.stringify(recipient_data_as_JSON));
 
-    /* Use this code if sending Fetch request as application/x-www-form-urlencoded:
+    /* Use this code if sending Fetch request with
+     * Content-Type = application/x-www-form-urlencoded:
+
     let donation_data = new URLSearchParams();
     donation_data.append('donor', JSON.stringify(donor_data_as_JSON));
     donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
     donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
-    */
 
-    // Use this code if sending Fetch request as application/json:
+     *
+     */
+
+    /* Use this code if sending Fetch request with
+     * Content-Type = application/json
+     */
     let donation_data = {
         donor: JSON.stringify(donor_data_as_JSON),
         who_to_notify: JSON.stringify(notify_data_as_JSON),
@@ -65,7 +71,9 @@ const save_donation = function (event) {
     console.log("fetch url = " + living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key());
 
-    /*
+    /* Use this code if sending Fetch request with
+     * Content-Type = application/x-www-form-urlencoded:
+
     fetch(living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key(), {
         method: 'POST',
@@ -74,8 +82,9 @@ const save_donation = function (event) {
         },
         body: donation_data
     }).then(response => console.log(response));
-    */
 
+     *
+     */
 
     fetch(living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key(), {
