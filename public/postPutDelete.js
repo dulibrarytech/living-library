@@ -44,14 +44,28 @@ const save_donation = function (event) {
     console.log("recipient_data_as_JSON = "
                 + JSON.stringify(recipient_data_as_JSON));
 
+    /* Use this code if sending Fetch request as application/x-www-form-urlencoded:
     let donation_data = new URLSearchParams();
     donation_data.append('donor', JSON.stringify(donor_data_as_JSON));
     donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
     donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
+    */
 
-    console.log(living_library_config.get_api() +
+    // Use this code if sending Fetch request as application/json:
+    let donation_data = {
+        donor: JSON.stringify(donor_data_as_JSON),
+        who_to_notify: JSON.stringify(notify_data_as_JSON),
+        recipient: JSON.stringify(recipient_data_as_JSON)
+    }
+
+
+    console.log("donation_data = ");
+    console.log(donation_data);
+
+    console.log("fetch url = " + living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key());
 
+    /*
     fetch(living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key(), {
         method: 'POST',
@@ -60,8 +74,21 @@ const save_donation = function (event) {
         },
         body: donation_data
     }).then(response => console.log(response));
-    // console.log(test);
-/*
+    */
+
+
+    fetch(living_library_config.get_api() +
+          '?api_key=' + living_library_config.get_api_key(), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(donation_data),
+        mode: 'cors'
+    }).then(response => console.log(response));
+
+
+    /*
         .then(function (response) {
             console.log('Inside save_donation fetch: first "then" function');
             return response.json();
@@ -76,7 +103,7 @@ const save_donation = function (event) {
                                        'getDonations/queued';
                 */
 
-/*                alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
+    /*          alert('Donation ID ' + data[0].id + ' added to Donation Queue.');
                 // return 'Donation ID ' + data[0].id + ' added to Donation Queue.';
             } else {
                 alert('There was an error submitting the donation form.');
@@ -89,12 +116,12 @@ const save_donation = function (event) {
               alert(message);
         })
         */
-/*
+    /*
         .catch(function (error) {
             console.log('FATAL: [save_donation] Unable to POST: ' + error);
             // throw 'FATAL: [create_donation] Unable to POST: ' + error;
         });
-*/
+    */
 };
 
 
