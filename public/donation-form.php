@@ -190,7 +190,7 @@
 
 								<td>
 									<label for="donor_first_name_input_box" class="form-label-text">First Name:</label>
-									<input type="text" id="donor_first_name_input_box" class="input_form-default" name="donor_first_name"/>
+									<input type="text" id="donor_first_name_input_box" class="input_form-default" name="donor_first_name" pattern="^(?!\s*$).+" required/>
 								</td>
 
 								<td>

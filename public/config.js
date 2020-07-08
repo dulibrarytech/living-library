@@ -57,7 +57,7 @@ const living_library_config = (function () {
         return 'tbl_titles_lookup';
     };
 
-    /* Form field groups, required fields, validation attributes, etc. */
+    /* Form field groups, required fields, etc. */
     let donation_form = {
         // The name attributes of the form fields
         donor_fields: ['donor_title', 'donor_first_name',
@@ -98,13 +98,16 @@ const living_library_config = (function () {
                                         'recipient_donation_type',
                                         'donor_amount_of_donation_input_box',
                                         'gift-date-box'],
-        // Validation attributes
-        zip_code_validation: 'pattern="^\\d{5}|\\d{5}-\\d{4}"',
-        dollar_amount_validation: 'min=0.01 step=0.01',
-        // -- Date regex taken from http://html5pattern.com/Dates [Full Date Validation (YYYY-MM-DD) by Patrick Denny] --
-        date_validation: 'pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"',
         // Reusable label text
         zip_code_label_text: 'Zip (e.g. 80210 or 80210-4711):'
+    };
+
+    /**
+     * Returns the above donation form object
+     * @returns {Object}
+     */
+    obj.get_donation_form_info = function () {
+        return donation_form;
     };
 
     let book_plate_form = {
@@ -122,19 +125,28 @@ const living_library_config = (function () {
     book_plate_form.required_label_for_attributes = book_plate_form.required_ids;
 
     /**
-     * Returns the above donation form object
-     * @returns {Object}
-     */
-    obj.get_donation_form_info = function () {
-        return donation_form;
-    };
-
-    /**
      * Returns the above book plate form object
      * @returns {Object}
      */
     obj.get_book_plate_form_info = function () {
         return book_plate_form;
+    };
+
+    /* Form field validation rules */
+    let form_validation_rules = {
+        general_validation: '^(?!\\s*$).+', // at least one non-whitespace character
+        zip_code_validation: 'pattern="^\\d{5}|\\d{5}-\\d{4}"',
+        dollar_amount_validation: 'min=0.01 step=0.01',
+        // -- Date regex taken from http://html5pattern.com/Dates [Full Date Validation (YYYY-MM-DD) by Patrick Denny] --
+        date_validation: 'pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"',
+    };
+
+    /**
+     * Returns the above form validation rules object
+     * @returns {Object}
+     */
+    obj.get_form_validation_rules = function () {
+        return form_validation_rules;
     };
 
     /**

@@ -109,7 +109,7 @@ function create_donation() {
                  + 'id="donor_zip_input_box" '
                  + 'class="input-medium" '
                  + 'name="donor_zip" '
-                 + living_library_config.get_donation_form_info()
+                 + living_library_config.get_form_validation_rules()
                                         .zip_code_validation + '/>'
                  + '</td>';
     form_html += '</tr>';
@@ -204,7 +204,7 @@ function create_donation() {
                  + 'id="notify_zip_input_box_1" '
                  + 'class="input-medium notify_person_1" '
                  + 'name="notify_zip" '
-                 + living_library_config.get_donation_form_info()
+                 + living_library_config.get_form_validation_rules()
                                         .zip_code_validation + '/>'
                  + '</td>';
 
@@ -312,7 +312,7 @@ function create_donation() {
                  + '</label>'
                  + '<input type="number" id="donor_amount_of_donation_input_box" '
                  + 'class="input_form-default" name="donor_amount_of_donation" '
-                 + living_library_config.get_donation_form_info()
+                 + living_library_config.get_form_validation_rules()
                                         .dollar_amount_validation + ' />'
                  + '</td>';
 
@@ -322,7 +322,7 @@ function create_donation() {
                  + '</label>'
                  + '<input type="text" id="gift-date-box" '
                  + 'class="input_form-default" name="donor_date_of_donation" '
-                 + living_library_config.get_donation_form_info()
+                 + living_library_config.get_form_validation_rules()
                                         .date_validation + '/>'
                  + '</td>';
 
@@ -599,13 +599,37 @@ function update_required_fields_in_form(required_fields) {
         console.log(form_element.tagName);
         console.log(form_element.id);
 
+        /**
+         * Add general validation rule to element (if there is no existing
+         * validation)
+         */
+        if (form_element.tagName === 'INPUT' && !form_element.pattern &&
+            !form_element.min) {
+            console.log("before change, form_element.title = ");
+            console.log(form_element.title);
+
+            form_element.title = 'Enter at least one character (e.g. a letter or number)';
+
+            console.log("after change, form_element.title = ");
+            console.log(form_element.title);
+
+            console.log("form_element does not have a pattern attribute.");
+
+            form_element.pattern = living_library_config
+                                   .get_form_validation_rules()
+                                   .general_validation;
+
+            console.log("form_element.pattern = " + form_element.pattern);
+        }
+
+        // Add 'required' attribute
         console.log("Before change, form_element.required = "
                     + form_element.required);
         form_element.required = true;
         console.log("After change, form_element.required = "
                     + form_element.required);
 
-        // create <span> for inline validation and insert after form_element
+        // Create <span> for inline validation and insert after form_element
         if (form_element.type != 'radio') {
             let span = document.createElement('span');
             span.className = 'validity';
