@@ -585,19 +585,13 @@ function update_required_fields_in_form(required_fields) {
 
     for (let element of required_fields.required_label_for_attributes) {
         let label_element = document.querySelector(`label[for="${element}"]`);
-        console.log(label_element.tagName);
-        console.log(label_element.htmlFor);
 
-        console.log("innerHTML before change: " + label_element.innerHTML);
         label_element.innerHTML = '<abbr class="required" title="required">* '
                                    + '</abbr>' + label_element.innerHTML;
-        console.log("innerHTML after change: " + label_element.innerHTML);
     }
 
     for (let element of required_fields.required_ids) {
         let form_element = document.querySelector(`#${element}`);
-        console.log(form_element.tagName);
-        console.log(form_element.id);
 
         /**
          * Add general validation rule to element (if there is no existing
@@ -605,29 +599,15 @@ function update_required_fields_in_form(required_fields) {
          */
         if (form_element.tagName === 'INPUT' && !form_element.pattern &&
             !form_element.min) {
-            console.log("before change, form_element.title = ");
-            console.log(form_element.title);
-
             form_element.title = 'Enter at least one character (e.g. a letter or number)';
-
-            console.log("after change, form_element.title = ");
-            console.log(form_element.title);
-
-            console.log("form_element does not have a pattern attribute.");
 
             form_element.pattern = living_library_config
                                    .get_form_validation_rules()
                                    .general_validation;
-
-            console.log("form_element.pattern = " + form_element.pattern);
         }
 
         // Add 'required' attribute
-        console.log("Before change, form_element.required = "
-                    + form_element.required);
         form_element.required = true;
-        console.log("After change, form_element.required = "
-                    + form_element.required);
 
         // Create <span> for inline validation and insert after form_element
         if (form_element.type != 'radio') {
