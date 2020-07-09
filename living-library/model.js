@@ -31,16 +31,126 @@ const LOGGER = require('../libs/log4'),
  */
 exports.create = function (req, callback) {
     let request_body = req.body;
+    console.log("request_body = ");
     console.log(request_body);
+    console.log("typeof request_body = " + typeof request_body);
 
     /**
      * Donation Form submission actions
      */
 
-    // Add validation here
+    /* Validate request_body */
+
+    // Expected fields
+    const donation_fields = ['donor', 'who_to_notify', 'recipient'];
+
+    // Expected keys for each donation field
+    const donation_field_keys = {
+        donor: ['donor_title', 'donor_first_name',
+                   'donor_last_name', 'donor_address',
+                   'donor_city', 'donor_state', 'donor_zip',
+                   'donor_amount_of_donation',
+                   'donor_date_of_donation', 'donor_notes',
+                   'donor_subject_areas'],
+        who_to_notify: ['notify_title', 'notify_first_name',
+                           'notify_last_name', 'notify_address',
+                           'notify_city', 'notify_state', 'notify_zip',
+                           'notify_relation_to_donor'],
+        recipient: ['recipient_title', 'recipient_first_name',
+                       'recipient_last_name', 'recipient_donation_type']
+    };
+
+    // Check for expected fields in request_body
+    let donation_keys = Object.keys(request_body);
+    console.log("donation_keys = ");
+    console.log(donation_keys);
+    console.log("donation_keys.length = " + donation_keys.length);
+
+    if (!arrays_match(donation_keys, donation_fields)) {
+        console.log('Request body is valid JSON, but does not exclusively ' +
+                    'contain these properties in this order:\n' +
+                    donation_fields.join('\n'));
+        callback({
+            status: 400,
+            message: 'Request body does not contain the expected properties.'
+        });
+
+        return false;
+    }
+
+    // Check each field for valid JSON and expected keys
+    for (let key of donation_keys) {
+        let is_client_error = false;
+        let json_field;
+
+        try {
+            json_field = JSON.parse(request_body[key]);
+        } catch (error) {
+            console.log("Error parsing " + key + " field of request_body: " +
+                        error);
+
+            callback({
+                status: 400,
+                message: 'Invalid syntax in request body.'
+            });
+
+            return false;
+        }
+        console.log(key + " = ");
+        console.log(json_field);
+
+        let json_field_keys;
+        let has_more_elements_to_validate = true;
+
+        if (Array.isArray(json_field)) {
+            if (json_field.length === 0) {
+                has_more_elements_to_validate = false;
+            } else {
+                json_field_keys = Object.keys(json_field[0]);
+            }
+        } else {
+            json_field_keys = Object.keys(json_field);
+        }
+
+        let i = 0;
+        while (has_more_elements_to_validate) {
+            console.log(key + " keys = ");
+            console.log(json_field_keys);
+            console.log(key + " keys length = " + json_field_keys.length);
+
+            if (!arrays_match(json_field_keys, donation_field_keys[key])) {
+                console.log('Request body is valid JSON, but ' + key + ' does '
+                            + 'not exclusively contain these properties in this '
+                            + 'order:\n' + donation_field_keys[key].join('\n'));
+
+                callback({
+                    status: 400,
+                    message: 'Request body does not contain the expected properties.'
+                });
+
+                return false;
+            }
+
+            if (Array.isArray(json_field) && ++i < json_field.length) {
+                json_field_keys = Object.keys(json_field[i]);
+            } else {
+                has_more_elements_to_validate = false;
+            }
+        }
+
+        // Not being used as of now. Either use it or delete it.
+        if (is_client_error) {
+            callback({
+                status: 400,
+                message: 'Invalid syntax in request body.'
+            });
+
+            return false;
+        }
+    }
 
     // 1.)
-    function createDonor(callback) {
+    function add_donation_to_db(callback) {
         let obj = {};
 
         /**
@@ -69,38 +179,38 @@ exports.create = function (req, callback) {
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().error('FATAL [/living-library/model module (create/createDonor)] Unable to create record ' + error);
-                throw 'FATAL [/living-library/model module (create/createDonor)] Unable to create record ' + error;
+                LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error);
+                throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
             });
     }
 
     // 2.)
-    function secondFunction(obj, callback) {
+    function select_new_donation(obj, callback) {
         DB(TABLE)
             .select('*')
             .where({
                 id: obj.id
             })
             .then(function (data) {
-                console.log("Inside secondFunction");
+                console.log("Inside select_new_donation");
                 obj.data = data;
                 callback(null, obj);
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().error('FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error);
-                throw 'FATAL: [/living-library/model module (create/secondFunction)] Unable to create record ' + error;
+                LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
+                throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
             });
     }
 
     /**
-     * Is this waterfall approach needed here? I don't think secondFunction
+     * Is this waterfall approach needed here? I don't think select_new_donation
      * is necessary since I can populate the entire tbl_donations record with
      * one insert. <-- This is correct (no waterfall approach needed here).
      */
     ASYNC.waterfall([
-       createDonor,
-       secondFunction
+       add_donation_to_db,
+       select_new_donation
     ], function (error, results) {
         console.log("Inside waterfall function");
 
@@ -181,6 +291,8 @@ exports.read = function (req, callback) {
                      */
                     console.log("Found " + data.length + " record(s).");
                     for (let i = 0; i < data.length; i++) {
+                        /*
+
                         // Is is ok to make 'donor' a constant? Yes.
                         const donor = JSON.parse(data[i].donor);
                         const recipient = JSON.parse(data[i].recipient);
@@ -188,7 +300,6 @@ exports.read = function (req, callback) {
                                                   ? "completed"
                                                   : "in the queue";
 
-                        /*
                         if (donor !== null) {
                             console.log("Tracking ID = " + data[i].id + " from " +
                                         donor.donor_title + " " +
@@ -335,34 +446,11 @@ exports.update = function (req, callback) {
      * into the database. Any key from the request body that is not in the
      * database is ignored. Is that okay? This could be problematic. Keep an
      * eye on this.
-     *
-     * Should I check for valid values for each field before updating the DB?
-     * If so, at which level (model, controller or view)? At the form level.
-     *
-     * If I have last_updated keys in my JSON fields, I'll need to automatically
-     * add the current timestamp to each JSON field before updating the database.
-     * Do you have a recommendation on how to implement this type of
-     * timestamping within JSON? Take the following approach:
-     * 1) Use moment.js time library (the built-in time library isn’t very good)
-     *    to get the current timestamp.
-     * 2) Construct the key-value pair.
-     * 3) Then add the key-value pair to the JSON before inserting the JSON into
-     *    the database.
      */
 
-    // let request_body_obj = JSON.parse(request_body);
-
-    // console.log("\ntypeof request_body_obj = " + typeof request_body_obj);
-
-    /*
-    let book = typeof request_body_obj.book === 'undefined'
-               ? ""
-               : request_body_obj.book;
-    */
-
     let book = typeof request_body.book === 'undefined'
-           ? ""
-           : request_body.book;
+               ? ""
+               : request_body.book;
 
     console.log("\ntypeof book = " + typeof book);
 
@@ -380,7 +468,7 @@ exports.update = function (req, callback) {
         return false;
     }
 
-    // Check for required fields
+    // Check for expected fields
     const book_fields = ['book_author_name',
                          'book_title',
                          'book_bibliographic_number',
