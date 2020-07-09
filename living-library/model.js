@@ -480,7 +480,8 @@ exports.update = function (req, callback) {
     console.log("book_keys.length = " + book_keys.length);
     if (!arrays_match(book_keys, book_fields)) {
         console.log('Request body is valid JSON, but does not exclusively ' +
-                    'contain these properties:\n' + book_fields.join('\n'));
+                    'contain these properties in this order:\n' +
+                    book_fields.join('\n'));
         callback({
             status: 400,
             message: 'Request body does not contain the expected properties.'
