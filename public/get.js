@@ -726,6 +726,7 @@ function get_donations(is_completed) {
     fetch(living_library_config.get_api() + '?is_completed=' + is_completed +
           '&api_key=' + living_library_config.get_api_key())
         .then(response => {
+            console.log(response);
             return response.json();
         })
         .then(data => {
@@ -1062,7 +1063,9 @@ function get_queued_donation(url) {
                         + '<dd>' + donor.donor_date_of_donation + '</dd>';
             }
 
-            if (donor === null || donor.donor_subject_areas === null
+            if (donor === null
+                || typeof donor.donor_subject_areas === 'undefined'
+                || donor.donor_subject_areas === null
                 || donor.donor_subject_areas.length === 0) {
                 html += '<dt>No subject areas selected.</dt>'
                         + '<dd></dd>';
