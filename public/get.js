@@ -773,7 +773,7 @@ function get_donations(is_completed) {
                     console.log(recipient);
                     console.log('typeof recipient = ' + typeof recipient);
 
-                    // Make sure data[i] contains the expected fields
+                    // TO DO: Make sure data[i] contains the expected fields
 
                     let donation_status = data[i].is_completed
                                           ? 'completed'
@@ -796,15 +796,6 @@ function get_donations(is_completed) {
                             + data[i].id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
-                    if (living_library_config.is_non_null_object(donor)) {
-                        console.log("donor is a non-null object!");
-                    } else {
-                        let msg = typeof donor !== 'object'
-                                  ? 'typeof donor = ' + typeof donor
-                                  : 'donor = ' + donor;
-                        console.log('Oops... ' + msg);
-                    }
-
                     if (living_library_config.is_non_null_object(donor)) {
                         html += donor.donor_title + ' ' + donor.donor_first_name
                                 + ' ' + donor.donor_last_name;
