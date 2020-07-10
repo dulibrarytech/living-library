@@ -767,9 +767,11 @@ function get_donations(is_completed) {
 
                     console.log('After parsing JSON, donor = ');
                     console.log(donor);
+                    console.log('typeof donor = ' + typeof donor);
 
                     console.log('After parsing JSON, recipient = ');
                     console.log(recipient);
+                    console.log('typeof recipient = ' + typeof recipient);
 
                     // Make sure data[i] contains the expected fields
 
@@ -794,10 +796,16 @@ function get_donations(is_completed) {
                             + data[i].id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
+                    if (living_library_config.is_non_null_object(donor)) {
+                        console.log("donor is a non-null object!");
+                    } else {
+                        let msg = typeof donor !== 'object'
+                                  ? 'typeof donor = ' + typeof donor
+                                  : 'donor = ' + donor;
+                        console.log('Oops... ' + msg);
+                    }
 
-                    // Refactor the if/else logic
-                    if (typeof donor !== 'undefined' && donor !== null
-                        && donor !== '') {
+                    if (living_library_config.is_non_null_object(donor)) {
                         html += donor.donor_title + ' ' + donor.donor_first_name
                                 + ' ' + donor.donor_last_name;
                     } else {
@@ -807,18 +815,18 @@ function get_donations(is_completed) {
                     html += '</td>';
 
                     html += '<td class="span4 name-cell4">';
-                    if (recipient !== null) {
+                    if (living_library_config.is_non_null_object(recipient)) {
                         html += recipient.recipient_title + ' '
                                 + recipient.recipient_first_name
                                 + ' ' + recipient.recipient_last_name;
+                    } else {
+                        html += living_library_config
+                                .get_error_text_for_invalid_json();
                     }
                     html += '</td>';
 
                     html += '<td style="text-align: center">';
-
-                    // Refactor the if/else logic
-                    if (typeof donor !== 'undefined' && donor !== null
-                        && donor !== '') {
+                    if (living_library_config.is_non_null_object(donor)) {
                         html += donor.donor_date_of_donation;
                     } else {
                         html += living_library_config

@@ -210,6 +210,15 @@ const living_library_config = (function () {
         return field;
     };
 
+    /**
+     * Checks whether the variable is a non-null object
+     * @param               field   the variable to check
+     * @returns {boolean}           true if non-null object; false, otherwise
+     */
+    obj.is_non_null_object = function (field) {
+        return typeof field === 'object' && field !== null;
+    };
+
     return obj;
 
 }());
