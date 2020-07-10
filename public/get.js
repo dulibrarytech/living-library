@@ -764,9 +764,12 @@ function get_donations(is_completed) {
                      * 1. Make sure data[i] contains the expected fields
                      * 2. Parse JSON for each field
                      */
-                    let donor, recipient;
-                    const fields_to_parse = ['donor', 'recipient'];
+                    let donor = living_library_config
+                                .get_valid_json('donor', data[i]),
+                        recipient = living_library_config
+                                    .get_valid_json('recipient', data[i]);
 
+                    /*
                     if (data[i].hasOwnProperty('donor')) {
                         donor = living_library_config
                                 .get_valid_json('donor', data[i]);
@@ -774,6 +777,7 @@ function get_donations(is_completed) {
                         console.log("Error: Cannot find 'd' field in " +
                                     "donation " + data[i].id + ".");
                     }
+                    */
 
                     /*
                     console.log("variation 1: Error: Cannot find 'd' field in " +
@@ -786,7 +790,7 @@ function get_donations(is_completed) {
                     console.log('After parsing JSON, donor = ');
                     console.log(donor);
 
-                    // Need to refactor this
+                    /*
                     if (data[i].hasOwnProperty('recipient')) {
                         recipient = living_library_config
                                     .get_valid_json('recipient', data[i]);
@@ -794,6 +798,7 @@ function get_donations(is_completed) {
                         console.log("Error: Cannot find 'd' field in " +
                                     "donation " + data[i].id + ".");
                     }
+                    */
 
                     /*
                     console.log("variation 1: Error: Cannot find 'd' field in " +

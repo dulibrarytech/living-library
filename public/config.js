@@ -170,12 +170,13 @@ const living_library_config = (function () {
     };
 
     /**
-     * Validates json field
-     * @returns {string}
+     * Parses the JSON stored in the specified object property
+     * @param   {string}  property   name of property to be parsed
+     * @param   {Object}  object     object whose property needs to be parsed
+     * @returns {Object}             the resulting parsed object;
+     *                               otherwise, 'undefined'
      */
     obj.get_valid_json = function (property, obj) {
-        //
-        // if ()
         console.log('Inside get_valid_json function');
 
         console.log('property = ' + property);
@@ -184,13 +185,23 @@ const living_library_config = (function () {
 
         let field;
 
-        try {
-            field = JSON.parse(obj[property]);
-        } catch (error) {
-            console.log('Error parsing JSON for donation id ' +
-                        obj.id + ': ' + error + ':\n' +
-                        'donation_' + obj.id + '.' + property +
-                        ' = ' + obj[property]);
+        if (typeof obj === 'undefined' || obj === null) {
+            console.log("Error: donation record is " + obj);
+        } else if (obj.hasOwnProperty(property)) {
+            try {
+                field = JSON.parse(obj[property]);
+            } catch (error) {
+                console.log('Error parsing JSON for donation id ' +
+                            obj.id + ': ' + error + ':\n' +
+                            'donation_' + obj.id + '.' + property +
+                            ' = ' + obj[property]);
+            }
+        } else {
+            let id = typeof obj.id === 'undefined'
+                     ? ''
+                     : ' ' + obj.id;
+            console.log(`Error: Cannot find '${property}' field in donation`
+                        + id + ' record.');
         }
 
         console.log("get_valid_json function is returning:");
