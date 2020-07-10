@@ -161,6 +161,44 @@ const living_library_config = (function () {
                + '</p>';
     };
 
+    /**
+     * Returns error text to display on webpage if field contains invalid JSON
+     * @returns {string}
+     */
+    obj.get_error_text_for_invalid_json = function () {
+        return '<span class="error">error loading field</span>';
+    };
+
+    /**
+     * Validates json field
+     * @returns {string}
+     */
+    obj.get_valid_json = function (property, obj) {
+        //
+        // if ()
+        console.log('Inside get_valid_json function');
+
+        console.log('property = ' + property);
+        console.log('obj = ');
+        console.log(obj);
+
+        let field;
+
+        try {
+            field = JSON.parse(obj[property]);
+        } catch (error) {
+            console.log('Error parsing JSON for donation id ' +
+                        obj.id + ': ' + error + ':\n' +
+                        'donation_' + obj.id + '.' + property +
+                        ' = ' + obj[property]);
+        }
+
+        console.log("get_valid_json function is returning:");
+        console.log(field);
+
+        return field;
+    };
+
     return obj;
 
 }());

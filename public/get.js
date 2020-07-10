@@ -760,8 +760,92 @@ function get_donations(is_completed) {
                 console.log("Found " + data.length + " record(s).");
                 html += '<table class="table table-bordered table-striped">';
                 for (let i = 0; i < data.length; i++) {
-                    const donor = JSON.parse(data[i].donor);
-                    const recipient = JSON.parse(data[i].recipient);
+                    /**
+                     * 1. Make sure data[i] contains the expected fields
+                     * 2. Parse JSON for each field
+                     */
+                    let donor, recipient;
+                    const fields_to_parse = ['donor', 'recipient'];
+
+                    if (data[i].hasOwnProperty('donor')) {
+                        donor = living_library_config
+                                .get_valid_json('donor', data[i]);
+                    } else {
+                        console.log("Error: Cannot find 'd' field in " +
+                                    "donation " + data[i].id + ".");
+                    }
+
+                    /*
+                    console.log("variation 1: Error: Cannot find 'd' field in " +
+                                "donation " + data[i].id + ".");
+
+                    console.log('variation 2: Error: donation_' + data[i].id + '.d = ' +
+                                data[i].d);
+                    */
+
+                    console.log('After parsing JSON, donor = ');
+                    console.log(donor);
+
+                    // Need to refactor this
+                    if (data[i].hasOwnProperty('recipient')) {
+                        recipient = living_library_config
+                                    .get_valid_json('recipient', data[i]);
+                    } else {
+                        console.log("Error: Cannot find 'd' field in " +
+                                    "donation " + data[i].id + ".");
+                    }
+
+                    /*
+                    console.log("variation 1: Error: Cannot find 'd' field in " +
+                                "donation " + data[i].id + ".");
+
+                    console.log('variation 2: Error: donation_' + data[i].id + '.d = ' +
+                                data[i].d);
+                    */
+
+                    console.log('After parsing JSON, recipient = ');
+                    console.log(recipient);
+
+/*
+                    for (let field of fields_to_parse) {
+                        console.log('Trying to parse ' + field);
+
+                        if (data[i].hasOwnProperty(field)) {
+                            eval(field +
+                                 ` = living_library_config
+                                     .get_valid_json(` + field + ', data[i]);');
+                        } else {
+                            console.log('Error processing donation id ' +
+                                        data[i].id + ': ' + field + ' = ' +
+                                        eval('data[i][' + field + ']'));
+                        }
+
+                        console.log('After parsing JSON, ' + field + ' = ');
+                        console.log(eval('data[i][' + field + ']'));
+
+                        /*
+                        try {
+                            eval(field + ' = JSON.parse(data[i].' + field
+                                 + ');');
+                        } catch (error) {
+                            console.log('Error parsing JSON for record ' +
+                                        data[i].id + ': ' + error + ':\n' +
+                                        'record_' + data[i].id + '.' + field +
+                                        ' = ' + data[i][field]);
+                            eval(field + ' = "";');
+                        }
+                        */
+//                  }
+
+                    /*
+                    eval(field + ' = ' +
+                         living_library_config
+                         .get_error_text_for_invalid_json());
+                    */
+
+                    // const donor = JSON.parse(data[i].donor);
+                    // const recipient = JSON.parse(data[i].recipient);
+
                     let is_completed_string = data[i].is_completed
                                               ? 'completed'
                                               : 'in the queue';
@@ -815,9 +899,15 @@ function get_donations(is_completed) {
                             + data[i].id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
-                    if (donor !== null) {
+
+                    // Refactor the if/else logic
+                    if (typeof donor !== 'undefined' && donor !== null
+                        && donor !== '') {
                         html += donor.donor_title + ' ' + donor.donor_first_name
                                 + ' ' + donor.donor_last_name;
+                    } else {
+                        html += living_library_config
+                                .get_error_text_for_invalid_json();
                     }
                     html += '</td>';
 
@@ -830,8 +920,14 @@ function get_donations(is_completed) {
                     html += '</td>';
 
                     html += '<td style="text-align: center">';
-                    if (donor !== null) {
+
+                    // Refactor the if/else logic
+                    if (typeof donor !== 'undefined' && donor !== null
+                        && donor !== '') {
                         html += donor.donor_date_of_donation;
+                    } else {
+                        html += living_library_config
+                                .get_error_text_for_invalid_json();
                     }
                     html += '</td>';
 

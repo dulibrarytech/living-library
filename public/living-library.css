@@ -74,3 +74,8 @@ abbr[title] {
   content: '\2714';
   padding-left: 5px;
 }
+
+/* Style for error messages */
+.error {
+  font-style: italic;
+}
