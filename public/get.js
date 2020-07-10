@@ -761,9 +761,9 @@ function get_donations(is_completed) {
                 html += '<table class="table table-bordered table-striped">';
                 for (let i = 0; i < data.length; i++) {
                     const donor = living_library_config
-                                .get_valid_json('donor', data[i]),
+                                  .get_valid_json(data[i], 'donor'),
                           recipient = living_library_config
-                                    .get_valid_json('recipient', data[i]);
+                                      .get_valid_json(data[i], 'recipient');
 
                     console.log('After parsing JSON, donor = ');
                     console.log(donor);
@@ -773,7 +773,10 @@ function get_donations(is_completed) {
                     console.log(recipient);
                     console.log('typeof recipient = ' + typeof recipient);
 
-                    // TO DO: Make sure data[i] contains the expected fields
+                    let donation_id = living_library_config
+                                      .get_field_value(data[i], 'id');
+
+                    console.log('donation_id = ' + donation_id);
 
                     let donation_status = data[i].is_completed
                                           ? 'completed'
@@ -781,24 +784,33 @@ function get_donations(is_completed) {
 
                     html += '<tr>';
 
-                    html += '<td class="span1_wider" style="text-align: center">'
-                            + '<a href="' + baseUrl + 'index.php/livinglibrary/'
-                            + 'getDonation/' + donation_status + '/'
-                            + data[i].id + '">'
-                            + '<img src="' + baseUrl
-                            + (data[i].is_completed
-                              ? 'img/living_library_application_view_list.png" />'
-                              : 'img/living_library_application_form.png" />')
-                            + '</a>'
-                            + '</td>';
+                    html += '<td class="span1_wider" '
+                            + 'style="text-align: center">';
+                    if (typeof donation_id === 'number') {
+                        html += '<a href="' + baseUrl
+                                + 'index.php/livinglibrary/getDonation/'
+                                + donation_status + '/' + donation_id + '">'
+                                + '<img src="' + baseUrl
+                                + (data[i].is_completed
+                                   ? 'img/living_library_application_view_list.png" />'
+                                   : 'img/living_library_application_form.png" />')
+                                + '</a>';
+                    }
+                    html += '</td>';
 
                     html += '<td class="span1" style="text-align: center">'
-                            + data[i].id + '</td>';
+                            + donation_id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
                     if (living_library_config.is_non_null_object(donor)) {
-                        html += donor.donor_title + ' ' + donor.donor_first_name
-                                + ' ' + donor.donor_last_name;
+                        html += living_library_config
+                                .get_field_value(donor, 'donor_title')
+                                + ' ' +
+                                living_library_config
+                                .get_field_value(donor, 'donor_first_name')
+                                + ' ' +
+                                living_library_config
+                                .get_field_value(donor, 'donor_last_name');
                     } else {
                         html += living_library_config
                                 .get_error_text_for_invalid_json();
@@ -807,9 +819,16 @@ function get_donations(is_completed) {
 
                     html += '<td class="span4 name-cell4">';
                     if (living_library_config.is_non_null_object(recipient)) {
-                        html += recipient.recipient_title + ' '
-                                + recipient.recipient_first_name
-                                + ' ' + recipient.recipient_last_name;
+                        html += living_library_config
+                                .get_field_value(recipient, 'recipient_title')
+                                + ' ' +
+                                living_library_config
+                                .get_field_value(recipient,
+                                                 'recipient_first_name')
+                                + ' ' +
+                                living_library_config
+                                .get_field_value(recipient,
+                                                 'recipient_last_name');
                     } else {
                         html += living_library_config
                                 .get_error_text_for_invalid_json();
@@ -818,7 +837,9 @@ function get_donations(is_completed) {
 
                     html += '<td style="text-align: center">';
                     if (living_library_config.is_non_null_object(donor)) {
-                        html += donor.donor_date_of_donation;
+                        html += living_library_config
+                                .get_field_value(donor,
+                                                 'donor_date_of_donation');
                     } else {
                         html += living_library_config
                                 .get_error_text_for_invalid_json();

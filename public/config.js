@@ -171,12 +171,12 @@ const living_library_config = (function () {
 
     /**
      * Parses the JSON stored in the specified object property
+     * @param   {Object}  obj        object whose property needs to be parsed
      * @param   {string}  property   name of property to be parsed
-     * @param   {Object}  object     object whose property needs to be parsed
      * @returns {Object}             the resulting parsed object;
      *                               otherwise, 'undefined'
      */
-    obj.get_valid_json = function (property, obj) {
+    obj.get_valid_json = function (obj, property) {
         console.log('Inside get_valid_json function');
 
         console.log('property = ' + property);
@@ -197,11 +197,9 @@ const living_library_config = (function () {
                             ' = ' + obj[property]);
             }
         } else {
-            let id = typeof obj.id === 'undefined'
-                     ? ''
-                     : ' ' + obj.id;
-            console.log(`Error: Cannot find '${property}' field in donation`
-                        + id + ' record.');
+            console.log(`Error: Cannot find '${property}' field in donation `
+                        + 'record with id = ');
+            console.log(obj.id);
         }
 
         console.log("get_valid_json function is returning:");
@@ -217,6 +215,22 @@ const living_library_config = (function () {
      */
     obj.is_non_null_object = function (field) {
         return typeof field === 'object' && field !== null;
+    };
+
+    /**
+     * Returns the specified object property if it exists and is not null.
+     * @param   {Object}    obj        the object to check
+     * @param   {string}    property   the property to check for
+     * @returns                        the object property if defined and not
+     *                                 null; otherwise, an empty string
+     */
+    obj.get_field_value = function (obj, property) {
+        if (typeof obj[property] !== 'undefined' && obj[property] !== null) {
+            return obj[property];
+        }
+        console.log('Error in donation record field: ' + property + ' = ' +
+                    obj[property]);
+        return '';
     };
 
     return obj;
