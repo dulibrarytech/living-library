@@ -218,18 +218,26 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the specified object property if it exists and is not null.
+     * Returns the specified object property (if it's a string or number)
      * @param   {Object}    obj        the object to check
      * @param   {string}    property   the property to check for
-     * @returns                        the object property if defined and not
-     *                                 null; otherwise, an empty string
+     * @returns                        the object property (if it's a string or
+     *                                 number); otherwise, an empty string
      */
     obj.get_field_value = function (obj, property) {
-        if (typeof obj[property] !== 'undefined' && obj[property] !== null) {
+        if (typeof obj[property] === 'string' ||
+            typeof obj[property] === 'number') {
             return obj[property];
         }
-        console.log('Error in donation record field: ' + property + ' = ' +
-                    obj[property]);
+
+        if (Array.isArray(obj[property])) {
+            console.log('Error in donation record field: ' + property +
+                        ' is an array: [' + obj[property].join(', ') + ']');
+        } else {
+            console.log('Error in donation record field: ' + property + ' = ' +
+                        obj[property]);
+        }
+
         return '';
     };
 

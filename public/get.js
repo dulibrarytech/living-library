@@ -758,6 +758,7 @@ function get_donations(is_completed) {
                 html += '<p class="label">No donation records found.</p>';
             } else {
                 console.log("Found " + data.length + " record(s).");
+
                 html += '<table class="table table-bordered table-striped">';
                 for (let i = 0; i < data.length; i++) {
                     const donor = living_library_config
@@ -892,106 +893,220 @@ function get_completed_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
 
-            const donor = JSON.parse(data[0].donor);
-            const who_to_notify = JSON.parse(data[0].who_to_notify);
-            const recipient = JSON.parse(data[0].recipient);
-            const book = JSON.parse(data[0].book);
+            const donor = living_library_config
+                          .get_valid_json(data[0], 'donor'),
+                  who_to_notify = living_library_config
+                                  .get_valid_json(data[0], 'who_to_notify'),
+                  recipient = living_library_config
+                              .get_valid_json(data[0], 'recipient'),
+                  book = living_library_config
+                         .get_valid_json(data[0], 'book');
+
+            console.log('After parsing JSON, donor = ');
+            console.log(donor);
+            console.log('typeof donor = ' + typeof donor);
+
+            console.log('After parsing JSON, who_to_notify = ');
+            console.log(who_to_notify);
+            console.log('typeof who_to_notify = ' + typeof who_to_notify);
+
+            console.log('After parsing JSON, recipient = ');
+            console.log(recipient);
+            console.log('typeof recipient = ' + typeof recipient);
+
+            console.log('After parsing JSON, book = ');
+            console.log(book);
+            console.log('typeof book = ' + typeof book);
 
             let html = '';
 
-            if (donor === null) {
+            if (!living_library_config.is_non_null_object(donor) ||
+                Array.isArray(donor)) {
                 html += '<h4>No person making donation.</h4>';
             } else {
                 html += '<h4>Person making donation</h4>';
                 html += '<dl>';
                 html += '<dt>Title: </dt>'
-                        + '<dd>' + donor.donor_title + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_title')
+                        + '</dd>';
                 html += '<dt>First Name: </dt>'
-                        + '<dd>' + donor.donor_first_name + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_first_name')
+                        + '</dd>';
                 html += '<dt>Last Name: </dt>'
-                        + '<dd>' + donor.donor_last_name + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_last_name')
+                        + '</dd>';
                 html += '<dt>Address: </dt>'
-                        + '<dd>' + donor.donor_address + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_address')
+                        + '</dd>';
                 html += '<dt>City: </dt>'
-                        + '<dd>' + donor.donor_city + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_city')
+                        + '</dd>';
                 html += '<dt>State: </dt>'
-                        + '<dd>' + donor.donor_state + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_state')
+                        + '</dd>';
                 html += '<dt>Zip: </dt>'
-                        + '<dd>' + donor.donor_zip + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_zip')
+                        + '</dd>';
                 html += '</dl>';
             }
 
-            if (who_to_notify === null) {
+            if (!living_library_config.is_non_null_object(who_to_notify) ||
+                !Array.isArray(who_to_notify) || who_to_notify.length === 0) {
                 html += '<h4>No person to be notified of donation.</h4>';
             } else {
                 html += '<h4>Person(s) to be notified of donation</h4>';
                 for (let i = 0; i < who_to_notify.length; i++) {
-                    html += '<dl class="name_address_block">';
-                    html += '<dt>Title: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_title + '</dd>';
-                    html += '<dt>First Name: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_first_name
-                            + '</dd>';
-                    html += '<dt>Last Name: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_last_name
-                            + '</dd>';
-                    html += '<dt>Address: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_address
-                            + '</dd>';
-                    html += '<dt>City: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_city + '</dd>';
-                    html += '<dt>State: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_state + '</dd>';
-                    html += '<dt>Zip: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_zip + '</dd>';
-                    html += '<dt>Relation to Donor: </dt>'
-                            + '<dd>' + who_to_notify[i].notify_relation_to_donor
-                            + '</dd>';
-                    html += '</dl>';
+                    if (living_library_config
+                        .is_non_null_object(who_to_notify[i]) &&
+                        !Array.isArray(who_to_notify[i])) {
+                        html += '<dl class="name_address_block">';
+                        html += '<dt>Title: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i], 'notify_title')
+                                + '</dd>';
+                        html += '<dt>First Name: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i],
+                                                 'notify_first_name')
+                                + '</dd>';
+                        html += '<dt>Last Name: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i],
+                                                 'notify_last_name')
+                                + '</dd>';
+                        html += '<dt>Address: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i], 'notify_address')
+                                + '</dd>';
+                        html += '<dt>City: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i], 'notify_city')
+                                + '</dd>';
+                        html += '<dt>State: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i], 'notify_state')
+                                + '</dd>';
+                        html += '<dt>Zip: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i], 'notify_zip')
+                                + '</dd>';
+                        html += '<dt>Relation to Donor: </dt>'
+                                + '<dd>' +
+                                living_library_config
+                                .get_field_value(who_to_notify[i],
+                                                 'notify_relation_to_donor')
+                                + '</dd>';
+                        html += '</dl>';
+                    }
                 }
             }
 
-            if (recipient === null) {
+            if (!living_library_config.is_non_null_object(recipient) ||
+                Array.isArray(recipient)) {
                 html += '<h4>No person receiving donation.</h4>';
             } else {
                 html += '<h4>Person receiving donation</h4>';
                 html += '<dl>';
                 html += '<dt>Title: </dt>'
-                        + '<dd>' + recipient.recipient_title + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(recipient, 'recipient_title')
+                        + '</dd>';
                 html += '<dt>First Name: </dt>'
-                        + '<dd>' + recipient.recipient_first_name + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(recipient, 'recipient_first_name')
+                        + '</dd>';
                 html += '<dt>Last Name: </dt>'
-                        + '<dd>' + recipient.recipient_last_name + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(recipient, 'recipient_last_name')
+                        + '</dd>';
                 html += '<dt>Donation Type: </dt>'
-                        + '<dd>' + recipient.recipient_donation_type + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(recipient, 'recipient_donation_type')
+                        + '</dd>';
                 html += '</dl>';
             }
 
-            if (donor === null) {
+            if (!living_library_config.is_non_null_object(donor) ||
+                Array.isArray(donor)) {
                 html += '<h4>No donation date or amount.</h4>';
             } else {
+                let donation_amount = living_library_config
+                                      .get_field_value(donor,
+                                                       'donor_amount_of_donation');
+                if (typeof donation_amount === 'number') {
+                    donation_amount = Intl.NumberFormat('en-US', {
+                                          style: 'currency',
+                                          currency: 'USD',
+                                          minimumFractionDigits: 2
+                                      }).format(donation_amount);
+                } else {
+                    console.log('Error in donation record field: ' +
+                                'donor_amount_of_donation is not a number.');
+                }
+
                 html += '<h4>Donation Information</h4>';
                 html += '<dl>';
                 html += '<dt>Amount of Donation: </dt>'
-                        + '<dd>' + donor.donor_amount_of_donation + '</dd>';
+                        + '<dd>' + donation_amount + '</dd>';
                 html += '<dt>Date of Donation: </dt>'
-                        + '<dd>' + donor.donor_date_of_donation + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(donor, 'donor_date_of_donation')
+                        + '</dd>';
                 html += '</dl>';
             }
 
-            if (book === null) {
+            if (!living_library_config.is_non_null_object(book) ||
+                Array.isArray(book)) {
                 html += '<h4>No book information.</h4>';
             } else {
                 html += '<h4>Book Information</h4>';
                 html += '<dl>';
                 html += '<dt>Author Name: </dt>'
-                        + '<dd>' + book.book_author_name + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(book, 'book_author_name')
+                        + '</dd>';
                 html += '<dt>Book Title: </dt>'
-                        + '<dd>' + book.book_title + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(book, 'book_title')
+                        + '</dd>';
                 html += '<dt>Bibliographic Number: </dt>'
-                        + '<dd>' + book.book_bibliographic_number + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(book, 'book_bibliographic_number')
+                        + '</dd>';
                 html += '<dt>Call Number: </dt>'
-                        + '<dd>' + book.book_call_number + '</dd>';
+                        + '<dd>' +
+                        living_library_config
+                        .get_field_value(book, 'book_call_number')
+                        + '</dd>';
                 html += '</dl>';
             }
 
