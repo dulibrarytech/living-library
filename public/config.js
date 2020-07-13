@@ -163,10 +163,13 @@ const living_library_config = (function () {
 
     /**
      * Returns error text to display on webpage if field contains invalid JSON
-     * @returns {string}
+     * @returns {string}    error text (in this case, an empty string)
      */
     obj.get_error_text_for_invalid_json = function () {
-        return '<span class="error">error loading field</span>';
+        /* If you want error text for this situation, uncomment the line below */
+        // return '<span class="error">error loading field</span>';
+
+        return '';
     };
 
     /**
@@ -238,6 +241,7 @@ const living_library_config = (function () {
                         obj[property]);
         }
 
+        // Invalid field value, so return the empty string
         return '';
     };
 
