@@ -755,7 +755,11 @@ function get_donations(is_completed) {
             let html = '';
 
             if (data.length === 0) {
-                html += '<p class="label">No donation records found.</p>';
+                html += '<table class="table table-bordered table-striped">'
+                        + '<tr>'
+                        + '<td>No donation records found.</td>'
+                        + '</tr>'
+                        + '</table>';
             } else {
                 console.log("Found " + data.length + " record(s).");
 
@@ -853,10 +857,11 @@ function get_donations(is_completed) {
             }
             // console.log(html);
 
-            let id = document.querySelector('#table-content');
+            let table_content_element = document
+                                        .querySelector('#table-content');
 
-            if (id) {
-                id.innerHTML = html;
+            if (table_content_element) {
+                table_content_element.innerHTML = html;
             }
 
         })
@@ -1111,10 +1116,11 @@ function get_completed_donation(url) {
             }
 
             console.log(html);
-            let id = document.querySelector('#record-content');
+            let record_content_element = document
+                                         .querySelector('#record-content');
 
-            if (id) {
-                id.innerHTML = html;
+            if (record_content_element) {
+                record_content_element.innerHTML = html;
             }
         })
         .catch((error) => {
