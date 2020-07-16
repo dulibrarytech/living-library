@@ -103,7 +103,7 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the above donation form object
+     * Returns the above 'donation form' object
      * @returns {Object}
      */
     obj.get_donation_form_info = function () {
@@ -125,11 +125,31 @@ const living_library_config = (function () {
     book_plate_form.required_label_for_attributes = book_plate_form.required_ids;
 
     /**
-     * Returns the above book plate form object
+     * Returns the above 'book plate form' object
      * @returns {Object}
      */
     obj.get_book_plate_form_info = function () {
         return book_plate_form;
+    };
+
+    let add_menu_choice_form = {
+        // The name attributes of the form fields
+        menu_choice_fields: ['new_menu_choice'],
+
+        // The id attributes of all required form fields
+        required_ids: ['new_menu_choice_input_box']
+    };
+
+    // The 'for' attributes of all required form field label tags
+    add_menu_choice_form.required_label_for_attributes = add_menu_choice_form
+                                                         .required_ids;
+
+    /**
+     * Returns the above 'add menu choice form' object
+     * @returns {Object}
+     */
+    obj.get_add_menu_choice_form_info = function () {
+        return add_menu_choice_form;
     };
 
     /* Form field validation rules */
