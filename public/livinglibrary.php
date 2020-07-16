@@ -77,4 +77,20 @@ class LivingLibrary extends CI_Controller {
 
 		$this->load->view('living-library-view', $data);
 	}
+
+  /**
+	 * Loads page for adding and editing the specified lookup table's records.
+   * @param   table     the lookup table to display
+	 */
+  public function getMenuChoices($table)
+	{
+    $table_name = is_string($table)
+                  ? strtolower($table)
+                  : $table;
+
+    $data['pageLoader'] = "<script>get_menu_choices('" . $table_name .
+                          "');</script>";
+
+    $this->load->view('living-library-view', $data);
+	}
 }

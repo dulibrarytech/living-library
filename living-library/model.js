@@ -243,10 +243,10 @@ exports.read = function (req, callback) {
              * No tbl parameter, so default to querying tbl_donations.
              *
              * tbl_donations query URLs:
-             * GET all donation records: SITE_URL/api/app?api_key=API_KEY
-             * GET donations in queue: SITE_URL/api/app?is_completed=false&api_key=API_KEY
-             * GET completed donations: SITE_URL/api/app?is_completed=true&api_key=API_KEY
-             * GET a single donation record: SITE_URL/api/app?id=[id]&api_key=API_KEY
+             * GET all donation records: SITE_URL/api/v1/living-library/donations?api_key=API_KEY
+             * GET donations in queue: SITE_URL/api/v1/living-library/donations?is_completed=false&api_key=API_KEY
+             * GET completed donations: SITE_URL/api/v1/living-library/donations?is_completed=true&api_key=API_KEY
+             * GET a single donation record: SITE_URL/api/v1/living-library/donations?id=[id]&api_key=API_KEY
              */
             let is_completed = typeof req.query.is_completed === 'undefined'
                                ? ""
@@ -349,10 +349,10 @@ exports.read = function (req, callback) {
         case "tbl_subject_areas_lookup": {
             /**
              * Lookup table query URLs:
-             * GET all active title records: SITE_URL/api/app?tbl=tbl_titles_lookup&is_active=true&api_key=API_KEY
-             * GET all active state records: SITE_URL/api/app?tbl=tbl_states_lookup&is_active=true&api_key=API_KEY
-             * GET all active relationship records: SITE_URL/api/app?tbl=tbl_relationships_lookup&is_active=true&api_key=API_KEY
-             * GET all active title records: SITE_URL/api/app?tbl=tbl_subject_areas_lookup&is_active=true&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_titles_lookup&is_active=true&api_key=API_KEY
+             * GET all active state records: SITE_URL/api/v1/living-library/donations?tbl=tbl_states_lookup&is_active=true&api_key=API_KEY
+             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=tbl_relationships_lookup&is_active=true&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_subject_areas_lookup&is_active=true&api_key=API_KEY
              */
             let is_active = typeof req.query.is_active === 'undefined'
                             ? ""

@@ -193,6 +193,12 @@ const save_book_plate = function (event) {
         });
 };
 
+const add_menu_choice = function (event) {
+    event.preventDefault();
+
+    console.log("Inside add_menu_choice function");
+}
+
 /**
  * Retrieves input data from a form and returns it as a JSON object.
  * @param  {Array}            expected_form_fields  the form fields that will be

@@ -1359,6 +1359,156 @@ function get_queued_donation(url) {
 }
 
 /**
+ * Loads the specified lookup table's records, i.e. subject areas, titles, and
+ * relationships. This includes (1) a form to add a new record to the lookup
+ * table and (2) a list of all active records, each with a hyperlink allowing
+ * the user to update or delete the given record.
+ * @param   table     the lookup table to display
+ */
+function get_menu_choices(table) {
+    // How many columns to use when displaying records
+    const TOTAL_COLS = 2;
+
+    console.log('table = ' + table);
+
+    hide_table_header_and_content();
+
+    let label,
+        id,
+        choice;
+
+    switch (table) {
+        case 'subjectarea':
+            label = 'Subject Area';
+            table = living_library_config.get_subject_areas_table();
+            id = 'subject_id';
+            choice = 'subject';
+            break;
+        case 'title':
+            label = 'Title';
+            table = living_library_config.get_titles_table();
+            id = 'title_id';
+            choice = 'title';
+            break;
+        case 'relationship':
+            label = 'Relationship';
+            table = living_library_config.get_relationships_table();
+            id = 'relationship_id';
+            choice = 'relationship';
+            break;
+        default:
+            label = '',
+            table = '';
+    }
+
+    let page_label_element = document.querySelector('#page-label');
+
+    if (page_label_element) {
+        page_label_element.innerHTML = 'Living Library: ' + label + 's';
+    }
+
+    // Add menu choice form
+    let html = '<form id="add-menu-choice-form" method="post" '
+               + 'onsubmit="add_menu_choice(event);">'
+    html += '<table class="table">';
+
+    html += '<tr>';
+    html += '<td><h4>Add ' + label + '</h4></td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td>'
+            + '<label for="new_menu_choice_input_box" '
+            + 'class="form-label-text">'
+            + label + ':'
+            + '</label>'
+            + '<input type="text" id="new_menu_choice_input_box" '
+            + 'class="input_form-default" name="new_menu_choice"/>'
+            + '</td>';
+    html += '</tr>';
+
+    html += '</tr>';
+    html += '<td>'
+            + '<button type="submit" class="btn btn-light btn-bold">'
+            + 'Save ' + label
+            + '</button>'
+            + '</td>';
+    html += '</tr>';
+
+    html += '</table>';
+    html += '</form>';
+
+    // Menu choices table
+    html += '<table id="menu_choices" class="table">'
+            '</table>';
+
+    html += '<tr>';
+    html += '<td colspan="' + TOTAL_COLS + '">'
+            + '<h4>Edit ' + label + 's</h4>'
+            + '</td>';
+    html += '</tr>';
+
+    let form_content_element = document.querySelector('#form-content');
+
+    if (form_content_element) {
+        form_content_element.innerHTML = html;
+    }
+
+    // Populate menu choices
+    fetch(living_library_config.get_api() +
+          '?tbl=' + table +
+          '&is_active=true' +
+          '&api_key=' + living_library_config.get_api_key())
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem fetching the '
+                             + label.toLowerCase() + 's. Status Code: '
+                             + response.status);
+                return false;
+            }
+
+            response.json().then(function(data) {
+                console.log('Inside ' + label + 's fetch');
+
+                let table_element = document.querySelector('#menu_choices');
+                console.log('Menu choices table = ');
+                console.log(table_element);
+
+                if (data.length === 0) {
+                    let row = table_element.insertRow();
+                    let cell = row.insertCell();
+                    cell.colSpan = TOTAL_COLS;
+                    cell.innerHTML = 'No ' + label.toLowerCase() + 's found.';
+                    return;
+                }
+
+                for (let i = 0; i < data.length; i++) {
+                    // console.log('data[' + i + '][' + id + '] = ' + data[i][id]);
+                    let anchor_element = document.createElement('a');
+                    anchor_element.href = baseUrl +
+                                          'index.php/livinglibrary/' +
+                                          'editMenuChoice/' +
+                                          data[i][id];
+                    anchor_element.appendChild(document
+                                               .createTextNode(data[i][choice]));
+
+                    // decide where to insert cell
+                    let row = i % TOTAL_COLS == 0
+                              ? table_element.insertRow()
+                              : table_element.rows[table_element.rows.length - 1];
+                    row.insertCell().appendChild(anchor_element);
+                }
+            });
+        })
+        .catch(function(error) {
+            console.log('FATAL: [create_donation] Unable to fetch subject '
+                        + 'areas ' + error);
+            throw 'FATAL: [create_donation] Unable to fetch subject areas '
+                  + error;
+        });
+}
+
+/**
  * Removes table header and table content elements from view.
  */
 function hide_table_header_and_content() {
