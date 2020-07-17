@@ -1388,8 +1388,8 @@ function get_menu_choices(table) {
             table = living_library_config.get_relationships_table();
             break;
         default:
-            label = '',
-            table = '';
+            label = '';
+            // table = '';
     }
 
     let page_label_element = document.querySelector('#page-label');
@@ -1485,9 +1485,11 @@ function get_menu_choices(table) {
           '&is_active=true' +
           '&api_key=' + living_library_config.get_api_key())
         .then(function(response) {
+            console.log(response);
+
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem fetching the '
-                             + label.toLowerCase() + 's. Status Code: '
+                console.warn('Looks like there was a problem fetching table: '
+                             + table + '. Status Code: '
                              + response.status);
                 return false;
             }

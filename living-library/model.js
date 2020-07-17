@@ -423,15 +423,20 @@ exports.read = function (req, callback) {
 
                 })
                 .catch(function (error) {
-                    console.log('Inside catch function of tbl_titles_lookup case');
-                    LOGGER.module().fatal('FATAL: Unable to read record ' + error);
-                    throw 'FATAL: Unable to read record ' + error;
+                    console.log('Inside catch function of lookup table case');
+                    LOGGER.module().fatal('FATAL: Unable to read record: ' + error);
+                    throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
-        } // end of tbl_titles_lookup case
+        } // end of lookup table case
         default: {
-            LOGGER.module().fatal('FATAL: tbl = ' + tbl + '. Unable to read from this table.');
-            throw 'FATAL: tbl = ' + tbl + '. Unable to read from this table.';
+            LOGGER.module().fatal('FATAL: Request query contains invalid value '
+                                  + 'for tbl parameter: ' + tbl);
+
+            callback({
+                status: 400,
+                message: 'Request query contains invalid value for tbl parameter.'
+            });
         }
     } // end of switch
 };

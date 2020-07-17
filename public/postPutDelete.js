@@ -197,6 +197,49 @@ const add_menu_choice = function (event) {
     event.preventDefault();
 
     console.log("Inside add_menu_choice function");
+
+    let form_data = document.getElementById('add-menu-choice-form').elements;
+
+    for (let element of form_data) {
+        console.log(element.name + ' = ' + element.value);
+    }
+
+    console.log(form_to_JSON(['new_menu_choice'], form_data));
+
+    /*
+    fetch(living_library_config.get_api() +
+          '?api_key=' + living_library_config.get_api_key(), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(donation_data),
+        mode: 'cors'
+    })
+        .then(function (response) {
+            console.log('Inside save_donation fetch: first "then" function');
+            console.log(response);
+            return response.json();
+        })
+        .then(function (data) {
+            console.log('Inside second "then" function');
+            if (data.length > 0) {
+                console.log(data[0]);
+
+                alert('Donation ID ' + data[0].id +
+                      ' added to Donation Queue.');
+
+                window.location.href = baseUrl + 'index.php/livinglibrary/' +
+                                       'getDonations/queued';
+            } else {
+                alert('An error occurred when submitting the donation form.');
+            }
+        })
+        .catch(function (error) {
+            console.log('ERROR: [save_donation] An error occurred during or '
+                        + 'after POST request: ' + error);
+        });
+    */
 }
 
 /**
