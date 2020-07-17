@@ -40,6 +40,15 @@
   display: block;
 }
 
+/* Style for hyperlinks within menu choices table */
+#menu_choices a:link, #menu_choices a:visited {
+  color: #005580;
+}
+
+#menu_choices a:hover, #menu_choices a:focus {
+  color: Navy;
+}
+
 /* Style for label-value pairs */
 dt {
   float: left;
