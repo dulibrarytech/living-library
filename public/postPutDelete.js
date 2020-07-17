@@ -149,17 +149,11 @@ const save_book_plate = function (event) {
                                     form_data);
     console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
 
-    let book_field = new URLSearchParams();
-    book_field.append('book', JSON.stringify(form_as_JSON));
-
     let book_plate_data = { book: JSON.stringify(form_as_JSON) };
     console.log("book_plate_data = ");
     console.log(book_plate_data);
     console.log("book_plate_data.book = " + book_plate_data.book);
     console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
-    let book_plate_data_string = JSON.stringify(book_plate_data);
-    console.log("JSON.stringify(book_plate_data) = " + book_plate_data_string);
-    console.log("typeof book_plate_data_string = " + typeof book_plate_data_string);
 
     fetch(living_library_config.get_api() +
           '?id=' + form_data.donation_id.value +

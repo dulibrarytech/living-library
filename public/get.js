@@ -1460,24 +1460,6 @@ function get_menu_choices(table) {
 
     update_required_fields_in_form(living_library_config
                                    .get_add_menu_choice_form_info());
-    /*
-    if (form_content_element) {
-        Promise.resolve()
-            .then(() => {
-                form_content_element.innerHTML = html;
-            })
-            .then(() => {
-                update_required_fields_in_form(living_library_config
-                                               .get_add_menu_choice_form_info());
-            })
-            .catch(error => {
-                console.log('FATAL: [get_menu_choices] Error creating form: '
-                            + error);
-                throw 'FATAL: [get_menu_choices] Error creating form: '
-                      + error;
-            });
-    }
-    */
 
     // Populate menu choices
     fetch(living_library_config.get_api() +
@@ -1489,8 +1471,7 @@ function get_menu_choices(table) {
 
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching table: '
-                             + table + '. Status Code: '
-                             + response.status);
+                             + table + '. Status Code: ' + response.status);
                 return false;
             }
 
