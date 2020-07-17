@@ -358,29 +358,37 @@ exports.read = function (req, callback) {
                             ? ""
                             : req.query.is_active.toLowerCase();
 
-            let display_field, sort_field;
+            let id_field, display_field, sort_field;
 
             switch(tbl) {
                 case "tbl_titles_lookup": {
-                    display_field = 'title', sort_field = 'title_id';
+                    id_field = 'title_id',
+                    display_field = 'title',
+                    sort_field = id_field;
                     break;
                 }
                 case "tbl_states_lookup": {
-                    display_field = 'state_full', sort_field = 'state_id';
+                    id_field = 'state_id',
+                    display_field = 'state_full',
+                    sort_field = id_field;
                     break;
                 }
                 case "tbl_relationships_lookup": {
-                    display_field = 'relationship', sort_field = 'relationship_id';
+                    id_field = 'relationship_id',
+                    display_field = 'relationship',
+                    sort_field = id_field;
                     break;
                 }
                 case "tbl_subject_areas_lookup": {
-                    display_field = 'subject', sort_field = 'subject_id';
+                    id_field = 'subject_id',
+                    display_field = 'subject',
+                    sort_field = id_field;
                     break;
                 }
             }
 
             DB(tbl)
-                .select(display_field)
+                .select(id_field + ' as id', display_field + ' as term')
                 .orderBy(sort_field)
                 .modify(function(queryBuilder) {
                     if (is_active === 'true' || is_active === 'false'

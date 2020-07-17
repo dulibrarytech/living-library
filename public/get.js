@@ -429,7 +429,7 @@ function create_donation() {
                     checkbox.type = 'checkbox';
                     checkbox.id = 'checkbox_' + i;
                     checkbox.name = 'donor_subject_areas';
-                    checkbox.value = data[i].subject;
+                    checkbox.value = data[i].term;
 
                     let label = document.createElement('label');
                     label.htmlFor = checkbox.id;
@@ -641,18 +641,17 @@ function populate_dropdown_menu(table_name, url, html_elements,
     select.add(default_option);
     select.selectedIndex = 0;
 
-    let field_name; // name of the database field we need to reference
     let label_name; // name of the values being fetched
 
     switch(table_name) {
         case living_library_config.get_titles_table():
-            field_name = 'title', label_name = 'titles';
+            label_name = 'titles';
             break;
         case living_library_config.get_states_table():
-            field_name = 'state_full', label_name = 'states';
+            label_name = 'states';
             break;
         case living_library_config.get_relationships_table():
-            field_name = 'relationship', label_name = 'relationships';
+            label_name = 'relationships';
             break;
         default:
             console.log(table_name + " is not a lookup table. Cannot populate "
@@ -677,8 +676,8 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 let option;
                 for (let i = 0; i < data.length; i++) {
                     option = document.createElement('option');
-                    option.text = data[i][field_name];
-                    option.value = data[i][field_name];
+                    option.text = data[i].term;
+                    option.value = data[i].term;
                     select.add(option);
                 }
 
@@ -1373,28 +1372,20 @@ function get_menu_choices(table) {
 
     hide_table_header_and_content();
 
-    let label,
-        id,
-        choice;
+    let label;
 
     switch (table) {
         case 'subjectarea':
-            label = 'Subject Area';
+            label = 'Subject Area',
             table = living_library_config.get_subject_areas_table();
-            id = 'subject_id';
-            choice = 'subject';
             break;
         case 'title':
-            label = 'Title';
+            label = 'Title',
             table = living_library_config.get_titles_table();
-            id = 'title_id';
-            choice = 'title';
             break;
         case 'relationship':
-            label = 'Relationship';
+            label = 'Relationship',
             table = living_library_config.get_relationships_table();
-            id = 'relationship_id';
-            choice = 'relationship';
             break;
         default:
             label = '',
@@ -1517,14 +1508,13 @@ function get_menu_choices(table) {
                 }
 
                 for (let i = 0; i < data.length; i++) {
-                    // console.log('data[' + i + '][' + id + '] = ' + data[i][id]);
                     let anchor_element = document.createElement('a');
                     anchor_element.href = baseUrl +
                                           'index.php/livinglibrary/' +
                                           'editMenuChoice/' +
-                                          data[i][id];
+                                          data[i].id;
                     anchor_element.appendChild(document
-                                               .createTextNode(data[i][choice]));
+                                               .createTextNode(data[i].term));
 
                     // decide where to insert cell
                     let row = i % TOTAL_COLS == 0
