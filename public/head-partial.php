@@ -5,8 +5,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/main.css" />
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/jquery-ui.css" />
 
-<!-- Added for the Living Library integration -->
-<!-- needed for dropdown navbar menu -->
+<!-- Living Library integration -->
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/living-library.css" />
 
 <!-- DU Sheild favicon -->

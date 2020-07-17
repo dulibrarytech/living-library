@@ -23,13 +23,16 @@
 
             <li class="navbar-item"><a title="Statistics" href="<?php echo base_url();?>index.php/search/statisticsView">Statistics</a></li>
 
-						<!-- Added for the Living Library integration -->
+						<!-- Living Library integration -->
 						<li class="navbar-item dropdown">
 								<a title="Living Library">Living Library</a>
 								<div class="dropdown-content">
 										<a href="<?php echo base_url();?>index.php/livinglibrary/createDonation">Donation Form</a>
 										<a href="<?php echo base_url();?>index.php/livinglibrary/getDonations/queued">Donation Queue</a>
 										<a href="<?php echo base_url();?>index.php/livinglibrary/getDonations/completed">Completed Donations</a>
+										<a href="<?php echo base_url();?>index.php/livinglibrary/getMenuChoices/subjectArea">Subject Areas</a>
+										<a href="<?php echo base_url();?>index.php/livinglibrary/getMenuChoices/title">Titles</a>
+										<a href="<?php echo base_url();?>index.php/livinglibrary/getMenuChoices/relationship">Relationships</a>
 								</div>
 						</li>
 
