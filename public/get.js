@@ -1418,6 +1418,13 @@ function get_menu_choices(table) {
 
     html += '<tr>';
     html += '<td>'
+            + living_library_config
+              .get_form_symbol_explanation_text()
+            + '</td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td>'
             + '<label for="new_menu_choice_input_box" '
             + 'class="form-label-text">'
             + label + ':'
@@ -1445,6 +1452,12 @@ function get_menu_choices(table) {
     html += '<tr>';
     html += '<td colspan="' + TOTAL_COLS + '">'
             + '<h4>Edit ' + label + 's</h4>'
+            + '</td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td colspan="' + TOTAL_COLS + '">'
+            + '<p>( click ' + label + ' term to edit )</p>'
             + '</td>';
     html += '</tr>';
 
