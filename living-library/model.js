@@ -35,94 +35,47 @@ exports.create = function (req, callback) {
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
 
-    /**
-     * Donation Form submission actions
-     */
+    let tbl = typeof req.query.tbl === 'undefined'
+              ? ""
+              : req.query.tbl.toLowerCase();
 
-    /* Validate request_body */
+    switch(tbl) {
+        case "": {
+            /**
+             * Donation Form submission actions
+             */
 
-    // Expected fields
-    const donation_fields = ['donor', 'who_to_notify', 'recipient'];
+            /* Validate request_body */
 
-    // Expected keys for each donation field
-    const donation_field_keys = {
-        donor: ['donor_title', 'donor_first_name',
-                   'donor_last_name', 'donor_address',
-                   'donor_city', 'donor_state', 'donor_zip',
-                   'donor_amount_of_donation',
-                   'donor_date_of_donation', 'donor_notes',
-                   'donor_subject_areas'],
-        who_to_notify: ['notify_title', 'notify_first_name',
-                           'notify_last_name', 'notify_address',
-                           'notify_city', 'notify_state', 'notify_zip',
-                           'notify_relation_to_donor'],
-        recipient: ['recipient_title', 'recipient_first_name',
-                       'recipient_last_name', 'recipient_donation_type']
-    };
+            // Expected fields
+            const donation_fields = ['donor', 'who_to_notify', 'recipient'];
 
-    // Check for expected fields in request_body
-    let donation_keys = Object.keys(request_body);
-    console.log("donation_keys = ");
-    console.log(donation_keys);
-    console.log("donation_keys.length = " + donation_keys.length);
+            // Expected keys for each donation field
+            const donation_field_keys = {
+                donor: ['donor_title', 'donor_first_name',
+                        'donor_last_name', 'donor_address',
+                        'donor_city', 'donor_state', 'donor_zip',
+                        'donor_amount_of_donation',
+                        'donor_date_of_donation', 'donor_notes',
+                        'donor_subject_areas'],
+                who_to_notify: ['notify_title', 'notify_first_name',
+                                'notify_last_name', 'notify_address',
+                                'notify_city', 'notify_state', 'notify_zip',
+                                'notify_relation_to_donor'],
+                recipient: ['recipient_title', 'recipient_first_name',
+                            'recipient_last_name', 'recipient_donation_type']
+            };
 
-    if (!arrays_match(donation_keys, donation_fields)) {
-        console.log('Request body is valid JSON, but does not exclusively ' +
-                    'contain these properties in this order:\n' +
-                    donation_fields.join('\n'));
-        callback({
-            status: 400,
-            message: 'Request body does not contain the expected properties.'
-        });
+            // Check for expected fields in request_body
+            let donation_keys = Object.keys(request_body);
+            console.log("donation_keys = ");
+            console.log(donation_keys);
+            console.log("donation_keys.length = " + donation_keys.length);
 
-        return false;
-    }
-
-    // Check each field for valid JSON and expected keys
-    for (let key of donation_keys) {
-        let is_client_error = false;
-        let json_field;
-
-        try {
-            json_field = JSON.parse(request_body[key]);
-        } catch (error) {
-            console.log("Error parsing " + key + " field of request_body: " +
-                        error);
-
-            callback({
-                status: 400,
-                message: 'Invalid syntax in request body.'
-            });
-
-            return false;
-        }
-        console.log(key + " = ");
-        console.log(json_field);
-
-        let json_field_keys;
-        let has_more_elements_to_validate = true;
-
-        if (Array.isArray(json_field)) {
-            if (json_field.length === 0) {
-                has_more_elements_to_validate = false;
-            } else {
-                json_field_keys = Object.keys(json_field[0]);
-            }
-        } else {
-            json_field_keys = Object.keys(json_field);
-        }
-
-        let i = 0;
-        while (has_more_elements_to_validate) {
-            console.log(key + " keys = ");
-            console.log(json_field_keys);
-            console.log(key + " keys length = " + json_field_keys.length);
-
-            if (!arrays_match(json_field_keys, donation_field_keys[key])) {
-                console.log('Request body is valid JSON, but ' + key + ' does '
-                            + 'not exclusively contain these properties in this '
-                            + 'order:\n' + donation_field_keys[key].join('\n'));
-
+            if (!arrays_match(donation_keys, donation_fields)) {
+                console.log('Request body is valid JSON, but does not exclusively ' +
+                            'contain these properties in this order:\n' +
+                            donation_fields.join('\n'));
                 callback({
                     status: 400,
                     message: 'Request body does not contain the expected properties.'
@@ -131,99 +84,355 @@ exports.create = function (req, callback) {
                 return false;
             }
 
-            if (Array.isArray(json_field) && ++i < json_field.length) {
-                json_field_keys = Object.keys(json_field[i]);
-            } else {
-                has_more_elements_to_validate = false;
-            }
-        }
+            // Check each field for valid JSON and expected keys
+            for (let key of donation_keys) {
+                let is_client_error = false;
+                let json_field;
 
-        // Not being used as of now. Either use it or delete it.
-        if (is_client_error) {
+                try {
+                    json_field = JSON.parse(request_body[key]);
+                } catch (error) {
+                    console.log("Error parsing " + key + " field of request_body: " +
+                                error);
+
+                    callback({
+                        status: 400,
+                        message: 'Invalid syntax in request body.'
+                    });
+
+                    return false;
+                }
+                console.log(key + " = ");
+                console.log(json_field);
+
+                let json_field_keys;
+                let has_more_elements_to_validate = true;
+
+                if (Array.isArray(json_field)) {
+                    if (json_field.length === 0) {
+                        has_more_elements_to_validate = false;
+                    } else {
+                        json_field_keys = Object.keys(json_field[0]);
+                    }
+                } else {
+                    json_field_keys = Object.keys(json_field);
+                }
+
+                let i = 0;
+                while (has_more_elements_to_validate) {
+                    console.log(key + " keys = ");
+                    console.log(json_field_keys);
+                    console.log(key + " keys length = " + json_field_keys.length);
+
+                    if (!arrays_match(json_field_keys, donation_field_keys[key])) {
+                        console.log('Request body is valid JSON, but ' + key + ' does '
+                                    + 'not exclusively contain these properties in this '
+                                    + 'order:\n' + donation_field_keys[key].join('\n'));
+
+                        callback({
+                            status: 400,
+                            message: 'Request body does not contain the expected properties.'
+                        });
+
+                        return false;
+                    }
+
+                    if (Array.isArray(json_field) && ++i < json_field.length) {
+                        json_field_keys = Object.keys(json_field[i]);
+                    } else {
+                        has_more_elements_to_validate = false;
+                    }
+                }
+
+                // Not being used as of now. Either use it or delete it.
+                if (is_client_error) {
+                    callback({
+                        status: 400,
+                        message: 'Invalid syntax in request body.'
+                    });
+
+                    return false;
+                }
+            }
+
+            // 1.)
+            function add_donation_to_db(callback) {
+                let obj = {};
+
+                /**
+                 * This inserts all fields from the request_body, with newlines included,
+                 * into the database. Is that okay? This could be problematic. Keep an
+                 * eye on this.
+                 *
+                 * Would this be the spot to add JSON validation? Or should it be at
+                 * the view or controller level? Yes, add it just above this function
+                 * defintion (see above comment).
+                 *
+                 * Validation process:
+                 * 1) Do validation at the HTML form-level to alert for invalid field
+                 *    values and empty required fields.
+                 * 2) Construct JSON based on form data.
+                 * 3) Validate the JSON before sending to the controller/model.
+                 * 4) The model can have its own JSON validation (since there can be
+                 *    other endpoints using the model).
+                 */
+                DB(TABLE)
+                    .insert(request_body)
+                    .then(function (data) {
+                        console.log("Added donation record with id " + data);
+                        obj.id = data;
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error);
+                        throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
+                    });
+            }
+
+            // 2.)
+            function select_new_donation(obj, callback) {
+                DB(TABLE)
+                    .select('*')
+                    .where({
+                        id: obj.id
+                    })
+                    .then(function (data) {
+                        console.log("Inside select_new_donation");
+                        obj.data = data;
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
+                        throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
+                    });
+            }
+
+            /**
+             * Is this waterfall approach needed here? I don't think select_new_donation
+             * is necessary since I can populate the entire tbl_donations record with
+             * one insert. <-- This is correct (no waterfall approach needed here).
+             */
+            ASYNC.waterfall([
+               add_donation_to_db,
+               select_new_donation
+            ], function (error, results) {
+                console.log("Inside waterfall function");
+
+                if (error) {
+                    LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] Error creating or retrieving new donation record: ' + error);
+                }
+
+                callback({
+                    status: 201,
+                    message: 'Record created.',
+                    data: results.data
+                });
+            });
+
+            break;
+        } // end of "" case
+
+        case "tbl_subject_areas_lookup":
+        case "tbl_titles_lookup":
+        case "tbl_relationships_lookup": {
+            /**
+             * Lookup table query URLs:
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_titles_lookup&api_key=API_KEY
+             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=tbl_relationships_lookup&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_subject_areas_lookup&api_key=API_KEY
+             */
+
+            /* Validate request_body */
+
+            // Handle requests with properties other than new_menu_choice?
+
+            let new_menu_choice = typeof request_body
+                                         .new_menu_choice === 'undefined'
+                                  ? null
+                                  : request_body.new_menu_choice;
+
+            if (new_menu_choice === null) {
+                console.log('Request body is invalid: Must contain a ' +
+                            'non-null property named new_menu_choice');
+                callback({
+                    status: 400,
+                    message: 'Request body is invalid: Must contain a ' +
+                             'non-null property named new_menu_choice'
+                });
+                return false;
+            }
+
+            let id_field, display_field, sort_field;
+
+            console.log('new_menu_choice = ' + new_menu_choice);
+
+            switch(tbl) {
+                case "tbl_subject_areas_lookup": {
+                    id_field = 'subject_id',
+                    display_field = 'subject',
+                    sort_field = id_field;
+                    break;
+                }
+                case "tbl_titles_lookup": {
+                    id_field = 'title_id',
+                    display_field = 'title',
+                    sort_field = id_field;
+                    break;
+                }
+                case "tbl_relationships_lookup": {
+                    id_field = 'relationship_id',
+                    display_field = 'relationship',
+                    sort_field = id_field;
+                    break;
+                }
+            }
+
+            // 1.)
+            function search_db_for_menu_choice(callback) {
+                let obj = {};
+
+                DB(tbl)
+                    .select(id_field + ' as id', display_field + ' as term',
+                            'is_active')
+                    .orderBy(sort_field)
+                    .where(display_field, new_menu_choice)
+                    .then(function (data) {
+                        console.log("Searching " + tbl + " for " + display_field +
+                                    " = " + new_menu_choice + "\n" + data.length +
+                                    " choice(s) found.");
+
+                        obj.data = data;
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        console.log('Inside catch function of lookup table case');
+                        LOGGER.module().error('FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error);
+                        throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
+                    });
+            }
+
+            // 2.)
+            function update_db(obj, callback) {
+                if (!Array.isArray(obj.data)) {
+                    LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data);
+                    throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
+                } else if (obj.data.length === 0) {
+                    console.log('No match found for ' + new_menu_choice);
+
+                    DB(tbl)
+                        .insert(request_body)
+                        .then(function (data) {
+                            console.log('Added ' + display_field +
+                                        ' record with id ' + data + ' to ' +
+                                        tbl);
+
+                            obj.id = data,
+                            obj.status = 201,
+                            obj.message = 'Record created.';
+
+                            callback(null, obj);
+                            return false;
+                        })
+                        .catch(function (error) {
+                            LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + tbl + ': ' + error);
+                            // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + tbl + ': ' + error;
+                        });
+                } else if (obj.data.length === 1) {
+                    console.log('Found 1 record matching ' + new_menu_choice +
+                                ':');
+                    console.log(obj.data[0]);
+                    console.log('typeof record_payload = ' + typeof obj.data[0]);
+                    console.log('is_active = ' + obj.data[0].is_active);
+                    console.log('id = ' + obj.data[0].id);
+
+                    try {
+                        if (obj.data[0].is_active) {
+                            console.log('Record already exists with ' +
+                                        display_field + ' = ' +
+                                        new_menu_choice);
+
+                            obj.status = 409,
+                            obj.message = 'Record already exists.';
+                        } else {
+                            console.log('Record exists with ' + display_field +
+                                        ' = ' + new_menu_choice +
+                                        '\nBut is_active = ' +
+                                        obj.data[0].is_active);
+
+                            DB(tbl)
+                                .where(id_field, obj.data[0].id)
+                                .update({
+                                    is_active: 1
+                                })
+                                .then(function (data) {
+                                    if (data === 1) {
+                                        console.log("Updated " + tbl +
+                                                    " record with id " +
+                                                    obj.data[0].id);
+
+                                        obj.status = 200,
+                                        obj.message = 'Record updated.';
+                                    } else {
+                                        console.log("Update failed. Couldn't " +
+                                                    "find " + tbl + " record " +
+                                                    "with id " + obj.data[0].id
+                                                    + '.');
+
+                                        obj.status = 404,
+                                        obj.message = 'Record not found.';
+                                    }
+                                })
+                                .catch(function (error) {
+                                    LOGGER.module().fatal('FATAL: Unable to update record: ' + error);
+                                    throw 'FATAL: Unable to update record: ' + error;
+                                });
+                        }
+
+                        callback(null, obj);
+                        return false;
+                    } catch (error) {
+                        LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error);
+                        // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
+                    }
+                }
+            }
+
+            ASYNC.waterfall([
+               search_db_for_menu_choice,
+               update_db
+            ], function (error, results) {
+                console.log("Inside waterfall function");
+
+                if (error) {
+                    LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + tbl + ': ' + error);
+                }
+
+                console.log("\nEnd of CREATE query from model\n=====================\n");
+
+                // decide which callback parameter to use, may need a 'switch'
+                callback({
+                    status: results.status,
+                    message: results.message,
+                    data: results.data
+                });
+            });
+
+            break;
+        } // end of lookup table case
+
+        default: {
+            LOGGER.module().fatal('FATAL: Request query contains invalid value '
+                                  + 'for tbl parameter: ' + tbl);
+
             callback({
                 status: 400,
-                message: 'Invalid syntax in request body.'
+                message: 'Request query contains invalid value for tbl parameter.'
             });
-
-            return false;
-        }
-    }
-
-    // 1.)
-    function add_donation_to_db(callback) {
-        let obj = {};
-
-        /**
-         * This inserts all fields from the request_body, with newlines included,
-         * into the database. Is that okay? This could be problematic. Keep an
-         * eye on this.
-         *
-         * Would this be the spot to add JSON validation? Or should it be at
-         * the view or controller level? Yes, add it just above this function
-         * defintion (see above comment).
-         *
-         * Validation process:
-         * 1) Do validation at the HTML form-level to alert for invalid field
-         *    values and empty required fields.
-         * 2) Construct JSON based on form data.
-         * 3) Validate the JSON before sending to the controller/model.
-         * 4) The model can have its own JSON validation (since there can be
-         *    other endpoints using the model).
-         */
-        DB(TABLE)
-            .insert(request_body)
-            .then(function (data) {
-                console.log("Added donation record with id " + data);
-                obj.id = data;
-                callback(null, obj);
-                return false;
-            })
-            .catch(function (error) {
-                LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error);
-                throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
-            });
-    }
-
-    // 2.)
-    function select_new_donation(obj, callback) {
-        DB(TABLE)
-            .select('*')
-            .where({
-                id: obj.id
-            })
-            .then(function (data) {
-                console.log("Inside select_new_donation");
-                obj.data = data;
-                callback(null, obj);
-                return false;
-            })
-            .catch(function (error) {
-                LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
-                throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
-            });
-    }
-
-    /**
-     * Is this waterfall approach needed here? I don't think select_new_donation
-     * is necessary since I can populate the entire tbl_donations record with
-     * one insert. <-- This is correct (no waterfall approach needed here).
-     */
-    ASYNC.waterfall([
-       add_donation_to_db,
-       select_new_donation
-    ], function (error, results) {
-        console.log("Inside waterfall function");
-
-        if (error) {
-            LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] ' + error);
-        }
-
-        callback({
-            status: 201,
-            message: 'Record created.',
-            data: results.data
-        });
-    });
+        } // end of default case
+    } // end of switch
 };
 
 /**
@@ -342,7 +551,7 @@ exports.read = function (req, callback) {
                     throw 'FATAL: Unable to read record ' + error;
                 });
             break;
-        }
+        } // end of "" case
         case "tbl_titles_lookup":
         case "tbl_states_lookup":
         case "tbl_relationships_lookup":
@@ -437,7 +646,7 @@ exports.read = function (req, callback) {
                 status: 400,
                 message: 'Request query contains invalid value for tbl parameter.'
             });
-        }
+        } // end of default case
     } // end of switch
 };
 
