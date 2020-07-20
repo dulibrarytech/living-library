@@ -310,7 +310,7 @@ exports.create = function (req, callback) {
                     .catch(function (error) {
                         console.log('Inside catch function of lookup table case');
                         LOGGER.module().error('FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error);
-                        throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
+                        // throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
                     });
             }
 
@@ -318,16 +318,18 @@ exports.create = function (req, callback) {
             function update_db(obj, callback) {
                 if (!Array.isArray(obj.data)) {
                     LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data);
-                    throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
+                    // throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
                 } else if (obj.data.length === 0) {
                     console.log('No match found for ' + new_menu_choice);
 
+                    let new_record = {};
+                    new_record[display_field] = new_menu_choice;
+
                     DB(tbl)
-                        .insert(request_body)
+                        .insert(new_record)
                         .then(function (data) {
-                            console.log('Added ' + display_field +
-                                        ' record with id ' + data + ' to ' +
-                                        tbl);
+                            console.log('Added record with id ' + data + ' to '
+                                        + tbl);
 
                             obj.id = data,
                             obj.status = 201,
@@ -346,19 +348,25 @@ exports.create = function (req, callback) {
                     console.log(obj.data[0]);
                     console.log('typeof record_payload = ' + typeof obj.data[0]);
                     console.log('is_active = ' + obj.data[0].is_active);
-                    console.log('id = ' + obj.data[0].id);
+
+                    obj.id = obj.data[0].id;
+                    console.log('id = ' + obj.id);
 
                     try {
                         if (obj.data[0].is_active) {
-                            console.log('Record already exists with ' +
+                            console.log('Active record already exists with ' +
                                         display_field + ' = ' +
-                                        new_menu_choice);
+                                        obj.data[0].term +
+                                        '\nSo database left unchanged.');
 
                             obj.status = 409,
                             obj.message = 'Record already exists.';
+
+                            callback(null, obj);
+                            return false;
                         } else {
                             console.log('Record exists with ' + display_field +
-                                        ' = ' + new_menu_choice +
+                                        ' = ' + obj.data[0].term +
                                         '\nBut is_active = ' +
                                         obj.data[0].is_active);
 
@@ -384,35 +392,66 @@ exports.create = function (req, callback) {
                                         obj.status = 404,
                                         obj.message = 'Record not found.';
                                     }
+
+                                    callback(null, obj);
+                                    return false;
                                 })
                                 .catch(function (error) {
                                     LOGGER.module().fatal('FATAL: Unable to update record: ' + error);
                                     throw 'FATAL: Unable to update record: ' + error;
                                 });
                         }
-
-                        callback(null, obj);
-                        return false;
                     } catch (error) {
                         LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error);
                         // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
                     }
+                } else {
+                    LOGGER.module().error('ERROR [/living-library/model module (create/update_db)] search_db_for_menu_choice returned more than one result.');
+                }
+            }
+
+            // 3.)
+            function select_new_menu_choice(obj, callback) {
+                console.log("Inside select_new_menu_choice");
+
+                if (obj.status === 409) {
+                    callback(null, obj);
+                    return false;
+                } else {
+                    DB(tbl)
+                        .select('*')
+                        .where(id_field, obj.id)
+                        .then(function (data) {
+                            obj.data = data;
+                            callback(null, obj);
+                            return false;
+                        })
+                        .catch(function (error) {
+                            LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
+                            // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
+                        });
                 }
             }
 
             ASYNC.waterfall([
                search_db_for_menu_choice,
-               update_db
+               update_db,
+               select_new_menu_choice
             ], function (error, results) {
                 console.log("Inside waterfall function");
 
                 if (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + tbl + ': ' + error);
+                    LOGGER.module().error('ERROR [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + tbl + ': ' + error);
                 }
+
+                console.log("Results object = ");
+                console.log(results);
+
+                console.log("results.status = " + results.status);
+                console.log("typeof results.status = " + typeof results.status);
 
                 console.log("\nEnd of CREATE query from model\n=====================\n");
 
-                // decide which callback parameter to use, may need a 'switch'
                 callback({
                     status: results.status,
                     message: results.message,
