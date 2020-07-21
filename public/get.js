@@ -1372,22 +1372,26 @@ function get_menu_choices(table) {
 
     hide_table_header_and_content();
 
-    let label;
+    let label, link_text;
 
     switch (table) {
         case 'subjectarea':
             label = 'Subject Area',
+            link_text = 'subjectArea',
             table = living_library_config.get_subject_areas_table();
             break;
         case 'title':
             label = 'Title',
+            link_text = 'title',
             table = living_library_config.get_titles_table();
             break;
         case 'relationship':
             label = 'Relationship',
+            link_text = 'relationship',
             table = living_library_config.get_relationships_table();
             break;
         default:
+            console.log('Invalid parameter value for table: ' + table);
             label = '';
             // table = '';
     }
@@ -1495,7 +1499,7 @@ function get_menu_choices(table) {
                     let anchor_element = document.createElement('a');
                     anchor_element.href = baseUrl +
                                           'index.php/livinglibrary/' +
-                                          'editMenuChoice/' +
+                                          'editMenuChoice/' + link_text + '/' +
                                           data[i].id;
                     anchor_element.appendChild(document
                                                .createTextNode(data[i].term));
@@ -1512,6 +1516,97 @@ function get_menu_choices(table) {
             console.log('FATAL: [get_menu_choices] Unable to fetch ' + table +
                         ': ' + error);
         });
+}
+
+/**
+ * Loads a form for the specified lookup table record. The form allows the user
+ * to (1) update the text of the menu choice and (2) remove the menu choice from
+ * the lookup table (to 'remove' the menu choice, we set is_active = 0).
+ * @param   table     the lookup table
+ * @param   id        the id of the lookup table record to edit
+ */
+function edit_menu_choice(table, id) {
+    console.log('table = ' + table);
+
+    hide_table_header_and_content();
+
+    let label;
+
+    switch (table) {
+        case 'subjectarea':
+            label = 'Subject Area',
+            table = living_library_config.get_subject_areas_table();
+            break;
+        case 'title':
+            label = 'Title',
+            table = living_library_config.get_titles_table();
+            break;
+        case 'relationship':
+            label = 'Relationship',
+            table = living_library_config.get_relationships_table();
+            break;
+        default:
+            label = '';
+            // table = '';
+    }
+
+    let page_label_element = document.querySelector('#page-label');
+
+    if (page_label_element) {
+        page_label_element.innerHTML = 'Living Library: ' + label + 's';
+    }
+
+    // Edit menu choice form
+    let html = '<form id="edit-menu-choice-form" method="post" ' +
+               `onsubmit="edit_menu_choice(event, '${table}', ${id});">`;
+    console.log("form tag = " + html);
+    html += '<table class="table">';
+
+    html += '<tr>';
+    html += '<td><h4>Edit ' + label + '</h4></td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td>'
+            + living_library_config
+              .get_form_symbol_explanation_text()
+            + '</td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td>'
+            + '<label for="edit_menu_choice_input_box" '
+            + 'class="form-label-text">'
+            + label + ':'
+            + '</label>'
+            + '<input type="text" id="edit_menu_choice_input_box" '
+            + 'class="input_form-default" name="edit_menu_choice"/>'
+            + '</td>';
+    html += '</tr>';
+
+    html += '</tr>';
+    html += '<td>'
+            + '<button type="submit" class="btn btn-light btn-bold" '
+            + 'name="update" value="update"> Update '
+            + '</button>'
+            + '&nbsp;&nbsp;'
+            + '<button type="submit" class="btn btn-light btn-bold" '
+            + 'name="update" value="update"> Delete '
+            + '</button>'
+            + '</td>';
+    html += '</tr>';
+
+    html += '</table>';
+    html += '</form>';
+
+    let form_content_element = document.querySelector('#form-content');
+
+    if (form_content_element) {
+        form_content_element.innerHTML = html;
+    }
+
+    update_required_fields_in_form(living_library_config
+                                   .get_edit_menu_choice_form_info());
 }
 
 /**
