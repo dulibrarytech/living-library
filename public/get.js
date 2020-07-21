@@ -1377,15 +1377,15 @@ function get_menu_choices(table) {
     switch (table) {
         case 'subjectarea':
             label = 'Subject Area',
-            table = 'subject_areas';
+            table = living_library_config.get_subject_areas_table();
             break;
         case 'title':
             label = 'Title',
-            table = 'titles';
+            table = living_library_config.get_titles_table();
             break;
         case 'relationship':
             label = 'Relationship',
-            table = 'relationships';
+            table = living_library_config.get_relationships_table();
             break;
         default:
             label = '';
@@ -1471,7 +1471,7 @@ function get_menu_choices(table) {
             console.log(response);
 
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem fetching table: '
+                console.warn('Looks like there was a problem fetching '
                              + table + '. Status Code: ' + response.status);
                 return false;
             }
@@ -1509,10 +1509,8 @@ function get_menu_choices(table) {
             });
         })
         .catch(function(error) {
-            console.log('FATAL: [create_donation] Unable to fetch subject '
-                        + 'areas ' + error);
-            throw 'FATAL: [create_donation] Unable to fetch subject areas '
-                  + error;
+            console.log('FATAL: [get_menu_choices] Unable to fetch ' + table +
+                        ': ' + error);
         });
 }
 

@@ -42,19 +42,19 @@ const living_library_config = (function () {
 
     /* Lookup tables */
     obj.get_relationships_table = function () {
-        return 'tbl_relationships_lookup';
+        return 'relationships';
     };
 
     obj.get_states_table = function () {
-        return 'tbl_states_lookup';
+        return 'states';
     };
 
     obj.get_subject_areas_table = function () {
-        return 'tbl_subject_areas_lookup';
+        return 'subject_areas';
     };
 
     obj.get_titles_table = function () {
-        return 'tbl_titles_lookup';
+        return 'titles';
     };
 
     /* Form field groups, required fields, etc. */
