@@ -35,11 +35,40 @@ exports.create = function (req, callback) {
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
 
+    /**
+     * Donations table query URL (if there's no tbl parameter, default to querying tbl_donations):
+     * POST new record to donations table: SITE_URL/api/v1/living-library/donations?api_key=API_KEY
+     *
+     * Lookup table query URLs:
+     * POST new record to subject areas table: SITE_URL/api/v1/living-library/donations?tbl=subject_areas&api_key=API_KEY
+     * POST new record to titles table: SITE_URL/api/v1/living-library/donations?tbl=titles&api_key=API_KEY
+     * POST new record to relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&api_key=API_KEY
+     */
+
     let tbl = typeof req.query.tbl === 'undefined'
               ? ""
               : req.query.tbl.toLowerCase();
 
+    let table_name;
+
     switch(tbl) {
+        case "":
+            table_name = "";
+            break;
+        case "subject_areas":
+            table_name = "tbl_subject_areas_lookup";
+            break;
+        case "titles":
+            table_name = "tbl_titles_lookup";
+            break;
+        case "relationships":
+            table_name = "tbl_relationships_lookup";
+            break;
+        default:
+            table_name = null;
+    }
+
+    switch(table_name) {
         case "": {
             /**
              * Donation Form submission actions
@@ -73,12 +102,13 @@ exports.create = function (req, callback) {
             console.log("donation_keys.length = " + donation_keys.length);
 
             if (!arrays_match(donation_keys, donation_fields)) {
-                console.log('Request body is valid JSON, but does not exclusively ' +
-                            'contain these properties in this order:\n' +
-                            donation_fields.join('\n'));
+                console.log('Request body is valid JSON, but does not ' +
+                            'exclusively contain these properties in this ' +
+                            'order:\n' + donation_fields.join('\n'));
                 callback({
                     status: 400,
-                    message: 'Request body does not contain the expected properties.'
+                    message: 'Request body does not contain the expected ' +
+                             'properties.'
                 });
 
                 return false;
@@ -92,8 +122,8 @@ exports.create = function (req, callback) {
                 try {
                     json_field = JSON.parse(request_body[key]);
                 } catch (error) {
-                    console.log("Error parsing " + key + " field of request_body: " +
-                                error);
+                    console.log('Error parsing ' + key +
+                                ' field of request_body: ' + error);
 
                     callback({
                         status: 400,
@@ -122,16 +152,20 @@ exports.create = function (req, callback) {
                 while (has_more_elements_to_validate) {
                     console.log(key + " keys = ");
                     console.log(json_field_keys);
-                    console.log(key + " keys length = " + json_field_keys.length);
+                    console.log(key + " keys length = " +
+                                json_field_keys.length);
 
-                    if (!arrays_match(json_field_keys, donation_field_keys[key])) {
-                        console.log('Request body is valid JSON, but ' + key + ' does '
-                                    + 'not exclusively contain these properties in this '
-                                    + 'order:\n' + donation_field_keys[key].join('\n'));
+                    if (!arrays_match(json_field_keys,
+                                      donation_field_keys[key])) {
+                        console.log('Request body is valid JSON, but ' + key +
+                                    ' does not exclusively contain these ' +
+                                    'properties in this order:\n' +
+                                    donation_field_keys[key].join('\n'));
 
                         callback({
                             status: 400,
-                            message: 'Request body does not contain the expected properties.'
+                            message: 'Request body does not contain the ' +
+                                     'expected properties.'
                         });
 
                         return false;
@@ -186,7 +220,7 @@ exports.create = function (req, callback) {
                     })
                     .catch(function (error) {
                         LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error);
-                        throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
+                        // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
                     });
             }
 
@@ -205,7 +239,7 @@ exports.create = function (req, callback) {
                     })
                     .catch(function (error) {
                         LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
-                        throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
+                        // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
                     });
             }
 
@@ -237,13 +271,6 @@ exports.create = function (req, callback) {
         case "tbl_subject_areas_lookup":
         case "tbl_titles_lookup":
         case "tbl_relationships_lookup": {
-            /**
-             * Lookup table query URLs:
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_titles_lookup&api_key=API_KEY
-             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=tbl_relationships_lookup&api_key=API_KEY
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_subject_areas_lookup&api_key=API_KEY
-             */
-
             /* Validate request_body */
 
             // Handle requests with properties other than new_menu_choice?
@@ -268,7 +295,7 @@ exports.create = function (req, callback) {
 
             console.log('new_menu_choice = ' + new_menu_choice);
 
-            switch(tbl) {
+            switch(table_name) {
                 case "tbl_subject_areas_lookup": {
                     id_field = 'subject_id',
                     display_field = 'subject',
@@ -293,22 +320,23 @@ exports.create = function (req, callback) {
             function search_db_for_menu_choice(callback) {
                 let obj = {};
 
-                DB(tbl)
+                DB(table_name)
                     .select(id_field + ' as id', display_field + ' as term',
                             'is_active')
                     .orderBy(sort_field)
                     .where(display_field, new_menu_choice)
                     .then(function (data) {
-                        console.log("Searching " + tbl + " for " + display_field +
-                                    " = " + new_menu_choice + "\n" + data.length +
-                                    " choice(s) found.");
+                        console.log("Searching " + table_name + " for " +
+                                    display_field + " = " + new_menu_choice +
+                                    "\n" + data.length + " choice(s) found.");
 
                         obj.data = data;
                         callback(null, obj);
                         return false;
                     })
                     .catch(function (error) {
-                        console.log('Inside catch function of lookup table case');
+                        console.log('Inside catch function of lookup table ' +
+                                    'case');
                         LOGGER.module().error('FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error);
                         // throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
                     });
@@ -325,11 +353,11 @@ exports.create = function (req, callback) {
                     let new_record = {};
                     new_record[display_field] = new_menu_choice;
 
-                    DB(tbl)
+                    DB(table_name)
                         .insert(new_record)
                         .then(function (data) {
                             console.log('Added record with id ' + data + ' to '
-                                        + tbl);
+                                        + table_name);
 
                             obj.id = data,
                             obj.status = 201,
@@ -339,14 +367,15 @@ exports.create = function (req, callback) {
                             return false;
                         })
                         .catch(function (error) {
-                            LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + tbl + ': ' + error);
-                            // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + tbl + ': ' + error;
+                            LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error);
+                            // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error;
                         });
                 } else if (obj.data.length === 1) {
                     console.log('Found 1 record matching ' + new_menu_choice +
                                 ':');
                     console.log(obj.data[0]);
-                    console.log('typeof record_payload = ' + typeof obj.data[0]);
+                    console.log('typeof record_payload = ' +
+                                typeof obj.data[0]);
                     console.log('is_active = ' + obj.data[0].is_active);
 
                     obj.id = obj.data[0].id;
@@ -370,24 +399,24 @@ exports.create = function (req, callback) {
                                         '\nBut is_active = ' +
                                         obj.data[0].is_active);
 
-                            DB(tbl)
+                            DB(table_name)
                                 .where(id_field, obj.data[0].id)
                                 .update({
                                     is_active: 1
                                 })
                                 .then(function (data) {
                                     if (data === 1) {
-                                        console.log("Updated " + tbl +
+                                        console.log("Updated " + table_name +
                                                     " record with id " +
-                                                    obj.data[0].id);
+                                                    obj.data[0].id + ".");
 
                                         obj.status = 200,
                                         obj.message = 'Record updated.';
                                     } else {
                                         console.log("Update failed. Couldn't " +
-                                                    "find " + tbl + " record " +
-                                                    "with id " + obj.data[0].id
-                                                    + '.');
+                                                    "find " + table_name +
+                                                    " record with id " +
+                                                    obj.data[0].id + ".");
 
                                         obj.status = 404,
                                         obj.message = 'Record not found.';
@@ -398,7 +427,7 @@ exports.create = function (req, callback) {
                                 })
                                 .catch(function (error) {
                                     LOGGER.module().fatal('FATAL: Unable to update record: ' + error);
-                                    throw 'FATAL: Unable to update record: ' + error;
+                                    // throw 'FATAL: Unable to update record: ' + error;
                                 });
                         }
                     } catch (error) {
@@ -418,7 +447,7 @@ exports.create = function (req, callback) {
                     callback(null, obj);
                     return false;
                 } else {
-                    DB(tbl)
+                    DB(table_name)
                         .select('*')
                         .where(id_field, obj.id)
                         .then(function (data) {
@@ -441,7 +470,7 @@ exports.create = function (req, callback) {
                 console.log("Inside waterfall function");
 
                 if (error) {
-                    LOGGER.module().error('ERROR [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + tbl + ': ' + error);
+                    LOGGER.module().error('ERROR [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + table_name + ': ' + error);
                 }
 
                 console.log("Results object = ");
@@ -450,7 +479,8 @@ exports.create = function (req, callback) {
                 console.log("results.status = " + results.status);
                 console.log("typeof results.status = " + typeof results.status);
 
-                console.log("\nEnd of CREATE query from model\n=====================\n");
+                console.log("\nEnd of CREATE query from model\n" +
+                            "=====================\n");
 
                 callback({
                     status: results.status,
@@ -468,7 +498,8 @@ exports.create = function (req, callback) {
 
             callback({
                 status: 400,
-                message: 'Request query contains invalid value for tbl parameter.'
+                message: 'Request query contains invalid value for tbl ' +
+                         'parameter.'
             });
         } // end of default case
     } // end of switch
