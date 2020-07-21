@@ -187,10 +187,12 @@ const save_book_plate = function (event) {
         });
 };
 
-const add_menu_choice = function (event) {
+const add_menu_choice = function (event, table) {
     event.preventDefault();
 
     console.log("Inside add_menu_choice function");
+
+    console.log("table = " + table);
 
     let form_data = document.getElementById('add-menu-choice-form').elements;
 
@@ -198,20 +200,22 @@ const add_menu_choice = function (event) {
         console.log(element.name + ' = ' + element.value);
     }
 
-    console.log(form_to_JSON(['new_menu_choice'], form_data));
+    let form_as_JSON = form_to_JSON(['new_menu_choice'], form_data);
+    console.log('form_as_JSON = ');
+    console.log(form_as_JSON);
 
-    /*
     fetch(living_library_config.get_api() +
-          '?api_key=' + living_library_config.get_api_key(), {
+          '?tbl=' + table +
+          '&api_key=' + living_library_config.get_api_key(), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(donation_data),
+        body: JSON.stringify(form_as_JSON),
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside save_donation fetch: first "then" function');
+            console.log('Inside add_menu_choice fetch: first "then" function');
             console.log(response);
             return response.json();
         })
@@ -220,20 +224,21 @@ const add_menu_choice = function (event) {
             if (data.length > 0) {
                 console.log(data[0]);
 
-                alert('Donation ID ' + data[0].id +
-                      ' added to Donation Queue.');
+                alert('Form submitted.');
 
+                /*
                 window.location.href = baseUrl + 'index.php/livinglibrary/' +
                                        'getDonations/queued';
+                */
             } else {
                 alert('An error occurred when submitting the donation form.');
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [save_donation] An error occurred during or '
+            console.log('ERROR: [add_menu_choice] An error occurred during or '
                         + 'after POST request: ' + error);
         });
-    */
+
 }
 
 /**

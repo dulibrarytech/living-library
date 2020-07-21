@@ -1377,15 +1377,15 @@ function get_menu_choices(table) {
     switch (table) {
         case 'subjectarea':
             label = 'Subject Area',
-            table = living_library_config.get_subject_areas_table();
+            table = 'subject_areas';
             break;
         case 'title':
             label = 'Title',
-            table = living_library_config.get_titles_table();
+            table = 'titles';
             break;
         case 'relationship':
             label = 'Relationship',
-            table = living_library_config.get_relationships_table();
+            table = 'relationships';
             break;
         default:
             label = '';
@@ -1399,8 +1399,9 @@ function get_menu_choices(table) {
     }
 
     // Add menu choice form
-    let html = '<form id="add-menu-choice-form" method="post" '
-               + 'onsubmit="add_menu_choice(event);">'
+    let html = '<form id="add-menu-choice-form" method="post" ' +
+               `onsubmit="add_menu_choice(event, '${table}');">`;
+    console.log("form tag = " + html);
     html += '<table class="table">';
 
     html += '<tr>';

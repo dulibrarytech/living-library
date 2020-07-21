@@ -516,7 +516,29 @@ exports.read = function (req, callback) {
               ? ""
               : req.query.tbl.toLowerCase();
 
+    let table_name;
+
     switch(tbl) {
+        case "":
+            table_name = "";
+            break;
+        case "titles":
+            table_name = "tbl_titles_lookup";
+            break;
+        case "states":
+            table_name = "tbl_states_lookup";
+            break;
+        case "relationships":
+            table_name = "tbl_relationships_lookup";
+            break;
+        case "subject_areas":
+            table_name = "tbl_subject_areas_lookup";
+            break;
+        default:
+            table_name = null;
+    }
+
+    switch(table_name) {
         case "": {
             /**
              * No tbl parameter, so default to querying tbl_donations.
@@ -628,10 +650,10 @@ exports.read = function (req, callback) {
         case "tbl_subject_areas_lookup": {
             /**
              * Lookup table query URLs:
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_titles_lookup&is_active=true&api_key=API_KEY
-             * GET all active state records: SITE_URL/api/v1/living-library/donations?tbl=tbl_states_lookup&is_active=true&api_key=API_KEY
-             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=tbl_relationships_lookup&is_active=true&api_key=API_KEY
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=tbl_subject_areas_lookup&is_active=true&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=titles&is_active=true&api_key=API_KEY
+             * GET all active state records: SITE_URL/api/v1/living-library/donations?tbl=states&is_active=true&api_key=API_KEY
+             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=relationships&is_active=true&api_key=API_KEY
+             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=subject_areas&is_active=true&api_key=API_KEY
              */
             let is_active = typeof req.query.is_active === 'undefined'
                             ? ""
@@ -639,7 +661,7 @@ exports.read = function (req, callback) {
 
             let id_field, display_field, sort_field;
 
-            switch(tbl) {
+            switch(table_name) {
                 case "tbl_titles_lookup": {
                     id_field = 'title_id',
                     display_field = 'title',
@@ -666,7 +688,7 @@ exports.read = function (req, callback) {
                 }
             }
 
-            DB(tbl)
+            DB(table_name)
                 .select(id_field + ' as id', display_field + ' as term')
                 .orderBy(sort_field)
                 .modify(function(queryBuilder) {
