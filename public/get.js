@@ -1500,7 +1500,7 @@ function get_menu_choices(table) {
                     anchor_element.href = baseUrl +
                                           'index.php/livinglibrary/' +
                                           'editMenuChoice/' + link_text + '/' +
-                                          data[i].id;
+                                          data[i].id + '/' + data[i].term;
                     anchor_element.appendChild(document
                                                .createTextNode(data[i].term));
 
@@ -1522,11 +1522,14 @@ function get_menu_choices(table) {
  * Loads a form for the specified lookup table record. The form allows the user
  * to (1) update the text of the menu choice and (2) remove the menu choice from
  * the lookup table (to 'remove' the menu choice, we set is_active = 0).
- * @param   table     the lookup table
- * @param   id        the id of the lookup table record to edit
+ * @param   table              the lookup table containing the menu choice
+ * @param   menu_choice_id     the id of the menu choice
+ * @param   menu_choice_text   the text of the menu choice
  */
-function edit_menu_choice(table, id) {
+function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
     console.log('table = ' + table);
+    console.log('menu choice id = ' + menu_choice_id);
+    console.log('menu choice text = ' + menu_choice_text);
 
     hide_table_header_and_content();
 
@@ -1558,8 +1561,9 @@ function edit_menu_choice(table, id) {
 
     // Edit menu choice form
     let html = '<form id="edit-menu-choice-form" method="post" ' +
-               `onsubmit="edit_menu_choice(event, '${table}', ${id});">`;
-    console.log("form tag = " + html);
+               `onsubmit="edit_menu_choice(event, '${table}', ${menu_choice_id}`
+               + ');">';
+    console.log("edit menu choice form tag = " + html);
     html += '<table class="table">';
 
     html += '<tr>';
@@ -1577,7 +1581,7 @@ function edit_menu_choice(table, id) {
     html += '<td>'
             + '<label for="edit_menu_choice_input_box" '
             + 'class="form-label-text">'
-            + label + ':'
+            + 'Change &ldquo;' + menu_choice_text + '&rdquo; to:'
             + '</label>'
             + '<input type="text" id="edit_menu_choice_input_box" '
             + 'class="input_form-default" name="edit_menu_choice"/>'
@@ -1586,12 +1590,30 @@ function edit_menu_choice(table, id) {
 
     html += '</tr>';
     html += '<td>'
-            + '<button type="submit" class="btn btn-light btn-bold" '
-            + 'name="update" value="update"> Update '
+            + '<button type="submit" class="btn btn-light btn-bold">'
+            + 'Update'
             + '</button>'
-            + '&nbsp;&nbsp;'
-            + '<button type="submit" class="btn btn-light btn-bold" '
-            + 'name="update" value="update"> Delete '
+            + '</td>';
+    html += '</tr>';
+
+    html += '</table>';
+    html += '</form>';
+
+    // Delete menu choice form
+    html += '<form id="delete-menu-choice-form" method="post" ' +
+            `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id}`
+            + ');">';
+
+    html += '<table id="delete-menu-choice" class="table">';
+
+    html += '<tr>';
+    html += '<td><h4>Delete ' + label + '</h4></td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td>'
+            + '<button type="submit" class="btn btn-light btn-bold">'
+            + 'Delete &ldquo;' + menu_choice_text + '&rdquo;'
             + '</button>'
             + '</td>';
     html += '</tr>';
