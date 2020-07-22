@@ -271,7 +271,7 @@ exports.create = function (req, callback) {
         case "tbl_subject_areas_lookup":
         case "tbl_titles_lookup":
         case "tbl_relationships_lookup": {
-            /* Validate request_body */
+            // Validate request_body or trim new_menu_choice value?
 
             // Handle requests with properties other than new_menu_choice?
 
@@ -291,9 +291,9 @@ exports.create = function (req, callback) {
                 return false;
             }
 
-            let id_field, display_field, sort_field;
-
             console.log('new_menu_choice = ' + new_menu_choice);
+
+            let id_field, display_field, sort_field;
 
             switch(table_name) {
                 case "tbl_subject_areas_lookup": {
@@ -490,7 +490,7 @@ exports.create = function (req, callback) {
             });
 
             break;
-        } // end of lookup table case
+        } // end of lookup table cases
 
         default: {
             LOGGER.module().fatal('FATAL: Request query contains invalid value '
@@ -644,6 +644,7 @@ exports.read = function (req, callback) {
                 });
             break;
         } // end of "" case
+
         case "tbl_titles_lookup":
         case "tbl_states_lookup":
         case "tbl_relationships_lookup":
@@ -738,14 +739,16 @@ exports.read = function (req, callback) {
                     throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
-        } // end of lookup table case
+        } // end of lookup table cases
+
         default: {
             LOGGER.module().fatal('FATAL: Request query contains invalid value '
                                   + 'for tbl parameter: ' + tbl);
 
             callback({
                 status: 400,
-                message: 'Request query contains invalid value for tbl parameter.'
+                message: 'Request query contains invalid value for tbl ' +
+                         'parameter.'
             });
         } // end of default case
     } // end of switch
@@ -765,106 +768,235 @@ exports.update = function (req, callback) {
     console.log("typeof request_body = " + typeof request_body);
 
     /**
-     * This updates all fields from the request_body, with newlines included,
-     * into the database. Any key from the request body that is not in the
-     * database is ignored. Is that okay? This could be problematic. Keep an
-     * eye on this.
+     * Donations table query URL (if there's no tbl parameter, default to querying tbl_donations):
+     * PUT (i.e. update) record in donations table: SITE_URL/api/v1/living-library/donations?id=ID&api_key=API_KEY
+     *
+     * Lookup table query URLs:
+     * PUT (i.e. update) record in subject areas table: SITE_URL/api/v1/living-library/donations?tbl=subject_area&id=ID&api_key=API_KEY
+     * PUT (i.e. update) record in titles table: SITE_URL/api/v1/living-library/donations?tbl=titles&id=ID&api_key=API_KEY
+     * PUT (i.e. update) record in relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&id=ID&api_key=API_KEY
      */
 
-    let book = typeof request_body.book === 'undefined'
-               ? ""
-               : request_body.book;
+    let tbl = typeof req.query.tbl === 'undefined'
+              ? ""
+              : req.query.tbl.toLowerCase();
 
-    console.log("\ntypeof book = " + typeof book);
+    let table_name;
 
-    // Check for valid JSON string
-    try {
-        book = JSON.parse(book);
-    } catch (error) {
-        console.log("Error parsing JSON: " + error);
-
-        callback({
-            status: 400,
-            message: 'Invalid syntax in request body.'
-        });
-
-        return false;
+    switch(tbl) {
+        case "":
+            table_name = "";
+            break;
+        case "subject_areas":
+            table_name = "tbl_subject_areas_lookup";
+            break;
+        case "titles":
+            table_name = "tbl_titles_lookup";
+            break;
+        case "relationships":
+            table_name = "tbl_relationships_lookup";
+            break;
+        default:
+            table_name = null;
     }
 
-    // Check for expected fields
-    const book_fields = ['book_author_name',
-                         'book_title',
-                         'book_bibliographic_number',
-                         'book_call_number'];
+    switch(table_name) {
+        case "": {
+            /**
+             * This updates the book field (with newlines included) from the
+             * request_body (and sets is_completed = 1). Any other field from the
+             * request_body is ignored.
+             */
 
-    let book_keys = Object.keys(book);
-    console.log("book_keys = ");
-    console.log(book_keys);
-    console.log("book_keys.length = " + book_keys.length);
-    if (!arrays_match(book_keys, book_fields)) {
-        console.log('Request body is valid JSON, but does not exclusively ' +
-                    'contain these properties in this order:\n' +
-                    book_fields.join('\n'));
-        callback({
-            status: 400,
-            message: 'Request body does not contain the expected properties.'
-        });
+            let book = typeof request_body.book === 'undefined'
+                       ? ""
+                       : request_body.book;
 
-        return false;
-    }
+            console.log("\ntypeof book = " + typeof book);
 
-    // Add fields to book object
-    console.log("\nbook before adding fields: ");
-    console.log(book);
-
-    console.log("typeof book = " + typeof book);
-
-    /**
-     * These are legacy fields from original living library implementation
-     * and thus have empty values for new book plate records.
-     */
-    book.book_publisher = "";
-    book.book_date_published = "";
-
-    book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
-    console.log("\nbook_timestamp = " + book.book_timestamp);
-
-    book = JSON.stringify(book);
-    console.log("\nbook after adding fields: ");
-    console.log(book);
-
-    DB(TABLE)
-        .where({
-            id: id
-        })
-        .update({
-            book: book,
-            is_completed: 1
-        })
-        .then(function (data) {
-
-            if (data === 1) {
-                console.log("Updated donation record with id " + id);
+            // Check for valid JSON string
+            try {
+                book = JSON.parse(book);
+            } catch (error) {
+                console.log("Error parsing JSON: " + error);
 
                 callback({
-                    status: 200,
-                    message: 'Record updated.'
+                    status: 400,
+                    message: 'Invalid syntax in request body.'
                 });
-            } else {
-                console.log("Update failed. Couldn't find donation record with "
-                            + "id " + id + '.');
 
-                callback({
-                    status: 404,
-                    message: 'Record not found.'
-                });
+                return false;
             }
 
-        })
-        .catch(function (error) {
-            LOGGER.module().fatal('FATAL: Unable to update record ' + error);
-            throw 'FATAL: Unable to update record ' + error;
-        });
+            // Check for expected fields
+            const book_fields = ['book_author_name',
+                                 'book_title',
+                                 'book_bibliographic_number',
+                                 'book_call_number'];
+
+            let book_keys = Object.keys(book);
+            console.log("book_keys = ");
+            console.log(book_keys);
+            console.log("book_keys.length = " + book_keys.length);
+            if (!arrays_match(book_keys, book_fields)) {
+                console.log('Request body is valid JSON, but does not exclusively ' +
+                            'contain these properties in this order:\n' +
+                            book_fields.join('\n'));
+                callback({
+                    status: 400,
+                    message: 'Request body does not contain the expected properties.'
+                });
+
+                return false;
+            }
+
+            // Add fields to book object
+            console.log("\nbook before adding fields: ");
+            console.log(book);
+
+            console.log("typeof book = " + typeof book);
+
+            /**
+             * These are legacy fields from original living library implementation
+             * and thus have empty values for new book plate records.
+             */
+            book.book_publisher = "";
+            book.book_date_published = "";
+
+            book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+            console.log("\nbook_timestamp = " + book.book_timestamp);
+
+            book = JSON.stringify(book);
+            console.log("\nbook after adding fields: ");
+            console.log(book);
+
+            DB(TABLE)
+                .where({
+                    id: id
+                })
+                .update({
+                    book: book,
+                    is_completed: 1
+                })
+                .then(function (data) {
+
+                    if (data === 1) {
+                        console.log("Updated donation record with id " + id);
+
+                        callback({
+                            status: 200,
+                            message: 'Record updated.'
+                        });
+                    } else {
+                        console.log("Update failed. Couldn't find donation record with "
+                                    + "id " + id + '.');
+
+                        callback({
+                            status: 404,
+                            message: 'Record not found.'
+                        });
+                    }
+
+                })
+                .catch(function (error) {
+                    LOGGER.module().fatal('FATAL: Unable to update record ' + error);
+                    throw 'FATAL: Unable to update record ' + error;
+                });
+            break;
+        } // end of "" case
+
+        case "tbl_subject_areas_lookup":
+        case "tbl_titles_lookup":
+        case "tbl_relationships_lookup": {
+            // Validate request_body or trim edit_menu_choice value?
+
+            let edit_menu_choice = typeof request_body
+                                          .edit_menu_choice === 'undefined'
+                                   ? null
+                                   : request_body.edit_menu_choice;
+
+            console.log('After typeof check, edit_menu_choice = ' +
+                        edit_menu_choice);
+
+            if (edit_menu_choice === null) {
+                console.log('Request body is invalid: Must contain a ' +
+                            'non-null property named edit_menu_choice');
+                callback({
+                    status: 400,
+                    message: 'Request body is invalid: Must contain a ' +
+                             'non-null property named edit_menu_choice'
+                });
+                return false;
+            }
+
+            let id_field, display_field, sort_field;
+
+            switch(table_name) {
+                case "tbl_subject_areas_lookup": {
+                    id_field = 'subject_id',
+                    display_field = 'subject',
+                    sort_field = id_field;
+                    break;
+                }
+                case "tbl_titles_lookup": {
+                    id_field = 'title_id',
+                    display_field = 'title',
+                    sort_field = id_field;
+                    break;
+                }
+                case "tbl_relationships_lookup": {
+                    id_field = 'relationship_id',
+                    display_field = 'relationship',
+                    sort_field = id_field;
+                    break;
+                }
+            }
+
+            DB(table_name)
+                .where(id_field, id)
+                .update(display_field, edit_menu_choice)
+                .then(function (data) {
+
+                    if (data === 1) {
+                        console.log('Updated ' + tbl + ' record with id ' + id);
+
+                        callback({
+                            status: 200,
+                            message: 'Record updated.'
+                        });
+                    } else {
+                        console.log("Update failed. Couldn't find " + tbl +
+                                    " record with id " + id);
+
+                        callback({
+                            status: 404,
+                            message: 'Record not found.'
+                        });
+                    }
+
+                })
+                .catch(function (error) {
+                    LOGGER.module().fatal('FATAL: Unable to update ' + tbl +
+                                          ' record with id ' + id + ': ' +
+                                          error);
+                    /* throw 'FATAL: Unable to update ' + tbl +
+                             ' record with id ' + id + ': ' + error;
+                     */
+                });
+            break;
+        } // end of lookup table cases
+
+        default: {
+            LOGGER.module().fatal('FATAL: Request query contains invalid value '
+                                  + 'for tbl parameter: ' + tbl);
+
+            callback({
+                status: 400,
+                message: 'Request query contains invalid value for tbl ' +
+                         'parameter.'
+            });
+        } // end of default case
+    } // end of switch
 };
 
 /**
