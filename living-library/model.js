@@ -516,6 +516,8 @@ exports.read = function (req, callback) {
               ? ""
               : req.query.tbl.toLowerCase();
 
+    let id = req.query.id;
+
     let table_name;
 
     switch(tbl) {
@@ -552,8 +554,6 @@ exports.read = function (req, callback) {
             let is_completed = typeof req.query.is_completed === 'undefined'
                                ? ""
                                : req.query.is_completed.toLowerCase();
-
-            let id = req.query.id;
 
             DB(TABLE)
                 .select('id', 'donor', 'who_to_notify', 'recipient', 'book', 'is_completed')
@@ -704,6 +704,15 @@ exports.read = function (req, callback) {
                     } else {
                         console.log("No where clause because is_active = "
                                     + is_active + "\n");
+                    }
+                })
+                .modify(function(queryBuilder) {
+                    if (typeof id !== 'undefined') {
+                        console.log("id = " + id + ", so adding to SQL query\n");
+
+                        queryBuilder.where(id_field, id)
+                    } else {
+                        console.log("id = " + id + ", so no adjustment to SQL query\n");
                     }
                 })
                 .then(function (data) {

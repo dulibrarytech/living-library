@@ -1500,7 +1500,7 @@ function get_menu_choices(table) {
                     anchor_element.href = baseUrl +
                                           'index.php/livinglibrary/' +
                                           'editMenuChoice/' + link_text + '/' +
-                                          data[i].id + '/' + data[i].term;
+                                          data[i].id;
                     anchor_element.appendChild(document
                                                .createTextNode(data[i].term));
 
@@ -1524,12 +1524,10 @@ function get_menu_choices(table) {
  * the lookup table (to 'remove' the menu choice, we set is_active = 0).
  * @param   table              the lookup table containing the menu choice
  * @param   menu_choice_id     the id of the menu choice
- * @param   menu_choice_text   the text of the menu choice
  */
-function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
+function edit_menu_choice(table, menu_choice_id) {
     console.log('table = ' + table);
     console.log('menu choice id = ' + menu_choice_id);
-    console.log('menu choice text = ' + menu_choice_text);
 
     hide_table_header_and_content();
 
@@ -1581,7 +1579,9 @@ function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
     html += '<td>'
             + '<label for="edit_menu_choice_input_box" '
             + 'class="form-label-text">'
-            + 'Change &ldquo;' + menu_choice_text + '&rdquo; to:'
+            + 'Change &ldquo;'
+            + '<span class="menu-choice-term"></span>'
+            + '&rdquo; to:'
             + '</label>'
             + '<input type="text" id="edit_menu_choice_input_box" '
             + 'class="input_form-default" name="edit_menu_choice"/>'
@@ -1604,7 +1604,7 @@ function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
             `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id}`
             + ');">';
 
-    html += '<table id="delete-menu-choice" class="table">';
+    html += '<table class="table">';
 
     html += '<tr>';
     html += '<td><h4>Delete ' + label + '</h4></td>';
@@ -1613,7 +1613,9 @@ function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
     html += '<tr>';
     html += '<td>'
             + '<button type="submit" class="btn btn-light btn-bold">'
-            + 'Delete &ldquo;' + menu_choice_text + '&rdquo;'
+            + 'Delete &ldquo;'
+            + '<span class="menu-choice-term"></span>'
+            + '&rdquo;'
             + '</button>'
             + '</td>';
     html += '</tr>';
@@ -1629,6 +1631,48 @@ function edit_menu_choice(table, menu_choice_id, menu_choice_text) {
 
     update_required_fields_in_form(living_library_config
                                    .get_edit_menu_choice_form_info());
+
+    // Populate menu choice term
+    fetch(living_library_config.get_api() +
+          '?tbl=' + table +
+          '&is_active=true' +
+          '&id=' + menu_choice_id +
+          '&api_key=' + living_library_config.get_api_key())
+        .then(function(response) {
+            console.log(response);
+
+            if (response.status !== 200) {
+                console.warn('Looks like there was a problem fetching ' + label
+                             + ' with id = ' + menu_choice_id
+                             + '. Status Code: ' + response.status);
+                return false;
+            }
+
+            response.json().then(function(data) {
+                console.log('Inside ' + label + 's fetch');
+
+                let span_elements = document
+                                    .getElementsByClassName('menu-choice-term');
+                console.log('Menu choice term elements = ');
+                console.log(span_elements);
+
+                if (data.length === 0) {
+                    console.warn('No ' + label.toLowerCase() + 's found.');
+                } else if (data.length === 1) {
+                    for (let element of span_elements) {
+                        element.innerHTML = data[0].term;
+                    }
+                } else {
+                    console.warn('Error: Fetch response for ' + label +
+                                 ' with id = ' + menu_choice_id +
+                                 ' is of length ' + data.length);
+                }
+            });
+        })
+        .catch(function(error) {
+            console.log('FATAL: [edit_menu_choice] Unable to fetch ' + label
+                        + ' with id = ' + menu_choice_id + ': ' + error);
+        });
 }
 
 /**

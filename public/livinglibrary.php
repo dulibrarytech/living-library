@@ -97,17 +97,17 @@ class LivingLibrary extends CI_Controller {
   /**
 	 * Loads page for updating or deleting the specified lookup table record.
    * @param   table           the lookup table to display
-   * @param   id              the id of the menu choice
-   * @param   menuChoiceText  the text of the menu choice
+   * @param   id              the id of the menu choice (i.e. the lookup table
+   *                          record id)
 	 */
-  public function editMenuChoice($table, $id, $menuChoiceText)
+  public function editMenuChoice($table, $id)
 	{
     $table_name = is_string($table)
                   ? strtolower($table)
                   : $table;
 
     $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', " .
-                          $id . ", '" . urldecode($menuChoiceText) . "');</script>";
+                          $id . ");</script>";
 
     $this->load->view('living-library-view', $data);
 	}
