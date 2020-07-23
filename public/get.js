@@ -1557,15 +1557,15 @@ function edit_menu_choice(table, menu_choice_id) {
         page_label_element.innerHTML = 'Living Library: ' + label + 's';
     }
 
-    // Edit menu choice form
-    let html = '<form id="edit-menu-choice-form" method="post" ' +
-               `onsubmit="edit_menu_choice(event, '${table}', ${menu_choice_id}`
+    // 'Update menu choice' form
+    let html = '<form id="update-menu-choice-form" method="post" ' +
+               `onsubmit="update_menu_choice(event, '${table}', ${menu_choice_id}`
                + ');">';
-    console.log("edit menu choice form tag = " + html);
+    console.log("update menu choice form tag = " + html);
     html += '<table class="table">';
 
     html += '<tr>';
-    html += '<td><h4>Edit ' + label + '</h4></td>';
+    html += '<td><h4>Update ' + label + '</h4></td>';
     html += '</tr>';
 
     html += '<tr>';
@@ -1577,14 +1577,14 @@ function edit_menu_choice(table, menu_choice_id) {
 
     html += '<tr>';
     html += '<td>'
-            + '<label for="edit_menu_choice_input_box" '
+            + '<label for="updated_menu_choice_input_box" '
             + 'class="form-label-text">'
             + 'Change &ldquo;'
             + '<span class="menu-choice-term"></span>'
             + '&rdquo; to:'
             + '</label>'
-            + '<input type="text" id="edit_menu_choice_input_box" '
-            + 'class="input_form-default" name="edit_menu_choice"/>'
+            + '<input type="text" id="updated_menu_choice_input_box" '
+            + 'class="input_form-default" name="updated_menu_choice"/>'
             + '</td>';
     html += '</tr>';
 
@@ -1599,7 +1599,7 @@ function edit_menu_choice(table, menu_choice_id) {
     html += '</table>';
     html += '</form>';
 
-    // Delete menu choice form
+    // 'Delete menu choice' form
     html += '<form id="delete-menu-choice-form" method="post" ' +
             `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id}`
             + ');">';
@@ -1630,7 +1630,7 @@ function edit_menu_choice(table, menu_choice_id) {
     }
 
     update_required_fields_in_form(living_library_config
-                                   .get_edit_menu_choice_form_info());
+                                   .get_update_menu_choice_form_info());
 
     // Populate menu choice term
     fetch(living_library_config.get_api() +

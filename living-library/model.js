@@ -908,23 +908,23 @@ exports.update = function (req, callback) {
         case "tbl_subject_areas_lookup":
         case "tbl_titles_lookup":
         case "tbl_relationships_lookup": {
-            // Validate request_body or trim edit_menu_choice value?
+            // Validate request_body or trim updated_menu_choice value?
 
-            let edit_menu_choice = typeof request_body
-                                          .edit_menu_choice === 'undefined'
-                                   ? null
-                                   : request_body.edit_menu_choice;
+            let updated_menu_choice = typeof request_body
+                                             .updated_menu_choice === 'undefined'
+                                      ? null
+                                      : request_body.updated_menu_choice;
 
-            console.log('After typeof check, edit_menu_choice = ' +
-                        edit_menu_choice);
+            console.log('After typeof check, updated_menu_choice = ' +
+                        updated_menu_choice);
 
-            if (edit_menu_choice === null) {
+            if (updated_menu_choice === null) {
                 console.log('Request body is invalid: Must contain a ' +
-                            'non-null property named edit_menu_choice');
+                            'non-null property named updated_menu_choice');
                 callback({
                     status: 400,
                     message: 'Request body is invalid: Must contain a ' +
-                             'non-null property named edit_menu_choice'
+                             'non-null property named updated_menu_choice'
                 });
                 return false;
             }
@@ -954,7 +954,7 @@ exports.update = function (req, callback) {
 
             DB(table_name)
                 .where(id_field, id)
-                .update(display_field, edit_menu_choice)
+                .update(display_field, updated_menu_choice)
                 .then(function (data) {
 
                     if (data === 1) {

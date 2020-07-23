@@ -152,24 +152,24 @@ const living_library_config = (function () {
         return add_menu_choice_form;
     };
 
-    let edit_menu_choice_form = {
+    let update_menu_choice_form = {
         // The name attributes of the form fields
-        menu_choice_fields: ['edit_menu_choice'],
+        menu_choice_fields: ['updated_menu_choice'],
 
         // The id attributes of all required form fields
-        required_ids: ['edit_menu_choice_input_box']
+        required_ids: ['updated_menu_choice_input_box']
     };
 
     // The 'for' attributes of all required form field label tags
-    edit_menu_choice_form.required_label_for_attributes = edit_menu_choice_form
-                                                         .required_ids;
+    update_menu_choice_form
+    .required_label_for_attributes = update_menu_choice_form.required_ids;
 
     /**
      * Returns the above 'edit menu choice form' object
      * @returns {Object}
      */
-    obj.get_edit_menu_choice_form_info = function () {
-        return edit_menu_choice_form;
+    obj.get_update_menu_choice_form_info = function () {
+        return update_menu_choice_form;
     };
 
     /* Form field validation rules */

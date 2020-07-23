@@ -231,15 +231,70 @@ const add_menu_choice = function (event, table) {
                                        'getDonations/queued';
                 */
             } else {
-                alert('An error occurred when submitting the donation form.');
+                alert('An error occurred when adding the menu choice.');
             }
         })
         .catch(function (error) {
             console.log('ERROR: [add_menu_choice] An error occurred during or '
-                        + 'after POST request: ' + error);
+                        + 'after PUT request: ' + error);
         });
+};
 
-}
+/**
+ * Updates the text of the specified lookup table record.
+ * @param   table           the lookup table to update
+ * @param   id              the id of the menu choice to be updated (i.e. the
+ *                          lookup table record id)
+ */
+const update_menu_choice = function (event, table, id) {
+    event.preventDefault();
+
+    console.log("Inside update_menu_choice function");
+
+    console.log("table = " + table);
+    console.log("id = " + id);
+
+    let form_data = document.getElementById('update-menu-choice-form').elements;
+
+    for (let element of form_data) {
+        console.log(element.name + ' = ' + element.value);
+    }
+
+    let form_as_JSON = form_to_JSON(['updated_menu_choice'], form_data);
+    console.log('form_as_JSON = ');
+    console.log(form_as_JSON);
+
+    fetch(living_library_config.get_api() +
+          '?tbl=' + table +
+          '&id=' + id +
+          '&api_key=' + living_library_config.get_api_key(), {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(form_as_JSON),
+        mode: 'cors'
+    })
+        .then(function (response) {
+            console.log('Inside update_menu_choice fetch "then" function');
+            console.log(response);
+
+            if (response.ok) {
+                alert('Form submitted.');
+
+                /*
+                window.location.href = baseUrl + 'index.php/livinglibrary/' +
+                                       'getDonations/queued';
+                */
+            } else {
+                alert('An error occurred when updating the menu choice.');
+            }
+        })
+        .catch(function (error) {
+            console.log('ERROR: [update_menu_choice] An error occurred during '
+                        + 'or after PUT request: ' + error);
+        });
+};
 
 /**
  * Retrieves input data from a form and returns it as a JSON object.
