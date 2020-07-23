@@ -560,9 +560,10 @@ exports.read = function (req, callback) {
                 .orderBy('created', 'desc')
                 .modify(function(queryBuilder) {
                     if (is_completed === 'true' || is_completed === 'false'
-                        || is_completed === '0' || is_completed === '1') {
+                        || is_completed === '1' || is_completed === '0') {
                         // convert from string to boolean
-                        is_completed = is_completed === 'true' || is_completed === '1';
+                        is_completed = is_completed === 'true' ||
+                                       is_completed === '1';
                         console.log("is_completed = " + is_completed + "\n");
 
                         queryBuilder.where({
@@ -694,7 +695,7 @@ exports.read = function (req, callback) {
                 .orderBy(sort_field)
                 .modify(function(queryBuilder) {
                     if (is_active === 'true' || is_active === 'false'
-                        || is_active === '0' || is_active === '1') {
+                        || is_active === '1' || is_active === '0') {
                         // convert from string to boolean
                         is_active = is_active === 'true' || is_active === '1';
                         console.log("is_active = " + is_active + "\n");
@@ -881,15 +882,15 @@ exports.update = function (req, callback) {
                 .then(function (data) {
 
                     if (data === 1) {
-                        console.log("Updated donation record with id " + id);
+                        console.log('Updated donation record with id ' + id);
 
                         callback({
                             status: 200,
                             message: 'Record updated.'
                         });
                     } else {
-                        console.log("Update failed. Couldn't find donation record with "
-                                    + "id " + id + '.');
+                        console.log("Update failed. Couldn't find donation " +
+                                    + "record with id " + id);
 
                         callback({
                             status: 404,
@@ -910,24 +911,11 @@ exports.update = function (req, callback) {
         case "tbl_relationships_lookup": {
             // Validate request_body or trim updated_menu_choice value?
 
-            let updated_menu_choice = typeof request_body
-                                             .updated_menu_choice === 'undefined'
-                                      ? null
-                                      : request_body.updated_menu_choice;
+            let is_active = typeof request_body.is_active === 'undefined'
+                            ? null
+                            : request_body.is_active.toLowerCase();
 
-            console.log('After typeof check, updated_menu_choice = ' +
-                        updated_menu_choice);
-
-            if (updated_menu_choice === null) {
-                console.log('Request body is invalid: Must contain a ' +
-                            'non-null property named updated_menu_choice');
-                callback({
-                    status: 400,
-                    message: 'Request body is invalid: Must contain a ' +
-                             'non-null property named updated_menu_choice'
-                });
-                return false;
-            }
+            console.log('After typeof check, is_active = ' + is_active);
 
             let id_field, display_field, sort_field;
 
@@ -954,9 +942,41 @@ exports.update = function (req, callback) {
 
             DB(table_name)
                 .where(id_field, id)
-                .update(display_field, updated_menu_choice)
-                .then(function (data) {
+                .modify(function(queryBuilder) {
+                    if (typeof request_body.updated_menu_choice !==
+                        'undefined') {
+                        console.log('updated_menu_choice = ' +
+                                    request_body.updated_menu_choice +
+                                    ', so adding to SQL query\n');
 
+                        queryBuilder.update(display_field,
+                                            request_body.updated_menu_choice)
+                    } else if (is_active === 'true' || is_active === 'false'
+                               || is_active === '1' || is_active === '0') {
+                        // convert from string to boolean
+                        is_active = is_active === 'true' || is_active === '1';
+                        console.log('After converting to boolean, is_active = '
+                                    + is_active + '\n');
+
+                        queryBuilder.update({
+                            is_active: is_active
+                        })
+                    } else {
+                        let error_msg = "Request body is invalid: Must " +
+                                        "contain (a) a property named " +
+                                        "'updated_menu_choice' or (b) " +
+                                        "a property named 'is_active' with a " +
+                                        "boolean value (e.g. true or false).";
+
+                        callback({
+                            status: 400,
+                            message: error_msg
+                        });
+
+                        throw error_msg;
+                    }
+                })
+                .then(function (data) {
                     if (data === 1) {
                         console.log('Updated ' + tbl + ' record with id ' + id);
 
@@ -973,7 +993,6 @@ exports.update = function (req, callback) {
                             message: 'Record not found.'
                         });
                     }
-
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: Unable to update ' + tbl +
@@ -1027,7 +1046,7 @@ exports.delete = function (req, callback) {
                     console.log("Deleted " + id);
                     break;
                 default:
-                    console.log("Delete " + count + " records.");
+                    console.log("Deleted " + count + " records.");
             }
 
             callback({
