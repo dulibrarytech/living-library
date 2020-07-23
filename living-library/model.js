@@ -943,21 +943,24 @@ exports.update = function (req, callback) {
             DB(table_name)
                 .where(id_field, id)
                 .modify(function(queryBuilder) {
+                    let data_to_update = {};
+
+                    // Check for updated_menu_choice property
                     if (typeof request_body.updated_menu_choice !==
                         'undefined') {
                         console.log('updated_menu_choice = ' +
                                     request_body.updated_menu_choice +
                                     ', so adding to SQL query\n');
 
-                        queryBuilder.update(display_field,
-                                            request_body.updated_menu_choice)
+                        data_to_update[display_field] = request_body
+                                                        .updated_menu_choice;
                     } else {
                         console.log('updated_menu_choice = ' +
                                     request_body.updated_menu_choice +
                                     ', so no adjustment to SQL query\n');
                     }
-                })
-                .modify(function(queryBuilder) {
+
+                    // Check for is_active property
                     if (is_active === 'true' || is_active === 'false'
                         || is_active === '1' || is_active === '0') {
                         // convert from string to boolean
@@ -965,9 +968,7 @@ exports.update = function (req, callback) {
                         console.log('is_active = ' + is_active +
                                     ', so adding to SQL query\n');
 
-                        queryBuilder.update({
-                            is_active: is_active
-                        })
+                        data_to_update.is_active = is_active;
                     } else {
                         console.log('is_active = ' + is_active +
                                     ', so no adjustment to SQL query\n');
@@ -989,6 +990,10 @@ exports.update = function (req, callback) {
                             throw error_msg;
                         }
                     }
+
+                    console.log('data_to_update = ');
+                    console.log(data_to_update);
+                    queryBuilder.update(data_to_update);
                 })
                 .then(function (data) {
                     if (data === 1) {
