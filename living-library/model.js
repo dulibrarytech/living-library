@@ -951,29 +951,43 @@ exports.update = function (req, callback) {
 
                         queryBuilder.update(display_field,
                                             request_body.updated_menu_choice)
-                    } else if (is_active === 'true' || is_active === 'false'
-                               || is_active === '1' || is_active === '0') {
+                    } else {
+                        console.log('updated_menu_choice = ' +
+                                    request_body.updated_menu_choice +
+                                    ', so no adjustment to SQL query\n');
+                    }
+                })
+                .modify(function(queryBuilder) {
+                    if (is_active === 'true' || is_active === 'false'
+                        || is_active === '1' || is_active === '0') {
                         // convert from string to boolean
                         is_active = is_active === 'true' || is_active === '1';
-                        console.log('After converting to boolean, is_active = '
-                                    + is_active + '\n');
+                        console.log('is_active = ' + is_active +
+                                    ', so adding to SQL query\n');
 
                         queryBuilder.update({
                             is_active: is_active
                         })
                     } else {
-                        let error_msg = "Request body is invalid: Must " +
-                                        "contain (a) a property named " +
-                                        "'updated_menu_choice' or (b) " +
-                                        "a property named 'is_active' with a " +
-                                        "boolean value (e.g. true or false).";
+                        console.log('is_active = ' + is_active +
+                                    ', so no adjustment to SQL query\n');
 
-                        callback({
-                            status: 400,
-                            message: error_msg
-                        });
+                        if (typeof request_body.updated_menu_choice ===
+                            'undefined') {
+                            let error_msg = "Request body is invalid: Must " +
+                                            "contain (a) a property named " +
+                                            "'updated_menu_choice' or (b) " +
+                                            "a property named 'is_active' " +
+                                            "with a boolean value (e.g. true " +
+                                            "or false).";
 
-                        throw error_msg;
+                            callback({
+                                status: 400,
+                                message: error_msg
+                            });
+
+                            throw error_msg;
+                        }
                     }
                 })
                 .then(function (data) {
