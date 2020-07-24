@@ -1521,7 +1521,7 @@ function get_menu_choices(table) {
 /**
  * Loads a form for the specified lookup table record. The form allows the user
  * to (1) update the text of the menu choice and (2) remove the menu choice from
- * the lookup table (to 'remove' the menu choice, we set is_active = 0).
+ * the lookup table (to 'delete' the menu choice, we set is_active = 0).
  * @param   table              the lookup table containing the menu choice
  * @param   menu_choice_id     the id of the menu choice
  */
