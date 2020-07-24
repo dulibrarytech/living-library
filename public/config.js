@@ -178,7 +178,7 @@ const living_library_config = (function () {
         zip_code_validation: 'pattern="^\\d{5}|\\d{5}-\\d{4}"',
         dollar_amount_validation: 'min=0.01 step=0.01',
         // -- Date regex taken from http://html5pattern.com/Dates [Full Date Validation (YYYY-MM-DD) by Patrick Denny] --
-        date_validation: 'pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"',
+        date_validation: 'pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"'
     };
 
     /**
@@ -209,87 +209,6 @@ const living_library_config = (function () {
         /* If you want error text for this situation, uncomment the line below */
         // return '<span class="error">error loading field</span>';
 
-        return '';
-    };
-
-    /**
-     * Parses the JSON stored in the specified object property
-     * @param   {Object}  object     object whose property needs to be parsed
-     * @param   {string}  property   name of property to be parsed
-     * @returns {Object}             the resulting parsed object;
-     *                               otherwise, 'undefined'
-     */
-    obj.get_valid_json = function (object, property) {
-        console.log('Inside get_valid_json function');
-
-        console.log('object = ');
-        console.log(object);
-        console.log('property = ' + property);
-
-        let field;
-
-        if (typeof object === 'undefined' || object === null) {
-            console.log("Error: donation record is " + object);
-        } else if (object.hasOwnProperty(property)) {
-            try {
-                field = JSON.parse(object[property]);
-            } catch (error) {
-                console.log('Error parsing JSON for donation id ' +
-                            object.id + ': ' + error + ':\n' +
-                            'donation_' + object.id + '.' + property +
-                            ' = ' + object[property]);
-            }
-        } else {
-            console.log(`Error: Cannot find '${property}' field in donation `
-                        + 'record with id = ');
-            console.log(object.id);
-        }
-
-        console.log("get_valid_json function is returning:");
-        console.log(field);
-
-        return field;
-    };
-
-    /**
-     * Checks whether the variable is a non-null object
-     * @param               field   the variable to check
-     * @returns {boolean}           true if non-null object; false, otherwise
-     */
-    obj.is_non_null_object = function (field) {
-        return typeof field === 'object' && field !== null;
-    };
-
-    /**
-     * Returns the specified object property (if it's a string or number)
-     * @param   {Object}            object     the object to check
-     * @param   {string or number}  property   the property to check for
-     * @returns                                the object property (if it's a
-     *                                         string or number); otherwise, an
-     *                                         empty string
-     */
-    obj.get_field_value = function (object, property) {
-        if (obj.is_non_null_object(object)) {
-            if (typeof object[property] === 'string' ||
-                typeof object[property] === 'number') {
-                return object[property];
-            }
-
-            let field_label = typeof property === 'number'
-                              ? 'element at index ' + property
-                              : property;
-
-            if (Array.isArray(object[property])) {
-                console.log('Error in donation record field: ' + field_label +
-                            ' is an array: [' + object[property].join(', ') +
-                            ']');
-            } else {
-                console.log('Error in donation record field: ' + field_label +
-                            ' = ' + object[property]);
-            }
-        }
-
-        // No field value, so return the empty string
         return '';
     };
 

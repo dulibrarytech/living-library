@@ -764,9 +764,9 @@ function get_donations(is_completed) {
 
                 html += '<table class="table table-bordered table-striped">';
                 for (let i = 0; i < data.length; i++) {
-                    const donor = living_library_config
+                    const donor = living_library_helper
                                   .get_valid_json(data[i], 'donor'),
-                          recipient = living_library_config
+                          recipient = living_library_helper
                                       .get_valid_json(data[i], 'recipient');
 
                     console.log('After parsing JSON, donor = ');
@@ -777,7 +777,7 @@ function get_donations(is_completed) {
                     console.log(recipient);
                     console.log('typeof recipient = ' + typeof recipient);
 
-                    let donation_id = living_library_config
+                    let donation_id = living_library_helper
                                       .get_field_value(data[i], 'id');
 
                     console.log('donation_id = ' + donation_id);
@@ -806,14 +806,14 @@ function get_donations(is_completed) {
                             + donation_id + '</td>';
 
                     html += '<td class="span4 name-cell4">';
-                    if (living_library_config.is_non_null_object(donor)) {
-                        html += living_library_config
+                    if (living_library_helper.is_non_null_object(donor)) {
+                        html += living_library_helper
                                 .get_field_value(donor, 'donor_title')
                                 + ' ' +
-                                living_library_config
+                                living_library_helper
                                 .get_field_value(donor, 'donor_first_name')
                                 + ' ' +
-                                living_library_config
+                                living_library_helper
                                 .get_field_value(donor, 'donor_last_name');
                     } else {
                         html += living_library_config
@@ -822,15 +822,15 @@ function get_donations(is_completed) {
                     html += '</td>';
 
                     html += '<td class="span4 name-cell4">';
-                    if (living_library_config.is_non_null_object(recipient)) {
-                        html += living_library_config
+                    if (living_library_helper.is_non_null_object(recipient)) {
+                        html += living_library_helper
                                 .get_field_value(recipient, 'recipient_title')
                                 + ' ' +
-                                living_library_config
+                                living_library_helper
                                 .get_field_value(recipient,
                                                  'recipient_first_name')
                                 + ' ' +
-                                living_library_config
+                                living_library_helper
                                 .get_field_value(recipient,
                                                  'recipient_last_name');
                     } else {
@@ -840,8 +840,8 @@ function get_donations(is_completed) {
                     html += '</td>';
 
                     html += '<td style="text-align: center">';
-                    if (living_library_config.is_non_null_object(donor)) {
-                        html += living_library_config
+                    if (living_library_helper.is_non_null_object(donor)) {
+                        html += living_library_helper
                                 .get_field_value(donor,
                                                  'donor_date_of_donation');
                     } else {
@@ -897,13 +897,13 @@ function get_completed_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
 
-            const donor = living_library_config
+            const donor = living_library_helper
                           .get_valid_json(data[0], 'donor'),
-                  who_to_notify = living_library_config
+                  who_to_notify = living_library_helper
                                   .get_valid_json(data[0], 'who_to_notify'),
-                  recipient = living_library_config
+                  recipient = living_library_helper
                               .get_valid_json(data[0], 'recipient'),
-                  book = living_library_config
+                  book = living_library_helper
                          .get_valid_json(data[0], 'book');
 
             console.log('After parsing JSON, donor = ');
@@ -926,37 +926,37 @@ function get_completed_donation(url) {
             html += '<dl>';
             html += '<dt>Title: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_title')
                     + '</dd>';
             html += '<dt>First Name: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_first_name')
                     + '</dd>';
             html += '<dt>Last Name: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_last_name')
                     + '</dd>';
             html += '<dt>Address: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_address')
                     + '</dd>';
             html += '<dt>City: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_city')
                     + '</dd>';
             html += '<dt>State: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_state')
                     + '</dd>';
             html += '<dt>Zip: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_zip')
                     + '</dd>';
             html += '</dl>';
@@ -969,44 +969,44 @@ function get_completed_donation(url) {
                     html += '<dl class="name_address_block">';
                     html += '<dt>Title: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i], 'notify_title')
                             + '</dd>';
                     html += '<dt>First Name: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i],
                                              'notify_first_name')
                             + '</dd>';
                     html += '<dt>Last Name: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i],
                                              'notify_last_name')
                             + '</dd>';
                     html += '<dt>Address: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i], 'notify_address')
                             + '</dd>';
                     html += '<dt>City: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i], 'notify_city')
                             + '</dd>';
                     html += '<dt>State: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i], 'notify_state')
                             + '</dd>';
                     html += '<dt>Zip: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i], 'notify_zip')
                             + '</dd>';
                     html += '<dt>Relation to Donor: </dt>'
                             + '<dd>' +
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i],
                                              'notify_relation_to_donor')
                             + '</dd>';
@@ -1018,27 +1018,27 @@ function get_completed_donation(url) {
             html += '<dl>';
             html += '<dt>Title: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(recipient, 'recipient_title')
                     + '</dd>';
             html += '<dt>First Name: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(recipient, 'recipient_first_name')
                     + '</dd>';
             html += '<dt>Last Name: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(recipient, 'recipient_last_name')
                     + '</dd>';
             html += '<dt>Donation Type: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(recipient, 'recipient_donation_type')
                     + '</dd>';
             html += '</dl>';
 
-            let donation_amount = living_library_config
+            let donation_amount = living_library_helper
                                   .get_field_value(donor,
                                                    'donor_amount_of_donation');
             if (typeof donation_amount === 'number') {
@@ -1057,7 +1057,7 @@ function get_completed_donation(url) {
                     + '<dd>' + donation_amount + '</dd>';
             html += '<dt>Date of Donation: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(donor, 'donor_date_of_donation')
                     + '</dd>';
             html += '</dl>';
@@ -1066,22 +1066,22 @@ function get_completed_donation(url) {
             html += '<dl>';
             html += '<dt>Author Name: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(book, 'book_author_name')
                     + '</dd>';
             html += '<dt>Book Title: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(book, 'book_title')
                     + '</dd>';
             html += '<dt>Bibliographic Number: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(book, 'book_bibliographic_number')
                     + '</dd>';
             html += '<dt>Call Number: </dt>'
                     + '<dd>' +
-                    living_library_config
+                    living_library_helper
                     .get_field_value(book, 'book_call_number')
                     + '</dd>';
             html += '</dl>';
@@ -1110,11 +1110,11 @@ function get_queued_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Book Plate Form');
 
-            const donor = living_library_config
+            const donor = living_library_helper
                           .get_valid_json(data[0], 'donor'),
-                  who_to_notify = living_library_config
+                  who_to_notify = living_library_helper
                                   .get_valid_json(data[0], 'who_to_notify'),
-                  recipient = living_library_config
+                  recipient = living_library_helper
                               .get_valid_json(data[0], 'recipient');
 
             /* Add information from the donation record */
@@ -1122,14 +1122,14 @@ function get_queued_donation(url) {
 
             html += '<dt>Person making donation: </dt>'
                     + '<dd>';
-            if (living_library_config.is_non_null_object(donor)) {
-                html += living_library_config
+            if (living_library_helper.is_non_null_object(donor)) {
+                html += living_library_helper
                         .get_field_value(donor, 'donor_title')
                         + ' ' +
-                        living_library_config
+                        living_library_helper
                         .get_field_value(donor, 'donor_first_name')
                         + ' ' +
-                        living_library_config
+                        living_library_helper
                         .get_field_value(donor, 'donor_last_name');
             } else {
                 html += living_library_config
@@ -1139,8 +1139,8 @@ function get_queued_donation(url) {
 
             html += '<dt>Notes: </dt>'
                     + '<dd>';
-            if (living_library_config.is_non_null_object(donor)) {
-                html += living_library_config
+            if (living_library_helper.is_non_null_object(donor)) {
+                html += living_library_helper
                         .get_field_value(donor, 'donor_notes');
             } else {
                 html += living_library_config
@@ -1153,11 +1153,11 @@ function get_queued_donation(url) {
             if (Array.isArray(who_to_notify) && who_to_notify.length > 0) {
                 let persons_to_be_notified = [];
                 for (let i = 0; i < who_to_notify.length; i++) {
-                    if (living_library_config
+                    if (living_library_helper
                         .is_non_null_object(who_to_notify[i])) {
                         let person = [];
 
-                        let notify_title = living_library_config
+                        let notify_title = living_library_helper
                                            .get_field_value(who_to_notify[i],
                                                             'notify_title');
                         if (notify_title !== '') {
@@ -1165,7 +1165,7 @@ function get_queued_donation(url) {
                         }
 
                         let notify_first_name =
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i],
                                              'notify_first_name');
                         if (notify_first_name !== '') {
@@ -1173,7 +1173,7 @@ function get_queued_donation(url) {
                         }
 
                         let notify_last_name =
-                            living_library_config
+                            living_library_helper
                             .get_field_value(who_to_notify[i],
                                              'notify_last_name');
                         if (notify_last_name !== '') {
@@ -1194,17 +1194,17 @@ function get_queued_donation(url) {
 
             html += '<dt>Person receiving donation: </dt>'
                     + '<dd>';
-            if (living_library_config.is_non_null_object(recipient)) {
-                html += living_library_config
+            if (living_library_helper.is_non_null_object(recipient)) {
+                html += living_library_helper
                         .get_field_value(recipient, 'recipient_title')
                         + ' ' +
-                        living_library_config
+                        living_library_helper
                         .get_field_value(recipient, 'recipient_first_name')
                         + ' ' +
-                        living_library_config
+                        living_library_helper
                         .get_field_value(recipient, 'recipient_last_name')
                         + ' (' +
-                        living_library_config
+                        living_library_helper
                         .get_field_value(recipient, 'recipient_donation_type')
                         + ')';
             } else {
@@ -1215,8 +1215,8 @@ function get_queued_donation(url) {
 
             html += '<dt>Date of donation: </dt>'
                     + '<dd>';
-            if (living_library_config.is_non_null_object(donor)) {
-                html += living_library_config
+            if (living_library_helper.is_non_null_object(donor)) {
+                html += living_library_helper
                         .get_field_value(donor, 'donor_date_of_donation');
             } else {
                 html += living_library_config
@@ -1226,7 +1226,7 @@ function get_queued_donation(url) {
 
             html += '<dt>Selected subject areas: </dt>'
                     + '<dd>';
-            if (living_library_config.is_non_null_object(donor) &&
+            if (living_library_helper.is_non_null_object(donor) &&
                 Array.isArray(donor.donor_subject_areas) &&
                 donor.donor_subject_areas.length > 0) {
                 console.log('donor.donor_subject_areas is a non-empty array');
@@ -1234,7 +1234,7 @@ function get_queued_donation(url) {
                 let subject_areas = [];
                 for (let i = 0; i < donor.donor_subject_areas.length; i++) {
                     let subject =
-                        living_library_config
+                        living_library_helper
                         .get_field_value(donor.donor_subject_areas, i);
                     if (subject !== '') {
                         subject_areas.push(subject);

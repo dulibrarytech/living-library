@@ -22,6 +22,7 @@
 
 <!-- Living Library integration -->
 <script src="<?php echo base_url();?>libs/livingLibrary/config.js"></script>
+<script src="<?php echo base_url();?>libs/livingLibrary/helper.js"></script>
 <script src="<?php echo base_url();?>libs/livingLibrary/get.js"></script>
 <script src="<?php echo base_url();?>libs/livingLibrary/postPutDelete.js"></script>
 
