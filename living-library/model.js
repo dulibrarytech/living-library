@@ -911,12 +911,6 @@ exports.update = function (req, callback) {
         case "tbl_relationships_lookup": {
             // Validate request_body or trim updated_menu_choice value?
 
-            let is_active = typeof request_body.is_active === 'undefined'
-                            ? null
-                            : request_body.is_active.toLowerCase();
-
-            console.log('After typeof check, is_active = ' + is_active);
-
             let id_field, display_field, sort_field;
 
             switch(table_name) {
@@ -961,10 +955,24 @@ exports.update = function (req, callback) {
                     }
 
                     // Check for is_active property
-                    if (is_active === 'true' || is_active === 'false'
-                        || is_active === '1' || is_active === '0') {
-                        // convert from string to boolean
-                        is_active = is_active === 'true' || is_active === '1';
+                    let is_active = request_body.is_active;
+
+                    if (typeof is_active === 'string') {
+                        is_active = is_active.toLowerCase();
+                    }
+
+                    console.log('After typeof check, is_active = ' + is_active);
+
+                    if (typeof is_active === 'boolean' ||
+                        is_active === 'true' || is_active === 'false' ||
+                        is_active === '1' || is_active === '0' ||
+                        is_active === 1 || is_active === 0) {
+                        // convert to boolean if needed
+                        if (typeof is_active !== 'boolean') {
+                            is_active = is_active === 'true' ||
+                                        is_active === '1' ||
+                                        is_active === 1;
+                        }
                         console.log('is_active = ' + is_active +
                                     ', so adding to SQL query\n');
 

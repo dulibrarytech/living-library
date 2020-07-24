@@ -1642,7 +1642,7 @@ function edit_menu_choice(table, menu_choice_id) {
             console.log(response);
 
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem fetching ' + label
+                console.warn('Looks like there was a problem fetching ' + table
                              + ' with id = ' + menu_choice_id
                              + '. Status Code: ' + response.status);
                 return false;
@@ -1670,7 +1670,7 @@ function edit_menu_choice(table, menu_choice_id) {
             });
         })
         .catch(function(error) {
-            console.log('FATAL: [edit_menu_choice] Unable to fetch ' + label
+            console.log('FATAL: [edit_menu_choice] Unable to fetch ' + table
                         + ' with id = ' + menu_choice_id + ': ' + error);
         });
 }

@@ -297,6 +297,54 @@ const update_menu_choice = function (event, table, id) {
 };
 
 /**
+ * Removes the specified lookup table record from view on the website.
+ * @param   table           the lookup table to update
+ * @param   id              the id of the menu choice to be removed (i.e. the
+ *                          lookup table record id)
+ */
+const delete_menu_choice = function (event, table, id) {
+    event.preventDefault();
+
+    console.log("Inside delete_menu_choice function");
+
+    console.log("table = " + table);
+    console.log("id = " + id);
+
+    fetch(living_library_config.get_api() +
+          '?tbl=' + table +
+          '&id=' + id +
+          '&api_key=' + living_library_config.get_api_key(), {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            is_active: false
+        }),
+        mode: 'cors'
+    })
+        .then(function (response) {
+            console.log('Inside delete_menu_choice fetch "then" function');
+            console.log(response);
+
+            if (response.ok) {
+                alert('Form submitted.');
+
+                /*
+                window.location.href = baseUrl + 'index.php/livinglibrary/' +
+                                       'getDonations/queued';
+                */
+            } else {
+                alert('An error occurred when removing the menu choice.');
+            }
+        })
+        .catch(function (error) {
+            console.log('ERROR: [delete_menu_choice] An error occurred during '
+                        + 'or after PUT request: ' + error);
+        });
+};
+
+/**
  * Retrieves input data from a form and returns it as a JSON object.
  * @param  {Array}            expected_form_fields  the form fields that will be
  *                                                  matched
