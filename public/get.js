@@ -1435,6 +1435,8 @@ function get_menu_choices(table) {
             + '<button type="submit" class="btn btn-light btn-bold">'
             + 'Save ' + label
             + '</button>'
+            + '<div id="add-menu-choice-form-confirmation">'
+            + '</div>'
             + '</td>';
     html += '</tr>';
 

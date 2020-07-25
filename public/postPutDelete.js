@@ -217,21 +217,43 @@ const add_menu_choice = function (event, table) {
         .then(function (response) {
             console.log('Inside add_menu_choice fetch: first "then" function');
             console.log(response);
-            return response.json();
+            return response.json().then(data => ({
+                data: data,
+                status: response.status,
+                ok: response.ok
+            }));
         })
-        .then(function (data) {
+        .then(function (response) {
             console.log('Inside second "then" function');
-            if (data.length > 0) {
-                console.log(data[0]);
+            console.log('response = ');
+            console.log(response);
 
-                alert('Form submitted.');
+            let confirmation_div_element =
+                document.getElementById('add-menu-choice-form-confirmation');
 
-                /*
-                window.location.href = baseUrl + 'index.php/livinglibrary/' +
-                                       'getDonations/queued';
-                */
+            if (response.ok && response.data.length === 1) {
+                if (confirmation_div_element) {
+                    confirmation_div_element.className =
+                        'form-submit-confirmation success';
+                    confirmation_div_element.innerHTML = 'Success -- ' +
+                        response.data[0].term + ' added to list!';
+                }
+
+                setTimeout(function () {
+                    window.location.reload(true)
+                }, 4000);
             } else {
-                alert('An error occurred when adding the menu choice.');
+                if (confirmation_div_element) {
+                    confirmation_div_element.className =
+                        'form-submit-confirmation error';
+
+                    confirmation_div_element.innerHTML =
+                        response.status === 409
+                        ? 'Error -- ' + form_as_JSON.new_menu_choice +
+                          ' already in list'
+                        : 'Error -- unable to add ' +
+                          form_as_JSON.new_menu_choice + ' to list';
+                }
             }
         })
         .catch(function (error) {

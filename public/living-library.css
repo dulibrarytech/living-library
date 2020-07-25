@@ -84,7 +84,17 @@ abbr[title] {
   padding-left: 5px;
 }
 
+/* Style for form submission confirmations */
+.form-submit-confirmation {
+  padding-top: 16px;
+}
+
+/* Style for success messages */
+.success {
+  color: Green;
+}
+
 /* Style for error messages */
 .error {
-  font-style: italic;
+  color: FireBrick;
 }

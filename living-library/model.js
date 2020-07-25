@@ -448,7 +448,7 @@ exports.create = function (req, callback) {
                     return false;
                 } else {
                     DB(table_name)
-                        .select('*')
+                        .select(id_field + ' as id', display_field + ' as term')
                         .where(id_field, obj.id)
                         .then(function (data) {
                             obj.data = data;
