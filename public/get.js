@@ -1595,6 +1595,8 @@ function edit_menu_choice(table, menu_choice_id) {
             + '<button type="submit" class="btn btn-light btn-bold">'
             + 'Update'
             + '</button>'
+            + '<div id="update-menu-choice-form-confirmation">'
+            + '</div>'
             + '</td>';
     html += '</tr>';
 

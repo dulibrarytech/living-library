@@ -235,18 +235,18 @@ const add_menu_choice = function (event, table) {
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
-                                         'Success -- ' + response.data[0].term +
-                                         ' added to list!');
+                                          'Success -- ' + response.data[0].term
+                                          + ' added to list!');
             } else {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
-                                         response.status === 409
-                                         ? 'Error -- ' +
-                                           form_as_JSON.new_menu_choice +
-                                           ' already in list'
-                                         : 'Error -- unable to add ' +
-                                           form_as_JSON.new_menu_choice +
-                                           ' to list');
+                                          response.status === 409
+                                          ? 'Error -- ' +
+                                            form_as_JSON.new_menu_choice +
+                                            ' already in list'
+                                          : 'Error -- unable to add ' +
+                                            form_as_JSON.new_menu_choice +
+                                            ' to list');
             }
         })
         .catch(function (error) {
@@ -292,17 +292,23 @@ const update_menu_choice = function (event, table, id) {
     })
         .then(function (response) {
             console.log('Inside update_menu_choice fetch "then" function');
+            console.log('response = ');
             console.log(response);
 
-            if (response.ok) {
-                alert('Form submitted.');
+            let confirmation_div_element =
+                document.getElementById('update-menu-choice-form-confirmation');
 
-                /*
-                window.location.href = baseUrl + 'index.php/livinglibrary/' +
-                                       'getDonations/queued';
-                */
+            if (response.ok) {
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, true,
+                                          'Success -- Updated menu choice!');
             } else {
-                alert('An error occurred when updating the menu choice.');
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, false,
+                                          response.status === 404
+                                          ? 'Error -- Record ' + id +
+                                            ' not found'
+                                          : 'Error -- unable to update');
             }
         })
         .catch(function (error) {
