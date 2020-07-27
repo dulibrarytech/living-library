@@ -93,6 +93,33 @@ const living_library_helper = (function () {
         return '';
     };
 
+    /**
+     * Inserts the given message into the specified DOM element.
+     * @param   {Object}   element      the DOM element to insert into
+     * @param   {boolean}  is_success   whether form submission succeeded (true)
+     *                                  or failed (false)
+     * @param   {string}   message      the message to be inserted
+     */
+    obj.insert_form_confirmation = function (element, is_success, message) {
+        console.log('Inside insert_form_confirmation function');
+
+        if (is_success) {
+            if (element) {
+                element.className = 'form-submit-confirmation success';
+                element.innerHTML = message;
+            }
+
+            setTimeout(function () {
+                window.location.reload(true);
+            }, 4000);
+        } else {
+            if (element) {
+                element.className = 'form-submit-confirmation error';
+                element.innerHTML = message;
+            }
+        }
+    };
+
     return obj;
 
 }());

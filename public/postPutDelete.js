@@ -216,6 +216,7 @@ const add_menu_choice = function (event, table) {
     })
         .then(function (response) {
             console.log('Inside add_menu_choice fetch: first "then" function');
+            console.log('response = ');
             console.log(response);
             return response.json().then(data => ({
                 data: data,
@@ -232,28 +233,20 @@ const add_menu_choice = function (event, table) {
                 document.getElementById('add-menu-choice-form-confirmation');
 
             if (response.ok && response.data.length === 1) {
-                if (confirmation_div_element) {
-                    confirmation_div_element.className =
-                        'form-submit-confirmation success';
-                    confirmation_div_element.innerHTML = 'Success -- ' +
-                        response.data[0].term + ' added to list!';
-                }
-
-                setTimeout(function () {
-                    window.location.reload(true)
-                }, 4000);
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, true,
+                                         'Success -- ' + response.data[0].term +
+                                         ' added to list!');
             } else {
-                if (confirmation_div_element) {
-                    confirmation_div_element.className =
-                        'form-submit-confirmation error';
-
-                    confirmation_div_element.innerHTML =
-                        response.status === 409
-                        ? 'Error -- ' + form_as_JSON.new_menu_choice +
-                          ' already in list'
-                        : 'Error -- unable to add ' +
-                          form_as_JSON.new_menu_choice + ' to list';
-                }
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, false,
+                                         response.status === 409
+                                         ? 'Error -- ' +
+                                           form_as_JSON.new_menu_choice +
+                                           ' already in list'
+                                         : 'Error -- unable to add ' +
+                                           form_as_JSON.new_menu_choice +
+                                           ' to list');
             }
         })
         .catch(function (error) {
