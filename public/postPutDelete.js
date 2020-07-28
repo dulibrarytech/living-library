@@ -167,18 +167,33 @@ const save_book_plate = function (event) {
     })
         .then(function (response) {
             console.log('Inside save_book_plate fetch: "then" function');
+            console.log('response = ');
             console.log(response);
-            if (response.ok) {
-                alert('Book plate saved for Donation ID ' +
-                      form_data.donation_id.value + '.');
 
-                window.location.href = baseUrl + 'index.php/livinglibrary/' +
-                                       'getDonation/completed/' +
-                                       form_data.donation_id.value;
+            let confirmation_div_element =
+                document.getElementById('donor-input-form-confirmation');
+
+            if (response.ok) {
+                let redirect_url = baseUrl + 'index.php/livinglibrary/' +
+                                   'getDonation/completed/' +
+                                   form_data.donation_id.value;
+
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, true,
+                                          'Success -- Book plate saved for ' +
+                                          'Donation ID ' +
+                                          form_data.donation_id.value + '!',
+                                          function () {
+                                              window.location.href =
+                                                  redirect_url;
+                                          });
             } else {
-                alert('An error occurred when saving the book plate. Could not '
-                      + 'find Donation ID ' + form_data.donation_id.value
-                      + '.');
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, false,
+                                          "Error when saving book plate -- " +
+                                          "Couldn't find donation record " +
+                                          "with id " +
+                                          form_data.donation_id.value);
             }
         })
         .catch(function (error) {

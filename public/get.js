@@ -1325,6 +1325,8 @@ function get_queued_donation(url) {
                          + 'class="btn-grey" id="save_book_plate_button">'
                          + 'Save Book Plate'
                          + '</button>'
+                         + '<div id="donor-input-form-confirmation">'
+                         + '</div>'
                          + '</td>'
                          + '</tr>'
                          + '</table>';

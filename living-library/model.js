@@ -890,7 +890,7 @@ exports.update = function (req, callback) {
                         });
                     } else {
                         console.log("Update failed. Couldn't find donation " +
-                                    + "record with id " + id);
+                                    "record with id " + id);
 
                         callback({
                             status: 404,
