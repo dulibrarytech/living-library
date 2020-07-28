@@ -142,7 +142,7 @@ const save_book_plate = function (event) {
 
     console.log("Inside save_book_plate function");
 
-    let form_data = document.getElementById('donor-input-form').elements;
+    let form_data = document.getElementById('book-plate-form').elements;
 
     let form_as_JSON = form_to_JSON(living_library_config
                                     .get_book_plate_form_info().book_fields,
@@ -171,7 +171,7 @@ const save_book_plate = function (event) {
             console.log(response);
 
             let confirmation_div_element =
-                document.getElementById('donor-input-form-confirmation');
+                document.getElementById('book-plate-form-confirmation');
 
             if (response.ok) {
                 let redirect_url = baseUrl + 'index.php/livinglibrary/' +
@@ -180,9 +180,7 @@ const save_book_plate = function (event) {
 
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
-                                          'Success -- Book plate saved for ' +
-                                          'Donation ID ' +
-                                          form_data.donation_id.value + '!',
+                                          'Success -- book plate saved!',
                                           function () {
                                               window.location.href =
                                                   redirect_url;

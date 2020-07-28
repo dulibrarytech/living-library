@@ -1259,7 +1259,7 @@ function get_queued_donation(url) {
             }
 
             /* Add book plate form */
-            let form_html = '<form id="donor-input-form" method="post" '
+            let form_html = '<form id="book-plate-form" method="post" '
                             + 'onsubmit="save_book_plate(event);">';
 
             form_html += '<table class="table">';
@@ -1325,7 +1325,7 @@ function get_queued_donation(url) {
                          + 'class="btn-grey" id="save_book_plate_button">'
                          + 'Save Book Plate'
                          + '</button>'
-                         + '<div id="donor-input-form-confirmation">'
+                         + '<div id="book-plate-form-confirmation">'
                          + '</div>'
                          + '</td>'
                          + '</tr>'
