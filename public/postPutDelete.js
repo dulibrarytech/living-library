@@ -12,7 +12,7 @@ const save_donation = function (event) {
 
     console.log("Inside save_donation function");
 
-    let form_data = document.getElementById('donor-input-form').elements;
+    let form_data = document.getElementById('donation-form').elements;
 
     let donor_data_as_JSON = form_to_JSON(living_library_config
                                           .get_donation_form_info().donor_fields,

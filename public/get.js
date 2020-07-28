@@ -26,7 +26,7 @@ function create_donation() {
         page_label_element.innerHTML = 'Living Library: Donation Form';
     }
 
-    let form_html = '<form id="donor-input-form" method="post" '
+    let form_html = '<form id="donation-form" method="post" '
                     + 'onsubmit="save_donation(event);">';
 
     // Donor table
