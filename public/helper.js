@@ -106,17 +106,14 @@ const living_library_helper = (function () {
                                              callback) {
         console.log('Inside insert_form_confirmation function');
 
-        if (is_success) {
-            if (element) {
-                element.className = 'form-submit-confirmation success';
-                element.innerHTML = message;
-            }
+        if (element) {
+            element.innerHTML = message;
 
-            setTimeout(callback, 4000);
-        } else {
-            if (element) {
+            if (is_success) {
+                element.className = 'form-submit-confirmation success';
+                setTimeout(callback, 4000);
+            } else {
                 element.className = 'form-submit-confirmation error';
-                element.innerHTML = message;
             }
         }
     };
