@@ -236,7 +236,10 @@ const add_menu_choice = function (event, table) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
                                           'Success -- ' + response.data[0].term
-                                          + ' added to list!');
+                                          + ' added to list!',
+                                          function () {
+                                              window.location.reload(true);
+                                          });
             } else {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
@@ -301,7 +304,10 @@ const update_menu_choice = function (event, table, id) {
             if (response.ok) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
-                                          'Success -- Updated menu choice!');
+                                          'Success -- Updated menu choice!',
+                                          function () {
+                                              window.location.reload(true);
+                                          });
             } else {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
@@ -318,12 +324,15 @@ const update_menu_choice = function (event, table, id) {
 };
 
 /**
- * Removes the specified lookup table record from view on the website.
- * @param   table           the lookup table to update
- * @param   id              the id of the menu choice to be removed (i.e. the
- *                          lookup table record id)
+ * Removes the specified lookup table record from view on the website. To
+ * remove the record from view, we set is_active = false.
+ * @param   table             the lookup table to update
+ * @param   id                the id of the menu choice to be removed (i.e. the
+ *                            lookup table record id)
+ * @param   table_link_text   the text to be used in hyperlinks to identify
+ *                            the lookup table
  */
-const delete_menu_choice = function (event, table, id) {
+const delete_menu_choice = function (event, table, id, table_link_text) {
     event.preventDefault();
 
     console.log("Inside delete_menu_choice function");
@@ -346,17 +355,29 @@ const delete_menu_choice = function (event, table, id) {
     })
         .then(function (response) {
             console.log('Inside delete_menu_choice fetch "then" function');
+            console.log('response = ');
             console.log(response);
 
-            if (response.ok) {
-                alert('Form submitted.');
+            let confirmation_div_element =
+                document.getElementById('delete-menu-choice-form-confirmation');
 
-                /*
-                window.location.href = baseUrl + 'index.php/livinglibrary/' +
-                                       'getDonations/queued';
-                */
+            if (response.ok) {
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, true,
+                                          'Success -- Removed menu choice!',
+                                          function () {
+                                              window.location.href = baseUrl +
+                                                  'index.php/livinglibrary/' +
+                                                  'getMenuChoices/' +
+                                                  table_link_text;
+                                          });
             } else {
-                alert('An error occurred when removing the menu choice.');
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, false,
+                                          response.status === 404
+                                          ? 'Error -- Record ' + id +
+                                            ' not found'
+                                          : 'Error -- unable to delete');
             }
         })
         .catch(function (error) {

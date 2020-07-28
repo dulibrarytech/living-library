@@ -107,7 +107,7 @@ class LivingLibrary extends CI_Controller {
                   : $table;
 
     $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', " .
-                          $id . ");</script>";
+                          $id . ", '" . $table . "');</script>";
 
     $this->load->view('living-library-view', $data);
 	}

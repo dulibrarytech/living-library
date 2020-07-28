@@ -1523,13 +1523,16 @@ function get_menu_choices(table) {
 /**
  * Loads a form for the specified lookup table record. The form allows the user
  * to (1) update the text of the menu choice and (2) remove the menu choice from
- * the lookup table (to 'delete' the menu choice, we set is_active = 0).
+ * the lookup table (to 'delete' the menu choice, we set is_active = false).
  * @param   table              the lookup table containing the menu choice
  * @param   menu_choice_id     the id of the menu choice
+ * @param   table_link_text    the text to be used in hyperlinks to identify
+ *                             the lookup table
  */
-function edit_menu_choice(table, menu_choice_id) {
+function edit_menu_choice(table, menu_choice_id, table_link_text) {
     console.log('table = ' + table);
     console.log('menu choice id = ' + menu_choice_id);
+    console.log('table link text = ' + table_link_text);
 
     hide_table_header_and_content();
 
@@ -1561,8 +1564,8 @@ function edit_menu_choice(table, menu_choice_id) {
 
     // 'Update menu choice' form
     let html = '<form id="update-menu-choice-form" method="post" ' +
-               `onsubmit="update_menu_choice(event, '${table}', ${menu_choice_id}`
-               + ');">';
+               `onsubmit="update_menu_choice(event, '${table}', `
+               + `${menu_choice_id});">`;
     console.log("update menu choice form tag = " + html);
     html += '<table class="table">';
 
@@ -1605,8 +1608,8 @@ function edit_menu_choice(table, menu_choice_id) {
 
     // 'Delete menu choice' form
     html += '<form id="delete-menu-choice-form" method="post" ' +
-            `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id}`
-            + ');">';
+            `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id},`
+            + ` '${table_link_text}');">`;
 
     html += '<table class="table">';
 
@@ -1621,6 +1624,8 @@ function edit_menu_choice(table, menu_choice_id) {
             + '<span class="menu-choice-term"></span>'
             + '&rdquo;'
             + '</button>'
+            + '<div id="delete-menu-choice-form-confirmation">'
+            + '</div>'
             + '</td>';
     html += '</tr>';
 

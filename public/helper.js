@@ -99,8 +99,11 @@ const living_library_helper = (function () {
      * @param   {boolean}  is_success   whether form submission succeeded (true)
      *                                  or failed (false)
      * @param   {string}   message      the message to be inserted
+     * @param   {function} callback     function to be called after message
+     *                                  has been displayed
      */
-    obj.insert_form_confirmation = function (element, is_success, message) {
+    obj.insert_form_confirmation = function (element, is_success, message,
+                                             callback) {
         console.log('Inside insert_form_confirmation function');
 
         if (is_success) {
@@ -109,9 +112,7 @@ const living_library_helper = (function () {
                 element.innerHTML = message;
             }
 
-            setTimeout(function () {
-                window.location.reload(true);
-            }, 4000);
+            setTimeout(callback, 4000);
         } else {
             if (element) {
                 element.className = 'form-submit-confirmation error';

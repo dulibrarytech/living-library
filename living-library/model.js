@@ -1020,6 +1020,8 @@ exports.update = function (req, callback) {
                             message: 'Record not found.'
                         });
                     }
+
+                    console.log("\nEnd of UPDATE query from model\n=====================\n");
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: Unable to update ' + tbl +
