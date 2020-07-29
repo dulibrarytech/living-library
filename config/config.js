@@ -29,5 +29,9 @@ module.exports = {
     dbHost: process.env.DB_HOST,
     dbUser: process.env.DB_USER,
     dbPassword: process.env.DB_PASSWORD,
-    dbName: process.env.DB_NAME
+    dbName: process.env.DB_NAME,
+    emailHost: process.env.EMAIL_HOST,
+    emailPort: process.env.EMAIL_PORT,
+    emailFromAddress: process.env.EMAIL_FROM_ADDRESS,
+    emailDeveloper: process.env.EMAIL_DEVELOPER
 };

@@ -22,7 +22,19 @@ const LOGGER = require('../libs/log4'),
       ASYNC = require('async'),
       DB = require('../config/db')(),
       MOMENT = require('moment'),
+      NODEMAILER = require('nodemailer'),
+      CONFIG = require('../config/config'),
       TABLE = 'tbl_donations';
+
+let transporter = NODEMAILER.createTransport({
+    host: CONFIG.emailHost,
+    port: CONFIG.emailPort,
+    debug: true,
+    logger: true
+},
+{
+    from: CONFIG.emailFromAddress
+});
 
 /**
  * Creates record
@@ -886,6 +898,30 @@ exports.update = function (req, callback) {
 
                     if (data === 1) {
                         console.log('Updated donation record with id ' + id);
+
+                        // verify connection configuration
+                        transporter.verify(function(error, success) {
+                          if (error) {
+                            console.log(error);
+                          } else {
+                            console.log("Server is ready to take our messages");
+                          }
+                        });
+
+                        const message = {
+                            // from: 'email@example.com', // Sender address
+                            to: CONFIG.emailDeveloper, // List of recipients
+                            subject: 'Living Library: Book Plate Information Completed', // Subject line
+                            text: 'The record for the donor listed below is complete.' + ' (donation id = ' + id + ')' // Plain text body
+                        };
+
+                        transporter.sendMail(message, function(err, info) {
+                            if (err) {
+                              console.log(err)
+                            } else {
+                              console.log(info);
+                            }
+                        });
 
                         callback({
                             status: 200,
