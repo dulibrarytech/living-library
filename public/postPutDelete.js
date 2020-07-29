@@ -97,21 +97,37 @@ const save_donation = function (event) {
     })
         .then(function (response) {
             console.log('Inside save_donation fetch: first "then" function');
+            console.log('response = ');
             console.log(response);
-            return response.json();
+            return response.json().then(data => ({
+                data: data,
+                status: response.status,
+                ok: response.ok
+            }));
         })
-        .then(function (data) {
+        .then(function (response) {
             console.log('Inside second "then" function');
-            if (data.length > 0) {
-                console.log(data[0]);
+            console.log('response = ');
+            console.log(response);
 
-                alert('Donation ID ' + data[0].id +
-                      ' added to Donation Queue.');
+            let confirmation_div_element =
+                document.getElementById('donation-form-confirmation');
 
-                window.location.href = baseUrl + 'index.php/livinglibrary/' +
-                                       'getDonations/queued';
+            if (response.ok && response.data.length === 1) {
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, true,
+                                          'Success -- donation with id ' +
+                                          response.data[0].id +
+                                          ' added to queue!',
+                                          function () {
+                                              window.location.href = baseUrl +
+                                                  'index.php/livinglibrary/' +
+                                                  'getDonations/queued';
+                                          });
             } else {
-                alert('An error occurred when submitting the donation form.');
+                living_library_helper
+                .insert_form_confirmation(confirmation_div_element, false,
+                                          'Error submitting the donation form');
             }
         })
         .catch(function (error) {
@@ -325,7 +341,7 @@ const update_menu_choice = function (event, table, id) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
                                           response.status === 404
-                                          ? 'Error -- Record ' + id +
+                                          ? 'Error -- record ' + id +
                                             ' not found'
                                           : 'Error -- unable to update');
             }
@@ -377,7 +393,7 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
             if (response.ok) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
-                                          'Success -- Removed menu choice!',
+                                          'Success -- Removed menu choice',
                                           function () {
                                               window.location.href = baseUrl +
                                                   'index.php/livinglibrary/' +
@@ -388,7 +404,7 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
                                           response.status === 404
-                                          ? 'Error -- Record ' + id +
+                                          ? 'Error -- record ' + id +
                                             ' not found'
                                           : 'Error -- unable to delete');
             }

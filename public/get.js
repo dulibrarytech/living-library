@@ -354,6 +354,8 @@ function create_donation() {
                  + 'class="btn-grey" id="save_donation_button">'
                  + 'Send to Queue'
                  + '</button>'
+                 + '<div id="donation-form-confirmation">'
+                 + '</div>'
                  + '</td>'
                  + '</tr>'
                  + '</table>';

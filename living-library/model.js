@@ -258,6 +258,9 @@ exports.create = function (req, callback) {
                     LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] Error creating or retrieving new donation record: ' + error);
                 }
 
+                console.log("\nEnd of CREATE query from model\n" +
+                            "=====================\n");
+
                 callback({
                     status: 201,
                     message: 'Record created.',
@@ -898,6 +901,8 @@ exports.update = function (req, callback) {
                         });
                     }
 
+                    console.log("\nEnd of UPDATE query from model\n" +
+                                "=====================\n");
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: Unable to update record ' + error);
@@ -1021,7 +1026,8 @@ exports.update = function (req, callback) {
                         });
                     }
 
-                    console.log("\nEnd of UPDATE query from model\n=====================\n");
+                    console.log("\nEnd of UPDATE query from model\n" +
+                                "=====================\n");
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: Unable to update ' + tbl +
