@@ -44,23 +44,18 @@ let transporter = NODEMAILER.createTransport({
  *                             sendMail method
  */
 const send_email = function (message) {
-    console.log('Inside send_email function');
+    console.log('Inside send_email helper function');
 
-    let promise = transporter.sendMail(message, function(err, info) {
+    transporter.sendMail(message, function(err, info) {
         if (err) {
+          // throw 'FATAL: [/living-library/model module (create/send_email)] Unable to send email: ' + err;
           console.log('Error sending email:');
-          console.log(err)
+          console.log(err);
         } else {
           console.log('Email sent successfully:');
           console.log(info);
         }
     });
-
-    console.log('typeof promise = ' + promise);
-    console.log('promise = ');
-    console.log(promise);
-
-    return promise;
 };
 
 /**
@@ -259,7 +254,7 @@ exports.create = function (req, callback) {
                     })
                     .catch(function (error) {
                         LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error);
-                        // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
+                        // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error;
                     });
             }
 
@@ -278,30 +273,28 @@ exports.create = function (req, callback) {
                     })
                     .catch(function (error) {
                         LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to retrieve new record: ' + error);
-                        // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
+                        // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record: ' + error;
                     });
             }
 
             // 3.)
             function send_email_notification(obj, callback) {
                 console.log("Inside send_email_notification");
-                send_email({
-                    // from: 'email@example.com', // Sender address
-                    to: CONFIG.emailDeveloper, // List of recipients
-                    subject: 'Living Library: A donation has been made', // Subject line
-                    text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
-                })
-                    .then(function (response) {
-                        console.log('Inside "then" function');
-                        console.log('response = ');
-                        console.log(response);
-                        callback(null, obj);
-                        return false;
-                    })
-                    .catch(function (error) {
-                        LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
-                        // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification ' + error;
+                try {
+                    send_email({
+                        // from: 'email@example.com', // Sender address
+                        to: CONFIG.emailDeveloper, // List of recipients
+                        subject: 'Living Library: A donation has been made', // Subject line
+                        text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
                     });
+                } catch (error) {
+                    LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
+                    // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error;
+                } finally {
+                    console.log('Inside "finally" block');
+                    callback(null, obj);
+                    return false;
+                }
             }
 
             /**
