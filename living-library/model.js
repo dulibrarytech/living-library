@@ -248,7 +248,7 @@ exports.create = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error);
+                        LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error);
                         // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record ' + error;
                     });
             }
@@ -267,9 +267,28 @@ exports.create = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
+                        LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to retrieve new record: ' + error);
                         // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
                     });
+            }
+
+            // 3.)
+            function send_email_notification(obj, callback) {
+                console.log("Inside send_email_notification");
+                try {
+                    send_email({
+                        // from: 'email@example.com', // Sender address
+                        to: CONFIG.emailDeveloper, // List of recipients
+                        subject: 'Living Library: A donation has been made', // Subject line
+                        text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
+                    });
+                } catch (error) {
+                    LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
+                    // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification ' + error;
+                } finally {
+                    callback(null, obj);
+                    return false;
+                }
             }
 
             /**
@@ -279,7 +298,8 @@ exports.create = function (req, callback) {
              */
             ASYNC.waterfall([
                add_donation_to_db,
-               select_new_donation
+               select_new_donation,
+               send_email_notification
             ], function (error, results) {
                 console.log("Inside waterfall function");
 
@@ -915,15 +935,6 @@ exports.update = function (req, callback) {
 
                     if (data === 1) {
                         console.log('Updated donation record with id ' + id);
-
-                        // verify connection configuration
-                        transporter.verify(function(error, success) {
-                          if (error) {
-                            console.log(error);
-                          } else {
-                            console.log("Server is ready to take our messages");
-                          }
-                        });
 
                         send_email({
                             // from: 'email@example.com', // Sender address
