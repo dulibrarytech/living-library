@@ -291,8 +291,8 @@ exports.create = function (req, callback) {
                         to: CONFIG.emailLibrarian,
                         bcc: CONFIG.emailDeveloper,
                         subject: 'Living Library: A donation has been made' + ' (donation id = ' + obj.id + ')',
-                        text: do_not_respond_email_text + '\n\nView Donation Information: ' + 'http://www.google.com',
-                        html: do_not_respond_html_email_text + `<a href="http://www.google.com">View Donation Information</a>`
+                        text: do_not_respond_email_text + '\n\nView Donation Information: ' + CONFIG.queuedDonationBaseUrl + obj.id,
+                        html: do_not_respond_html_email_text + `<a href="${CONFIG.queuedDonationBaseUrl}${obj.id}">View Donation Information</a>`
                     });
 
                     send_email({

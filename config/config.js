@@ -35,5 +35,6 @@ module.exports = {
     emailFromAddress: process.env.EMAIL_FROM_ADDRESS,
     emailLibrarian: process.env.EMAIL_LIBRARIAN,
     emailExternalRelations: process.env.EMAIL_EXTERNAL_RELATIONS,
-    emailDeveloper: process.env.EMAIL_DEVELOPER
+    emailDeveloper: process.env.EMAIL_DEVELOPER,
+    queuedDonationBaseUrl: process.env.QUEUED_DONATION_BASE_URL
 };
