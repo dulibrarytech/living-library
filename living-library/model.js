@@ -26,6 +26,7 @@ const LOGGER = require('../libs/log4'),
       CONFIG = require('../config/config'),
       TABLE = 'tbl_donations';
 
+// Configures email sending
 let transporter = NODEMAILER.createTransport({
     host: CONFIG.emailHost,
     port: CONFIG.emailPort,
@@ -35,6 +36,22 @@ let transporter = NODEMAILER.createTransport({
 {
     from: CONFIG.emailFromAddress
 });
+
+/**
+ * Sends email
+ * @param  {Object}  message   the nodemailer message configuration object
+ */
+const send_email = function (message) {
+    transporter.sendMail(message, function(err, info) {
+        if (err) {
+          console.log('Error sending email:');
+          console.log(err)
+        } else {
+          console.log('Email sent successfully:');
+          console.log(info);
+        }
+    });
+};
 
 /**
  * Creates record
@@ -908,19 +925,11 @@ exports.update = function (req, callback) {
                           }
                         });
 
-                        const message = {
+                        send_email({
                             // from: 'email@example.com', // Sender address
                             to: CONFIG.emailDeveloper, // List of recipients
                             subject: 'Living Library: Book Plate Information Completed', // Subject line
                             text: 'The record for the donor listed below is complete.' + ' (donation id = ' + id + ')' // Plain text body
-                        };
-
-                        transporter.sendMail(message, function(err, info) {
-                            if (err) {
-                              console.log(err)
-                            } else {
-                              console.log(info);
-                            }
                         });
 
                         callback({
@@ -942,7 +951,7 @@ exports.update = function (req, callback) {
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: Unable to update record ' + error);
-                    throw 'FATAL: Unable to update record ' + error;
+                    // throw 'FATAL: Unable to update record ' + error;
                 });
             break;
         } // end of "" case
