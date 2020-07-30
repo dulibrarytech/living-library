@@ -40,9 +40,13 @@ let transporter = NODEMAILER.createTransport({
 /**
  * Sends email
  * @param  {Object}  message   the nodemailer message configuration object
+ * @return {Object}            the Promise object returned by nodemailer's
+ *                             sendMail method
  */
 const send_email = function (message) {
-    transporter.sendMail(message, function(err, info) {
+    console.log('Inside send_email function');
+
+    let promise = transporter.sendMail(message, function(err, info) {
         if (err) {
           console.log('Error sending email:');
           console.log(err)
@@ -51,6 +55,12 @@ const send_email = function (message) {
           console.log(info);
         }
     });
+
+    console.log('typeof promise = ' + promise);
+    console.log('promise = ');
+    console.log(promise);
+
+    return promise;
 };
 
 /**
@@ -275,20 +285,23 @@ exports.create = function (req, callback) {
             // 3.)
             function send_email_notification(obj, callback) {
                 console.log("Inside send_email_notification");
-                try {
-                    send_email({
-                        // from: 'email@example.com', // Sender address
-                        to: CONFIG.emailDeveloper, // List of recipients
-                        subject: 'Living Library: A donation has been made', // Subject line
-                        text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
+                send_email({
+                    // from: 'email@example.com', // Sender address
+                    to: CONFIG.emailDeveloper, // List of recipients
+                    subject: 'Living Library: A donation has been made', // Subject line
+                    text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
+                })
+                    .then(function (response) {
+                        console.log('Inside "then" function');
+                        console.log('response = ');
+                        console.log(response);
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
+                        // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification ' + error;
                     });
-                } catch (error) {
-                    LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
-                    // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification ' + error;
-                } finally {
-                    callback(null, obj);
-                    return false;
-                }
             }
 
             /**
