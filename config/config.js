@@ -33,5 +33,7 @@ module.exports = {
     emailHost: process.env.EMAIL_HOST,
     emailPort: process.env.EMAIL_PORT,
     emailFromAddress: process.env.EMAIL_FROM_ADDRESS,
+    emailLibrarian: process.env.EMAIL_LIBRARIAN,
+    emailExternalRelations: process.env.EMAIL_EXTERNAL_RELATIONS,
     emailDeveloper: process.env.EMAIL_DEVELOPER
 };
