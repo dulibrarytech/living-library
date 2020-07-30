@@ -29,9 +29,11 @@ const LOGGER = require('../libs/log4'),
 // Configures email sending
 let transporter = NODEMAILER.createTransport({
     host: CONFIG.emailHost,
-    port: CONFIG.emailPort,
+    port: CONFIG.emailPort
+    /*
     debug: true,
     logger: true
+    */
 },
 {
     from: CONFIG.emailFromAddress
@@ -40,21 +42,20 @@ let transporter = NODEMAILER.createTransport({
 /**
  * Sends email
  * @param  {Object}  message   the nodemailer message configuration object
- * @return {Object}            the Promise object returned by nodemailer's
- *                             sendMail method
  */
 const send_email = function (message) {
     console.log('Inside send_email helper function');
 
-    transporter.sendMail(message, function(err, info) {
-        if (err) {
-          // throw 'FATAL: [/living-library/model module (create/send_email)] Unable to send email: ' + err;
-          console.log('Error sending email:');
-          console.log(err);
+    transporter.sendMail(message, function(error, info) {
+        if (error) {
+            LOGGER.module().error('ERROR: [/living-library/model module (create/send_email)] Unable to send notification email: ' + error);
+            // throw 'FATAL: [/living-library/model module (create/send_email)] Unable to send notification email: ' + error;
         } else {
-          console.log('Email sent successfully:');
-          console.log(info);
+            console.log('Notification email sent successfully.');
+            // console.log(info);
         }
+
+        console.log('=====================\n');
     });
 };
 
@@ -282,13 +283,12 @@ exports.create = function (req, callback) {
                 console.log("Inside send_email_notification");
                 try {
                     send_email({
-                        // from: 'email@example.com', // Sender address
-                        to: CONFIG.emailDeveloper, // List of recipients
-                        subject: 'Living Library: A donation has been made', // Subject line
-                        text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')' // Plain text body
+                        to: CONFIG.emailDeveloper,
+                        subject: 'Living Library: A donation has been made',
+                        text: 'View Donation Information.' + ' (donation id = ' + obj.id + ')'
                     });
                 } catch (error) {
-                    LOGGER.module().error('FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error);
+                    LOGGER.module().error('ERROR: [/living-library/model module (create/send_email_notification)]: ' + error);
                     // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error;
                 } finally {
                     console.log('Inside "finally" block');
@@ -943,10 +943,9 @@ exports.update = function (req, callback) {
                         console.log('Updated donation record with id ' + id);
 
                         send_email({
-                            // from: 'email@example.com', // Sender address
-                            to: CONFIG.emailDeveloper, // List of recipients
-                            subject: 'Living Library: Book Plate Information Completed', // Subject line
-                            text: 'The record for the donor listed below is complete.' + ' (donation id = ' + id + ')' // Plain text body
+                            to: CONFIG.emailDeveloper,
+                            subject: 'Living Library: Book Plate Information Completed',
+                            text: 'The record for the donor listed below is complete.' + ' (donation id = ' + id + ')'
                         });
 
                         callback({
