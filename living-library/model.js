@@ -943,50 +943,178 @@ exports.update = function (req, callback) {
             book = JSON.stringify(book);
             console.log("\nbook after adding fields: ");
             console.log(book);
+            console.log("=====================\n");
 
-            DB(TABLE)
-                .where({
-                    id: id
-                })
-                .update({
-                    book: book,
-                    is_completed: 1
-                })
-                .then(function (data) {
+            // 1.)
+            function update_donation_in_db(callback) {
+                console.log("Inside update_donation_in_db");
 
-                    if (data === 1) {
-                        console.log('Updated donation record with id ' + id);
+                let obj = {};
 
-                        send_email({
-                            to: CONFIG.emailExternalRelations,
-                            cc: CONFIG.emailLibrarian,
-                            bcc: CONFIG.emailDeveloper,
-                            subject: 'Living Library: Book plate information completed' + ' (donation id = ' + id + ')',
-                            text: do_not_respond_email_text + '\n\nThe record for the donation listed below is complete:',
-                            html: do_not_respond_html_email_text + 'The record for the donation listed below is complete:'
-                        });
+                DB(TABLE)
+                    .where({
+                        id: id
+                    })
+                    .update({
+                        book: book,
+                        is_completed: 1
+                    })
+                    .then(function (data) {
+                        if (data === 1) {
+                            console.log('Updated donation record with id ' + id);
 
-                        callback({
-                            status: 200,
-                            message: 'Record updated.'
-                        });
-                    } else {
-                        console.log("Update failed. Couldn't find donation " +
-                                    "record with id " + id);
+                            obj.status = 200,
+                            obj.message = 'Record updated.';
 
-                        callback({
-                            status: 404,
-                            message: 'Record not found.'
-                        });
+                            callback(null, obj);
+                            return false;
+                        } else {
+                            LOGGER.module().fatal("FATAL: [/living-library/" +
+                                                  "model module (update/" +
+                                                  "update_donation_in_db)] " +
+                                                  "Update failed. Couldn't " +
+                                                  "find donation record with " +
+                                                  "id " + id);
+
+                            obj.status = 404,
+                            obj.message = 'Record not found.';
+
+                            callback(null, obj);
+                            return false;
+                        }
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record ' + error;
+                    });
+            }
+
+            // 2.)
+            function select_updated_donation(obj, callback) {
+                console.log("Inside select_updated_donation");
+
+                if (obj.status !== 200) {
+                    callback(null, obj);
+                    return false;
+                }
+
+                DB(TABLE)
+                    .select('*')
+                    .where({
+                        id: id
+                    })
+                    .then(function (data) {
+                        obj.data = data;
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().error('FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record: ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record: ' + error;
+                    });
+            }
+
+            // 3.)
+            function send_email_notification_about_completed_donation(obj,
+                                                                      callback) {
+                console.log("Inside " +
+                            "send_email_notification_about_completed_donation");
+
+                if (obj.status !== 200) {
+                    callback(null, obj);
+                    return false;
+                }
+
+                let donor_info = '',
+                    book_info = '';
+
+                if (obj.data.length === 1) {
+                    let donor, book;
+
+                    if (typeof obj.data[0].donor !== 'undefined') {
+                        try {
+                            donor = JSON.parse(obj.data[0].donor);
+
+                            donor_info += donor.donor_title + " " +
+                                          donor.donor_first_name + " " +
+                                          donor.donor_last_name;
+                        } catch (error) {
+                            console.log('ERROR: Could not parse donor field of '
+                                        + 'retrieved donation record: ' + error);
+                        }
                     }
+                    console.log('donor = ');
+                    console.log(donor);
 
-                    console.log("\nEnd of UPDATE query from model\n" +
-                                "=====================\n");
-                })
-                .catch(function (error) {
-                    LOGGER.module().fatal('FATAL: Unable to update record ' + error);
-                    // throw 'FATAL: Unable to update record ' + error;
+                    if (typeof obj.data[0].book !== 'undefined') {
+                        try {
+                            book = JSON.parse(obj.data[0].book);
+
+                            book_info += book.book_title;
+                        } catch (error) {
+                            console.log('ERROR: Could not parse book field of '
+                                        + 'retrieved donation record: ' + error);
+                        }
+                    }
+                    console.log('book = ');
+                    console.log(book);
+                }
+
+                const donation_is_complete_msg = 'The record for the donation '
+                                                 + 'listed below is complete:';
+
+                console.log('Text of email body = \n' +
+                            do_not_respond_email_text + '\n\n' +
+                            donation_is_complete_msg + '\n\n' +
+                            'Donor: ' + donor_info + '\n' +
+                            'Book Title: ' + book_info);
+
+                try {
+                    send_email({
+                        to: CONFIG.emailExternalRelations,
+                        cc: CONFIG.emailLibrarian,
+                        bcc: CONFIG.emailDeveloper,
+                        subject: 'Living Library: Book plate information completed' + ' (donation id = ' + id + ')',
+                        text: do_not_respond_email_text + '\n\n' +
+                              donation_is_complete_msg + '\n\n' +
+                              'Donor: ' + donor_info + '\n' +
+                              'Book Title: ' + book_info,
+                        html: do_not_respond_html_email_text + '<br>' +
+                              donation_is_complete_msg + '<br>' +
+                              '<strong>Donor:</strong> ' + donor_info + '<br>' +
+                              '<strong>Book Title:</strong> ' + book_info
+                    });
+                } catch (error) {
+                    LOGGER.module().error('ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error);
+                    // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error;
+                } finally {
+                    console.log('Inside "finally" block');
+                    callback(null, obj);
+                    return false;
+                }
+            }
+
+            ASYNC.waterfall([
+               update_donation_in_db,
+               select_updated_donation,
+               send_email_notification_about_completed_donation
+            ], function (error, results) {
+                console.log("Inside waterfall function");
+
+                if (error) {
+                    LOGGER.module().error('ERROR: [/living-library/model module (update/async.waterfall)] Error updating or retrieving donation record: ' + error);
+                }
+
+                console.log("\nEnd of UPDATE query from model\n" +
+                            "=====================\n");
+
+                callback({
+                    status: results.status,
+                    message: results.message,
+                    data: results.data
                 });
+            });
+
             break;
         } // end of "" case
 
