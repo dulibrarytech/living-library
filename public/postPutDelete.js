@@ -116,13 +116,12 @@ const save_donation = function (event) {
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
-                                          'Success -- donation with id ' +
+                                          'Success -- donation with ID ' +
                                           response.data[0].id +
                                           ' added to queue!',
                                           function () {
                                               window.location.href = baseUrl +
-                                                  'index.php/livinglibrary/' +
-                                                  'getDonations/queued';
+                                                  _getQueuedDonationsUrl;
                                           });
             } else {
                 living_library_helper
@@ -190,8 +189,7 @@ const save_book_plate = function (event) {
                 document.getElementById('book-plate-form-confirmation');
 
             if (response.ok) {
-                let redirect_url = baseUrl + 'index.php/livinglibrary/' +
-                                   'getDonation/completed/' +
+                let redirect_url = baseUrl + _getCompletedDonationUrl +
                                    form_data.donation_id.value;
 
                 living_library_helper
@@ -206,7 +204,7 @@ const save_book_plate = function (event) {
                 .insert_form_confirmation(confirmation_div_element, false,
                                           "Error when saving book plate -- " +
                                           "Couldn't find donation record " +
-                                          "with id " +
+                                          "with ID " +
                                           form_data.donation_id.value);
             }
         })
@@ -396,8 +394,7 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
                                           'Success -- Removed menu choice',
                                           function () {
                                               window.location.href = baseUrl +
-                                                  'index.php/livinglibrary/' +
-                                                  'getMenuChoices/' +
+                                                  _getMenuChoicesUrl +
                                                   table_link_text;
                                           });
             } else {

@@ -793,8 +793,7 @@ function get_donations(is_completed) {
                     html += '<td class="span1_wider" '
                             + 'style="text-align: center">';
                     if (typeof donation_id === 'number') {
-                        html += '<a href="' + baseUrl
-                                + 'index.php/livinglibrary/getDonation/'
+                        html += '<a href="' + baseUrl + _getDonationUrl
                                 + donation_status + '/' + donation_id + '">'
                                 + '<img src="' + baseUrl
                                 + (data[i].is_completed
@@ -1503,10 +1502,8 @@ function get_menu_choices(table) {
 
                 for (let i = 0; i < data.length; i++) {
                     let anchor_element = document.createElement('a');
-                    anchor_element.href = baseUrl +
-                                          'index.php/livinglibrary/' +
-                                          'editMenuChoice/' + link_text + '/' +
-                                          data[i].id;
+                    anchor_element.href = baseUrl + _editMenuChoiceUrl +
+                                          link_text + '/' + data[i].id;
                     anchor_element.appendChild(document
                                                .createTextNode(data[i].term));
 
