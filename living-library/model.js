@@ -47,6 +47,7 @@ const do_not_respond_email_text = '**Please do not respond to this email**',
 /**
  * Sends email
  * @param  {Object}  message   the nodemailer message configuration object
+ * @param  {Object}  id        the id of the relevant donation record
  */
 const send_email = function (message, id) {
     console.log('Inside send_email helper function');
