@@ -48,15 +48,14 @@ const do_not_respond_email_text = '**Please do not respond to this email**',
  * Sends email
  * @param  {Object}  message   the nodemailer message configuration object
  */
-const send_email = function (message) {
+const send_email = function (message, id) {
     console.log('Inside send_email helper function');
 
     transporter.sendMail(message, function(error, info) {
         if (error) {
-            LOGGER.module().error('ERROR: [/living-library/model module (create/send_email)] Unable to send notification email: ' + error);
-            // throw 'FATAL: [/living-library/model module (create/send_email)] Unable to send notification email: ' + error;
+            LOGGER.module().error('ERROR: [/living-library/model module (send_email)] Unable to send notification email for record with donation id ' + id + ': ' + error);
         } else {
-            console.log('Notification email sent successfully:');
+            console.log('Notification email sent successfully for record with donation id ' + id + ":");
             console.log(info.envelope);
         }
 
@@ -290,18 +289,18 @@ exports.create = function (req, callback) {
                     send_email({
                         to: CONFIG.emailLibrarian,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: A donation has been made' + ' (donation id = ' + obj.id + ')',
+                        subject: 'Living Library: A donation has been made' + ' (Donation ID = ' + obj.id + ')',
                         text: do_not_respond_email_text + '\n\nView Donation Information: ' + CONFIG.queuedDonationBaseUrl + obj.id,
-                        html: do_not_respond_html_email_text + `<a href="${CONFIG.queuedDonationBaseUrl}${obj.id}">View Donation Information</a>`
-                    });
+                        html: do_not_respond_html_email_text + `<br><a href="${CONFIG.queuedDonationBaseUrl}${obj.id}">View Donation Information</a>`
+                    }, obj.id);
 
                     send_email({
                         to: CONFIG.emailExternalRelations,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: End processing has been notified of the Living Library donation' + ' (donation id = ' + obj.id + ')',
+                        subject: 'Living Library: End processing has been notified of the donation with ID ' + obj.id,
                         text: do_not_respond_email_text,
                         html: do_not_respond_html_email_text
-                    });
+                    }, obj.id);
                 } catch (error) {
                     LOGGER.module().error('ERROR: [/living-library/model module (create/send_email_notification)]: ' + error);
                     // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error;
@@ -1063,27 +1062,21 @@ exports.update = function (req, callback) {
                 const donation_is_complete_msg = 'The record for the donation '
                                                  + 'listed below is complete:';
 
-                console.log('Text of email body = \n' +
-                            do_not_respond_email_text + '\n\n' +
-                            donation_is_complete_msg + '\n\n' +
-                            'Donor: ' + donor_info + '\n' +
-                            'Book Title: ' + book_info);
-
                 try {
                     send_email({
                         to: CONFIG.emailExternalRelations,
                         cc: CONFIG.emailLibrarian,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: Book plate information completed' + ' (donation id = ' + id + ')',
+                        subject: 'Living Library: Book plate information completed for donation with ID ' + id,
                         text: do_not_respond_email_text + '\n\n' +
                               donation_is_complete_msg + '\n\n' +
                               'Donor: ' + donor_info + '\n' +
                               'Book Title: ' + book_info,
                         html: do_not_respond_html_email_text + '<br>' +
-                              donation_is_complete_msg + '<br>' +
+                              donation_is_complete_msg + '<br><br>' +
                               '<strong>Donor:</strong> ' + donor_info + '<br>' +
                               '<strong>Book Title:</strong> ' + book_info
-                    });
+                    }, id);
                 } catch (error) {
                     LOGGER.module().error('ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error);
                     // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error;
