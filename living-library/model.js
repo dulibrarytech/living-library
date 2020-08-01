@@ -882,6 +882,17 @@ exports.update = function (req, callback) {
              * request_body is ignored.
              */
 
+            if (typeof id === 'undefined') {
+                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: id parameter of query is undefined.');
+
+                callback({
+                    status: 400,
+                    message: 'Request query does not contain id parameter.'
+                });
+
+                return false;
+            }
+
             let book = typeof request_body.book === 'undefined'
                        ? ""
                        : request_body.book;
@@ -946,8 +957,8 @@ exports.update = function (req, callback) {
             console.log("=====================\n");
 
             // 1.)
-            function confirm_donation_is_not_already_completed(callback) {
-                console.log("Inside confirm_donation_is_not_already_completed");
+            function confirm_donation_is_in_the_queue(callback) {
+                console.log("Inside confirm_donation_is_in_the_queue");
 
                 let obj = {};
 
@@ -957,40 +968,31 @@ exports.update = function (req, callback) {
                         id: id
                     })
                     .then(function (data) {
-                        switch(data.length) {
-                            case 1: {
-                                if (data[0].is_completed === 1) {
-                                    LOGGER.module()
-                                          .fatal("FATAL: [/living-library/" +
-                                                 "model module (update/" +
-                                                 "confirm_donation_is_not_" +
-                                                 "already_completed)] " +
-                                                 "Update failed. Donation " +
-                                                 "record with id " + id +
-                                                 " already completed.");
-
-                                    obj.status = 409,
-                                    obj.message = 'Record already completed.';
-                                }
-                                break;
-                            }
-                            case 0: {
+                        if (data.length === 1) {
+                            if (data[0].is_completed === 1) {
                                 LOGGER.module()
                                       .fatal("FATAL: [/living-library/" +
                                              "model module (update/" +
-                                             "confirm_donation_is_not_" +
-                                             "already_completed)] " +
-                                             "Update failed. Couldn't " +
-                                             "find donation record with " +
-                                             "id " + id);
+                                             "confirm_donation_is_in_" +
+                                             "the_queue)] Update failed. " +
+                                             "Donation record with id " +
+                                             id + " is already completed.");
 
-                                obj.status = 404,
-                                obj.message = 'Record not found.';
-                                break;
+                                obj.status = 409,
+                                obj.message = 'Record already completed.';
                             }
-                            default:
-                                console.log("inside default case of switch on data.length");
-                        } // end of switch on data.length
+                        } else {
+                            LOGGER.module()
+                                  .fatal("FATAL: [/living-library/" +
+                                         "model module (update/confirm_" +
+                                         "donation_is_in_the_queue)] " +
+                                         "Update failed. Couldn't " +
+                                         "find donation record with " +
+                                         "id = " + id);
+
+                            obj.status = 404,
+                            obj.message = 'Record not found.';
+                        }
 
                         callback(null, obj);
                         return false;
@@ -1148,7 +1150,7 @@ exports.update = function (req, callback) {
             }
 
             ASYNC.waterfall([
-                confirm_donation_is_not_already_completed,
+                confirm_donation_is_in_the_queue,
                 update_donation_in_db,
                 select_updated_donation,
                 send_email_notification_about_completed_donation
