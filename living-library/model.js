@@ -714,7 +714,7 @@ exports.read = function (req, callback) {
                 .catch(function (error) {
                     console.log('Inside catch function of tbl_donations case');
                     LOGGER.module().fatal('FATAL: Unable to read record ' + error);
-                    throw 'FATAL: Unable to read record ' + error;
+                    // throw 'FATAL: Unable to read record ' + error;
                 });
             break;
         } // end of "" case
@@ -810,7 +810,7 @@ exports.read = function (req, callback) {
                 .catch(function (error) {
                     console.log('Inside catch function of lookup table case');
                     LOGGER.module().fatal('FATAL: Unable to read record: ' + error);
-                    throw 'FATAL: Unable to read record: ' + error;
+                    // throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
         } // end of lookup table cases
@@ -892,7 +892,7 @@ exports.update = function (req, callback) {
             try {
                 book = JSON.parse(book);
             } catch (error) {
-                console.log("Error parsing JSON: " + error);
+                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: Error parsing JSON: ' + error);
 
                 callback({
                     status: 400,
@@ -946,10 +946,69 @@ exports.update = function (req, callback) {
             console.log("=====================\n");
 
             // 1.)
-            function update_donation_in_db(callback) {
-                console.log("Inside update_donation_in_db");
+            function confirm_donation_is_not_already_completed(callback) {
+                console.log("Inside confirm_donation_is_not_already_completed");
 
                 let obj = {};
+
+                DB(TABLE)
+                    .select('id', 'is_completed')
+                    .where({
+                        id: id
+                    })
+                    .then(function (data) {
+                        switch(data.length) {
+                            case 1: {
+                                if (data[0].is_completed === 1) {
+                                    LOGGER.module()
+                                          .fatal("FATAL: [/living-library/" +
+                                                 "model module (update/" +
+                                                 "confirm_donation_is_not_" +
+                                                 "already_completed)] " +
+                                                 "Update failed. Donation " +
+                                                 "record with id " + id +
+                                                 " already completed.");
+
+                                    obj.status = 409,
+                                    obj.message = 'Record already completed.';
+                                }
+                                break;
+                            }
+                            case 0: {
+                                LOGGER.module()
+                                      .fatal("FATAL: [/living-library/" +
+                                             "model module (update/" +
+                                             "confirm_donation_is_not_" +
+                                             "already_completed)] " +
+                                             "Update failed. Couldn't " +
+                                             "find donation record with " +
+                                             "id " + id);
+
+                                obj.status = 404,
+                                obj.message = 'Record not found.';
+                                break;
+                            }
+                            default:
+                                console.log("inside default case of switch on data.length");
+                        } // end of switch on data.length
+
+                        callback(null, obj);
+                        return false;
+                    })
+                    .catch(function (error) {
+                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/confirm_donation_is_not_already_completed)] Unable to retrieve record: ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/confirm_donation_is_not_already_completed)] Unable to retrieve record: ' + error;
+                    });
+            }
+
+            // 2.)
+            function update_donation_in_db(obj, callback) {
+                console.log("Inside update_donation_in_db");
+
+                if (obj.status === 409 || obj.status === 404) {
+                    callback(null, obj);
+                    return false;
+                }
 
                 DB(TABLE)
                     .where({
@@ -989,7 +1048,7 @@ exports.update = function (req, callback) {
                     });
             }
 
-            // 2.)
+            // 3.)
             function select_updated_donation(obj, callback) {
                 console.log("Inside select_updated_donation");
 
@@ -1014,7 +1073,7 @@ exports.update = function (req, callback) {
                     });
             }
 
-            // 3.)
+            // 4.)
             function send_email_notification_about_completed_donation(obj,
                                                                       callback) {
                 console.log("Inside " +
@@ -1089,9 +1148,10 @@ exports.update = function (req, callback) {
             }
 
             ASYNC.waterfall([
-               update_donation_in_db,
-               select_updated_donation,
-               send_email_notification_about_completed_donation
+                confirm_donation_is_not_already_completed,
+                update_donation_in_db,
+                select_updated_donation,
+                send_email_notification_about_completed_donation
             ], function (error, results) {
                 console.log("Inside waterfall function");
 
