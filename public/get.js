@@ -1369,7 +1369,7 @@ function get_queued_donation(url) {
  */
 function get_menu_choices(table) {
     // How many columns to use when displaying records
-    const TOTAL_COLS = 2;
+    const MENU_CHOICE_COLS = 2;
 
     console.log('table = ' + table);
 
@@ -1451,13 +1451,13 @@ function get_menu_choices(table) {
             '</table>';
 
     html += '<tr>';
-    html += '<td colspan="' + TOTAL_COLS + '">'
+    html += '<td colspan="' + MENU_CHOICE_COLS + '">'
             + '<h4>Edit ' + label + 's</h4>'
             + '</td>';
     html += '</tr>';
 
     html += '<tr>';
-    html += '<td colspan="' + TOTAL_COLS + '">'
+    html += '<td colspan="' + MENU_CHOICE_COLS + '">'
             + '<p>( click ' + label + ' term to edit )</p>'
             + '</td>';
     html += '</tr>';
@@ -1495,7 +1495,7 @@ function get_menu_choices(table) {
                 if (data.length === 0) {
                     let row = table_element.insertRow();
                     let cell = row.insertCell();
-                    cell.colSpan = TOTAL_COLS;
+                    cell.colSpan = MENU_CHOICE_COLS;
                     cell.innerHTML = 'No ' + label.toLowerCase() + 's found.';
                     return;
                 }
@@ -1508,7 +1508,7 @@ function get_menu_choices(table) {
                                                .createTextNode(data[i].term));
 
                     // decide where to insert cell
-                    let row = i % TOTAL_COLS == 0
+                    let row = i % MENU_CHOICE_COLS == 0
                               ? table_element.insertRow()
                               : table_element.rows[table_element.rows.length - 1];
                     row.insertCell().appendChild(anchor_element);
