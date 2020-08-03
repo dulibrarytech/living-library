@@ -893,13 +893,22 @@ exports.update = function (req, callback) {
                 return false;
             }
 
-            let book = typeof request_body.book === 'undefined'
-                       ? ""
-                       : request_body.book;
-
+            let book = request_body.book;
             console.log("\ntypeof book = " + typeof book);
 
-            // Check for valid JSON string
+            // Check for book field
+            if (typeof book === 'undefined') {
+                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: Request body does not contain book field.');
+
+                callback({
+                    status: 400,
+                    message: 'Invalid syntax in request body.'
+                });
+
+                return false;
+            }
+
+            // Check for valid JSON string in book field
             try {
                 book = JSON.parse(book);
             } catch (error) {
@@ -924,9 +933,10 @@ exports.update = function (req, callback) {
             console.log(book_keys);
             console.log("book_keys.length = " + book_keys.length);
             if (!arrays_match(book_keys, book_fields)) {
-                console.log('Request body is valid JSON, but does not exclusively ' +
-                            'contain these properties in this order:\n' +
-                            book_fields.join('\n'));
+                LOGGER.module().fatal('Request body is valid JSON, but does ' +
+                                      'not exclusively contain these ' +
+                                      'properties in this order:\n' +
+                                      book_fields.join('\n'));
                 callback({
                     status: 400,
                     message: 'Request body does not contain the expected properties.'
