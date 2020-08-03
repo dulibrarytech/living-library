@@ -1218,17 +1218,22 @@ exports.update = function (req, callback) {
                     let data_to_update = {};
 
                     // Check for updated_menu_choice property
-                    if (typeof request_body.updated_menu_choice !==
-                        'undefined') {
+                    let updated_menu_choice = typeof request_body
+                                                     .updated_menu_choice ===
+                                                     'string'
+                                              ? request_body
+                                                .updated_menu_choice.trim()
+                                              : '';
+
+                    if (updated_menu_choice !== '') {
                         console.log('updated_menu_choice = ' +
-                                    request_body.updated_menu_choice +
+                                    updated_menu_choice +
                                     ', so adding to SQL query\n');
 
-                        data_to_update[display_field] = request_body
-                                                        .updated_menu_choice;
+                        data_to_update[display_field] = updated_menu_choice;
                     } else {
                         console.log('updated_menu_choice = ' +
-                                    request_body.updated_menu_choice +
+                                    updated_menu_choice +
                                     ', so no adjustment to SQL query\n');
                     }
 
@@ -1259,11 +1264,11 @@ exports.update = function (req, callback) {
                         console.log('is_active = ' + is_active +
                                     ', so no adjustment to SQL query\n');
 
-                        if (typeof request_body.updated_menu_choice ===
-                            'undefined') {
+                        if (updated_menu_choice === '') {
                             let error_msg = "Request body is invalid: Must " +
                                             "contain (a) a property named " +
-                                            "'updated_menu_choice' or (b) " +
+                                            "'updated_menu_choice' with a " +
+                                            "non-empty string value or (b) " +
                                             "a property named 'is_active' " +
                                             "with a boolean value (e.g. true " +
                                             "or false).";
@@ -1273,7 +1278,8 @@ exports.update = function (req, callback) {
                                 message: error_msg
                             });
 
-                            throw error_msg;
+                            LOGGER.module().fatal('FATAL: [/living-library/model module (update)] ' + error_msg);
+                            throw 'ERROR: ' + error_msg;
                         }
                     }
 
