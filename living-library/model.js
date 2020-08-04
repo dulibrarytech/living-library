@@ -333,27 +333,28 @@ exports.create = function (req, callback) {
         case "tbl_subject_areas_lookup":
         case "tbl_titles_lookup":
         case "tbl_relationships_lookup": {
-            // Validate request_body or trim new_menu_choice value?
-
-            // Handle requests with properties other than new_menu_choice?
-
-            let new_menu_choice = typeof request_body
-                                         .new_menu_choice === 'undefined'
-                                  ? null
-                                  : request_body.new_menu_choice;
-
-            if (new_menu_choice === null) {
-                console.log('Request body is invalid: Must contain a ' +
-                            'non-null property named new_menu_choice');
-                callback({
-                    status: 400,
-                    message: 'Request body is invalid: Must contain a ' +
-                             'non-null property named new_menu_choice'
-                });
-                return false;
-            }
+            // Check for valid new_menu_choice property
+            let new_menu_choice = typeof request_body.new_menu_choice ===
+                                  'string'
+                                  ? request_body.new_menu_choice.trim()
+                                  : '';
 
             console.log('new_menu_choice = ' + new_menu_choice);
+
+            if (new_menu_choice === '') {
+                let error_msg = "Request body is invalid: Must contain a " +
+                                "property named 'new_menu_choice' with a " +
+                                "non-empty string value";
+                callback({
+                    status: 400,
+                    message: error_msg
+                });
+
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(create)] ' + error_msg);
+
+                return false;
+            }
 
             let id_field, display_field, sort_field;
 
@@ -380,6 +381,8 @@ exports.create = function (req, callback) {
 
             // 1.)
             function search_db_for_menu_choice(callback) {
+                console.log("Inside search_db_for_menu_choice");
+
                 let obj = {};
 
                 DB(table_name)
@@ -406,6 +409,8 @@ exports.create = function (req, callback) {
 
             // 2.)
             function update_db(obj, callback) {
+                console.log("Inside update_db");
+
                 if (!Array.isArray(obj.data)) {
                     LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data);
                     // throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
@@ -1206,7 +1211,7 @@ exports.update = function (req, callback) {
                 .modify(function(queryBuilder) {
                     let data_to_update = {};
 
-                    // Check for updated_menu_choice property
+                    // Check for valid updated_menu_choice property
                     let updated_menu_choice = typeof request_body
                                                      .updated_menu_choice ===
                                                      'string'
@@ -1226,7 +1231,7 @@ exports.update = function (req, callback) {
                                     ', so no adjustment to SQL query\n');
                     }
 
-                    // Check for is_active property
+                    // Check for valid is_active property
                     let is_active = request_body.is_active;
 
                     if (typeof is_active === 'string') {
