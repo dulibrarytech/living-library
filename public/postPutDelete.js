@@ -245,6 +245,31 @@ const add_menu_choice = function (event, table) {
             console.log('Inside add_menu_choice fetch: first "then" function');
             console.log('response = ');
             console.log(response);
+
+            let response_obj = {
+                status: response.status,
+                ok: response.ok
+            };
+
+            response_obj.data = response.json()
+                .then(function (data) {
+                    console.log("Inside response.json() 'then' function");
+                    console.log("response.json = ");
+                    console.log(data);
+
+                    response_obj.data = data;
+                    return response_obj;
+                })
+                .catch(function (error) {
+                    console.log('ERROR: [add_menu_choice] Response body ' +
+                                'does not contain valid JSON: ' + error);
+
+                    console.log("response_obj = ");
+                    console.log(response_obj);
+
+                    return response_obj;
+                });
+            /* Fix attempt 3 <-- works!
             return response.json()
                 .then(data => ({
                     data: data,
@@ -257,6 +282,7 @@ const add_menu_choice = function (event, table) {
                     status: response.status,
                     ok: response.ok
                 }));
+            */
 
             // console.log('ERROR: [add_menu_choice] Response body ' + 'does not contain valid JSON: ' + error);
 
