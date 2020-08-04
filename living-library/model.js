@@ -24,7 +24,11 @@ const LOGGER = require('../libs/log4'),
       MOMENT = require('moment'),
       NODEMAILER = require('nodemailer'),
       CONFIG = require('../config/config'),
-      TABLE = 'tbl_donations';
+      DONATIONS_TABLE = 'tbl_donations',
+      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
+      STATES_TABLE = 'tbl_states_lookup',
+      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup',
+      TITLES_TABLE = 'tbl_titles_lookup';
 
 // Configures email sending
 let transporter = NODEMAILER.createTransport({
@@ -85,28 +89,8 @@ exports.create = function (req, callback) {
      * POST new record to relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&api_key=API_KEY
      */
 
-    let tbl = typeof req.query.tbl === 'undefined'
-              ? ""
-              : req.query.tbl.toLowerCase();
-
-    let table_name;
-
-    switch(tbl) {
-        case "":
-            table_name = "";
-            break;
-        case "subject_areas":
-            table_name = "tbl_subject_areas_lookup";
-            break;
-        case "titles":
-            table_name = "tbl_titles_lookup";
-            break;
-        case "relationships":
-            table_name = "tbl_relationships_lookup";
-            break;
-        default:
-            table_name = null;
-    }
+    let tbl = get_empty_or_lowercase_string(req.query.tbl),
+        table_name = get_table_name(tbl);
 
     switch(table_name) {
         case "": {
@@ -222,24 +206,7 @@ exports.create = function (req, callback) {
             function add_donation_to_db(callback) {
                 let obj = {};
 
-                /**
-                 * This inserts all fields from the request_body, with newlines included,
-                 * into the database. Is that okay? This could be problematic. Keep an
-                 * eye on this.
-                 *
-                 * Would this be the spot to add JSON validation? Or should it be at
-                 * the view or controller level? Yes, add it just above this function
-                 * defintion (see above comment).
-                 *
-                 * Validation process:
-                 * 1) Do validation at the HTML form-level to alert for invalid field
-                 *    values and empty required fields.
-                 * 2) Construct JSON based on form data.
-                 * 3) Validate the JSON before sending to the controller/model.
-                 * 4) The model can have its own JSON validation (since there can be
-                 *    other endpoints using the model).
-                 */
-                DB(TABLE)
+                DB(DONATIONS_TABLE)
                     .insert(request_body)
                     .then(function (data) {
                         console.log("Added donation record with id " + data);
@@ -255,7 +222,7 @@ exports.create = function (req, callback) {
 
             // 2.)
             function select_new_donation(obj, callback) {
-                DB(TABLE)
+                DB(DONATIONS_TABLE)
                     .select('*')
                     .where({
                         id: obj.id
@@ -279,20 +246,28 @@ exports.create = function (req, callback) {
                     send_email({
                         to: CONFIG.emailLibrarian,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: A donation has been made' + ' (Donation ID = ' + obj.id + ')',
-                        text: do_not_respond_email_text + '\n\nView Donation Information: ' + CONFIG.queuedDonationBaseUrl + obj.id,
-                        html: do_not_respond_html_email_text + `<br><a href="${CONFIG.queuedDonationBaseUrl}${obj.id}">View Donation Information</a>`
+                        subject: 'Living Library: A donation has been made' +
+                                 ' (Donation ID = ' + obj.id + ')',
+                        text: do_not_respond_email_text +
+                              '\n\nView Donation Information: ' +
+                              CONFIG.queuedDonationBaseUrl + obj.id,
+                        html: do_not_respond_html_email_text +
+                              `<br><a href="${CONFIG.queuedDonationBaseUrl}` +
+                              `${obj.id}">View Donation Information</a>`
                     }, obj.id);
 
                     send_email({
                         to: CONFIG.emailExternalRelations,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: End processing has been notified of the donation with ID ' + obj.id,
+                        subject: 'Living Library: End processing has been ' +
+                                 'notified of the donation with ID ' + obj.id,
                         text: do_not_respond_email_text,
                         html: do_not_respond_html_email_text
                     }, obj.id);
                 } catch (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (create/send_email_notification)]: ' + error);
+                    LOGGER.module().error('ERROR: [/living-library/model ' +
+                                          'module (create/' +
+                                          'send_email_notification)]: ' + error);
                     // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error;
                 } finally {
                     console.log('Inside "finally" block');
@@ -301,11 +276,6 @@ exports.create = function (req, callback) {
                 }
             }
 
-            /**
-             * Is this waterfall approach needed here? I don't think select_new_donation
-             * is necessary since I can populate the entire tbl_donations record with
-             * one insert. <-- This is correct (no waterfall approach needed here).
-             */
             ASYNC.waterfall([
                add_donation_to_db,
                select_new_donation,
@@ -330,9 +300,9 @@ exports.create = function (req, callback) {
             break;
         } // end of "" case
 
-        case "tbl_subject_areas_lookup":
-        case "tbl_titles_lookup":
-        case "tbl_relationships_lookup": {
+        case SUBJECT_AREAS_TABLE:
+        case TITLES_TABLE:
+        case RELATIONSHIPS_TABLE: {
             // Check for valid new_menu_choice property
             let new_menu_choice = typeof request_body.new_menu_choice ===
                                   'string'
@@ -356,28 +326,7 @@ exports.create = function (req, callback) {
                 return false;
             }
 
-            let id_field, display_field, sort_field;
-
-            switch(table_name) {
-                case "tbl_subject_areas_lookup": {
-                    id_field = 'subject_id',
-                    display_field = 'subject',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_titles_lookup": {
-                    id_field = 'title_id',
-                    display_field = 'title',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_relationships_lookup": {
-                    id_field = 'relationship_id',
-                    display_field = 'relationship',
-                    sort_field = id_field;
-                    break;
-                }
-            }
+            let table_field_names = get_table_field_names(table_name);
 
             // 1.)
             function search_db_for_menu_choice(callback) {
@@ -386,14 +335,16 @@ exports.create = function (req, callback) {
                 let obj = {};
 
                 DB(table_name)
-                    .select(id_field + ' as id', display_field + ' as term',
+                    .select(table_field_names.id + ' as id',
+                            table_field_names.display + ' as term',
                             'is_active')
-                    .orderBy(sort_field)
-                    .where(display_field, new_menu_choice)
+                    .orderBy(table_field_names.sort)
+                    .where(table_field_names.display, new_menu_choice)
                     .then(function (data) {
                         console.log("Searching " + table_name + " for " +
-                                    display_field + " = " + new_menu_choice +
-                                    "\n" + data.length + " choice(s) found.");
+                                    table_field_names.display + " = " +
+                                    new_menu_choice + "\n" + data.length +
+                                    " choice(s) found.");
 
                         obj.data = data;
                         callback(null, obj);
@@ -402,7 +353,10 @@ exports.create = function (req, callback) {
                     .catch(function (error) {
                         console.log('Inside catch function of lookup table ' +
                                     'case');
-                        LOGGER.module().error('FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error);
+                        LOGGER.module().error('FATAL [/living-library/model ' +
+                                              'module (create/' +
+                                              'search_db_for_menu_choice)] ' +
+                                              'Unable to read record: ' + error);
                         // throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
                     });
             }
@@ -418,7 +372,7 @@ exports.create = function (req, callback) {
                     console.log('No match found for ' + new_menu_choice);
 
                     let new_record = {};
-                    new_record[display_field] = new_menu_choice;
+                    new_record[table_field_names.display] = new_menu_choice;
 
                     DB(table_name)
                         .insert(new_record)
@@ -451,7 +405,7 @@ exports.create = function (req, callback) {
                     try {
                         if (obj.data[0].is_active) {
                             console.log('Active record already exists with ' +
-                                        display_field + ' = ' +
+                                        table_field_names.display + ' = ' +
                                         obj.data[0].term +
                                         '\nSo database left unchanged.');
 
@@ -461,13 +415,14 @@ exports.create = function (req, callback) {
                             callback(null, obj);
                             return false;
                         } else {
-                            console.log('Record exists with ' + display_field +
+                            console.log('Record exists with ' +
+                                        table_field_names.display +
                                         ' = ' + obj.data[0].term +
                                         '\nBut is_active = ' +
                                         obj.data[0].is_active);
 
                             DB(table_name)
-                                .where(id_field, obj.data[0].id)
+                                .where(table_field_names.id, obj.data[0].id)
                                 .update({
                                     is_active: 1
                                 })
@@ -515,8 +470,9 @@ exports.create = function (req, callback) {
                     return false;
                 } else {
                     DB(table_name)
-                        .select(id_field + ' as id', display_field + ' as term')
-                        .where(id_field, obj.id)
+                        .select(table_field_names.id + ' as id',
+                                table_field_names.display + ' as term')
+                        .where(table_field_names.id, obj.id)
                         .then(function (data) {
                             obj.data = data;
                             callback(null, obj);
@@ -579,33 +535,9 @@ exports.create = function (req, callback) {
  */
 exports.read = function (req, callback) {
 
-    let tbl = typeof req.query.tbl === 'undefined'
-              ? ""
-              : req.query.tbl.toLowerCase();
-
-    let id = req.query.id;
-
-    let table_name;
-
-    switch(tbl) {
-        case "":
-            table_name = "";
-            break;
-        case "titles":
-            table_name = "tbl_titles_lookup";
-            break;
-        case "states":
-            table_name = "tbl_states_lookup";
-            break;
-        case "relationships":
-            table_name = "tbl_relationships_lookup";
-            break;
-        case "subject_areas":
-            table_name = "tbl_subject_areas_lookup";
-            break;
-        default:
-            table_name = null;
-    }
+    let tbl = get_empty_or_lowercase_string(req.query.tbl),
+        table_name = get_table_name(tbl),
+        id = req.query.id;
 
     switch(table_name) {
         case "": {
@@ -622,8 +554,9 @@ exports.read = function (req, callback) {
                                ? ""
                                : req.query.is_completed.toLowerCase();
 
-            DB(TABLE)
-                .select('id', 'donor', 'who_to_notify', 'recipient', 'book', 'is_completed')
+            DB(DONATIONS_TABLE)
+                .select('id', 'donor', 'who_to_notify', 'recipient', 'book',
+                        'is_completed')
                 .orderBy('created', 'desc')
                 .modify(function(queryBuilder) {
                     if (is_completed === 'true' || is_completed === 'false'
@@ -649,54 +582,14 @@ exports.read = function (req, callback) {
                             id: id
                         })
                     } else {
-                        console.log("id = " + id + ", so no adjustment to SQL query\n");
+                        console.log("id = " + id +
+                                    ", so no adjustment to SQL query\n");
                     }
                 })
                 .then(function (data) {
-                    /** The Knex query returns a JSON object containing the query results.
-                     *  Why does Postman return the JSON object with escaped quotes \"
-                     *  and newlines in the callback? Is this okay? This could be
-                     *  problematic. Keep an eye on this.
-                     */
                     console.log("Found " + data.length + " record(s).");
-                    for (let i = 0; i < data.length; i++) {
-                        /*
-
-                        // Is is ok to make 'donor' a constant? Yes.
-                        const donor = JSON.parse(data[i].donor);
-                        const recipient = JSON.parse(data[i].recipient);
-                        let is_completed_string = data[i].is_completed
-                                                  ? "completed"
-                                                  : "in the queue";
-
-                        if (donor !== null) {
-                            console.log("Tracking ID = " + data[i].id + " from " +
-                                        donor.donor_title + " " +
-                                        donor.donor_first_name + " " +
-                                        donor.donor_last_name);
-                        } else {
-                            console.log("Donor field of " + data[i].id + " is "
-                                        + donor);
-                        }
-
-                        if (recipient !== null) {
-                            console.log(recipient.recipient_donation_type + " "
-                                        + recipient.recipient_title + " "
-                                        + recipient.recipient_first_name + " "
-                                        + recipient.recipient_last_name);
-                        } else {
-                            console.log("Recipient field of " + data[i].id + " is "
-                                          + recipient);
-                        }
-
-                        if (donor !== null) {
-                            console.log("Donated on " + donor.donor_date_of_donation
-                                        + ".\nStatus: " + is_completed_string);
-                        }
-                        console.log();
-                        */
-                    }
-                    console.log("End of READ query from model\n=====================\n");
+                    console.log("End of READ query from model" +
+                                "\n=====================\n");
 
                     callback({
                         status: 200,
@@ -706,17 +599,18 @@ exports.read = function (req, callback) {
 
                 })
                 .catch(function (error) {
-                    console.log('Inside catch function of tbl_donations case');
-                    LOGGER.module().fatal('FATAL: Unable to read record ' + error);
+                    console.log('Inside catch function of donations table case');
+                    LOGGER.module().fatal('FATAL: Unable to read record ' +
+                                          error);
                     // throw 'FATAL: Unable to read record ' + error;
                 });
             break;
         } // end of "" case
 
-        case "tbl_titles_lookup":
-        case "tbl_states_lookup":
-        case "tbl_relationships_lookup":
-        case "tbl_subject_areas_lookup": {
+        case TITLES_TABLE:
+        case STATES_TABLE:
+        case RELATIONSHIPS_TABLE:
+        case SUBJECT_AREAS_TABLE: {
             /**
              * Lookup table query URLs:
              * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=titles&is_active=true&api_key=API_KEY
@@ -728,38 +622,12 @@ exports.read = function (req, callback) {
                             ? ""
                             : req.query.is_active.toLowerCase();
 
-            let id_field, display_field, sort_field;
-
-            switch(table_name) {
-                case "tbl_titles_lookup": {
-                    id_field = 'title_id',
-                    display_field = 'title',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_states_lookup": {
-                    id_field = 'state_id',
-                    display_field = 'state_full',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_relationships_lookup": {
-                    id_field = 'relationship_id',
-                    display_field = 'relationship',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_subject_areas_lookup": {
-                    id_field = 'subject_id',
-                    display_field = 'subject',
-                    sort_field = id_field;
-                    break;
-                }
-            }
+            let table_field_names = get_table_field_names(table_name);
 
             DB(table_name)
-                .select(id_field + ' as id', display_field + ' as term')
-                .orderBy(sort_field)
+                .select(table_field_names.id + ' as id',
+                        table_field_names.display + ' as term')
+                .orderBy(table_field_names.sort)
                 .modify(function(queryBuilder) {
                     if (is_active === 'true' || is_active === 'false'
                         || is_active === '1' || is_active === '0') {
@@ -777,22 +645,20 @@ exports.read = function (req, callback) {
                 })
                 .modify(function(queryBuilder) {
                     if (typeof id !== 'undefined') {
-                        console.log("id = " + id + ", so adding to SQL query\n");
+                        console.log("id = " + id +
+                                    ", so adding to SQL query\n");
 
-                        queryBuilder.where(id_field, id)
+                        queryBuilder.where(table_field_names.id, id)
                     } else {
-                        console.log("id = " + id + ", so no adjustment to SQL query\n");
+                        console.log("id = " + id +
+                                    ", so no adjustment to SQL query\n");
                     }
                 })
                 .then(function (data) {
-                    console.log("Populating " + display_field + " choices. " +
-                                data.length + " choice(s) found.");
-                    /*
-                    for (let i = 0; i < data.length; i++) {
-                        console.log(display_field + "[" + i + "] = " + data[i][display_field]);
-                    }
-                    */
-                    console.log("\nEnd of READ query from model\n=====================\n");
+                    console.log("Populating " + table_field_names.display +
+                                " choices. " + data.length + " choice(s) found.");
+                    console.log("\nEnd of READ query from model" +
+                                "\n=====================\n");
 
                     callback({
                         status: 200,
@@ -803,7 +669,8 @@ exports.read = function (req, callback) {
                 })
                 .catch(function (error) {
                     console.log('Inside catch function of lookup table case');
-                    LOGGER.module().fatal('FATAL: Unable to read record: ' + error);
+                    LOGGER.module().fatal('FATAL: Unable to read record: ' +
+                                          error);
                     // throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
@@ -845,35 +712,14 @@ exports.update = function (req, callback) {
      * PUT (i.e. update) record in relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&id=ID&api_key=API_KEY
      */
 
-    let tbl = typeof req.query.tbl === 'undefined'
-              ? ""
-              : req.query.tbl.toLowerCase();
-
-    let table_name;
-
-    switch(tbl) {
-        case "":
-            table_name = "";
-            break;
-        case "subject_areas":
-            table_name = "tbl_subject_areas_lookup";
-            break;
-        case "titles":
-            table_name = "tbl_titles_lookup";
-            break;
-        case "relationships":
-            table_name = "tbl_relationships_lookup";
-            break;
-        default:
-            table_name = null;
-    }
+    let tbl = get_empty_or_lowercase_string(req.query.tbl),
+        table_name = get_table_name(tbl);
 
     switch(table_name) {
         case "": {
             /**
-             * This updates the book field (with newlines included) from the
-             * request_body (and sets is_completed = 1). Any other field from the
-             * request_body is ignored.
+             * This updates the book field (and sets is_completed = 1). Any
+             * other field from the request_body is ignored.
              */
 
             if (typeof id === 'undefined') {
@@ -966,7 +812,7 @@ exports.update = function (req, callback) {
 
                 let obj = {};
 
-                DB(TABLE)
+                DB(DONATIONS_TABLE)
                     .select('id', 'is_completed')
                     .where({
                         id: id
@@ -1016,7 +862,7 @@ exports.update = function (req, callback) {
                     return false;
                 }
 
-                DB(TABLE)
+                DB(DONATIONS_TABLE)
                     .where({
                         id: id
                     })
@@ -1063,7 +909,7 @@ exports.update = function (req, callback) {
                     return false;
                 }
 
-                DB(TABLE)
+                DB(DONATIONS_TABLE)
                     .select('*')
                     .where({
                         id: id
@@ -1133,7 +979,8 @@ exports.update = function (req, callback) {
                         to: CONFIG.emailExternalRelations,
                         cc: CONFIG.emailLibrarian,
                         bcc: CONFIG.emailDeveloper,
-                        subject: 'Living Library: Book plate information completed for donation with ID ' + id,
+                        subject: 'Living Library: Book plate information ' +
+                                 'completed for donation with ID ' + id,
                         text: do_not_respond_email_text + '\n\n' +
                               donation_is_complete_msg + '\n\n' +
                               'Donor: ' + donor_info + '\n' +
@@ -1178,36 +1025,13 @@ exports.update = function (req, callback) {
             break;
         } // end of "" case
 
-        case "tbl_subject_areas_lookup":
-        case "tbl_titles_lookup":
-        case "tbl_relationships_lookup": {
-            // Validate request_body or trim updated_menu_choice value?
-
-            let id_field, display_field, sort_field;
-
-            switch(table_name) {
-                case "tbl_subject_areas_lookup": {
-                    id_field = 'subject_id',
-                    display_field = 'subject',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_titles_lookup": {
-                    id_field = 'title_id',
-                    display_field = 'title',
-                    sort_field = id_field;
-                    break;
-                }
-                case "tbl_relationships_lookup": {
-                    id_field = 'relationship_id',
-                    display_field = 'relationship',
-                    sort_field = id_field;
-                    break;
-                }
-            }
+        case SUBJECT_AREAS_TABLE:
+        case TITLES_TABLE:
+        case RELATIONSHIPS_TABLE: {
+            let table_field_names = get_table_field_names(table_name);
 
             DB(table_name)
-                .where(id_field, id)
+                .where(table_field_names.id, id)
                 .modify(function(queryBuilder) {
                     let data_to_update = {};
 
@@ -1224,7 +1048,8 @@ exports.update = function (req, callback) {
                                     updated_menu_choice +
                                     ', so adding to SQL query\n');
 
-                        data_to_update[display_field] = updated_menu_choice;
+                        data_to_update[table_field_names.display] =
+                            updated_menu_choice;
                     } else {
                         console.log('updated_menu_choice = ' +
                                     updated_menu_choice +
@@ -1272,7 +1097,9 @@ exports.update = function (req, callback) {
                                 message: error_msg
                             });
 
-                            LOGGER.module().fatal('FATAL: [/living-library/model module (update)] ' + error_msg);
+                            LOGGER.module().fatal('FATAL: [/living-library/' +
+                                                  'model module (update)] ' +
+                                                  error_msg);
                             throw 'ERROR: ' + error_msg;
                         }
                     }
@@ -1334,7 +1161,7 @@ exports.update = function (req, callback) {
 exports.delete = function (req, callback) {
     let id = req.query.id;
 
-    DB(TABLE)
+    DB(DONATIONS_TABLE)
         .where({
             id: id
         })
@@ -1385,4 +1212,73 @@ const arrays_match = function (array1, array2) {
     }
 
     return true;
+};
+
+/**
+ * Returns empty string if str is undefined; otherwise, returns lowercase string
+ * @param   {string}    str    the string to check
+ * @return  {string}           empty or lowercase string
+ */
+const get_empty_or_lowercase_string = function (str) {
+    return typeof str === "undefined" ? "" : str.toLowerCase();
+};
+
+/**
+ * Returns the database table corresponding to the given string
+ * @param   {string}    tbl    the string to check
+ * @return  {string}           the name of the corresponding database table
+ */
+const get_table_name = function (tbl) {
+    switch(tbl) {
+        case "":
+            return "";
+        case "titles":
+            return TITLES_TABLE;
+        case "states":
+            return STATES_TABLE;
+        case "relationships":
+            return RELATIONSHIPS_TABLE;
+        case "subject_areas":
+            return SUBJECT_AREAS_TABLE;
+        default:
+            return null;
+    }
+};
+
+/**
+ * Returns an object containing the relevant field names for the specified table
+ * @param   {string}    table_name    the name of the specified table
+ * @return  {Object}                  an object whose properties (id, display,
+ *                                    and sort) contain the corresponding field
+ *                                    names for the specified table
+ */
+const get_table_field_names = function (table_name) {
+    let table_field_names = {};
+
+    switch(table_name) {
+        case TITLES_TABLE:
+            table_field_names.id = 'title_id',
+            table_field_names.display = 'title',
+            table_field_names.sort = table_field_names.id;
+            break;
+        case STATES_TABLE:
+            table_field_names.id = 'state_id',
+            table_field_names.display = 'state_full',
+            table_field_names.sort = table_field_names.id;
+            break;
+        case RELATIONSHIPS_TABLE:
+            table_field_names.id = 'relationship_id',
+            table_field_names.display = 'relationship',
+            table_field_names.sort = table_field_names.id;
+            break;
+        case SUBJECT_AREAS_TABLE:
+            table_field_names.id = 'subject_id',
+            table_field_names.display = 'subject',
+            table_field_names.sort = table_field_names.id;
+            break;
+        default:
+            table_field_names = null;
+    }
+
+    return table_field_names;
 };
