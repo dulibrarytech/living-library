@@ -156,7 +156,6 @@ exports.create = function (req, callback) {
 
             // Check each field for valid JSON and expected keys
             for (let key of donation_keys) {
-                let is_client_error = false;
                 let json_field;
 
                 try {
@@ -216,16 +215,6 @@ exports.create = function (req, callback) {
                     } else {
                         has_more_elements_to_validate = false;
                     }
-                }
-
-                // Not being used as of now. Either use it or delete it.
-                if (is_client_error) {
-                    callback({
-                        status: 400,
-                        message: 'Invalid syntax in request body.'
-                    });
-
-                    return false;
                 }
             }
 
@@ -1373,15 +1362,6 @@ exports.delete = function (req, callback) {
             LOGGER.module().fatal('FATAL: Unable to delete record ' + error);
             throw 'FATAL: Unable to delete record ' + error;
         });
-};
-
-/**
- * Returns
- * @param req
- * @param callback
- */
-const is_valid_json_string = function (json_string) {
-    // TODO
 };
 
 /**
