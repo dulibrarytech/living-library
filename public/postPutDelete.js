@@ -246,84 +246,25 @@ const add_menu_choice = function (event, table) {
             console.log('response = ');
             console.log(response);
 
-            let response_obj = {
-                status: response.status,
-                ok: response.ok
-            };
-
-            response_obj.data = response.json()
-                .then(function (data) {
-                    console.log("Inside response.json() 'then' function");
-                    console.log("response.json = ");
-                    console.log(data);
-
-                    response_obj.data = data;
-                    return response_obj;
-                })
-                .catch(function (error) {
-                    console.log('ERROR: [add_menu_choice] Response body ' +
-                                'does not contain valid JSON: ' + error);
-
-                    console.log("response_obj = ");
-                    console.log(response_obj);
-
-                    return response_obj;
-                });
-            /* Fix attempt 3 <-- works!
             return response.json()
                 .then(data => ({
                     data: data,
                     status: response.status,
                     ok: response.ok
                 }))
-                .catch(error => ({
-                    error_msg: 'ERROR: [add_menu_choice] Response body ' +
-                               'does not contain valid JSON: ' + error,
-                    status: response.status,
-                    ok: response.ok
-                }));
-            */
+                .catch(error => {
+                    console.log('ERROR: [add_menu_choice] Response does not ' +
+                                'contain JSON body content: ' + error);
 
-            // console.log('ERROR: [add_menu_choice] Response body ' + 'does not contain valid JSON: ' + error);
-
-            // let response_json = null;
-
-            // response_obj.data = response.json();
-
-            /* Fix attempt 2
-            let response_obj = {
-                status: response.status,
-                ok: response.ok
-            };
-
-            response.json()
-                .then(function (data) {
-                    console.log("Inside response.json() 'then' function");
-                    console.log("response.json = ");
-                    console.log(data);
-                    response_obj.data = data;
-                    console.log("response_obj = ");
-                    console.log(response_obj);
-                    return response_obj;
-                })
-                .catch(function (error) {
-                    console.log('ERROR: [add_menu_choice] Response body ' +
-                                'does not contain valid JSON: ' + error);
+                    return ({
+                        status: response.status,
+                        ok: response.ok
+                    });
                 });
-            */
-
-            /* Fix attempt 1
-            try {
-                response_obj.data = response.json();
-            } catch (error) {
-                console.log('ERROR: [add_menu_choice] Response body does not ' +
-                            'contain valid JSON');
-            }
-            */
         })
         .then(function (response) {
-            console.log('Inside second "then" function');
-            console.log('response = ');
+            console.log('Inside add_menu_choice fetch: second "then" function');
+            console.log('new response obj = ');
             console.log(response);
 
             let confirmation_div_element =
