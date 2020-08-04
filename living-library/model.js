@@ -23,12 +23,7 @@ const LOGGER = require('../libs/log4'),
       DB = require('../config/db')(),
       MOMENT = require('moment'),
       NODEMAILER = require('nodemailer'),
-      CONFIG = require('../config/config'),
-      DONATIONS_TABLE = 'tbl_donations',
-      RELATIONSHIPS_TABLE = 'tbl_relationships_lookup',
-      STATES_TABLE = 'tbl_states_lookup',
-      SUBJECT_AREAS_TABLE = 'tbl_subject_areas_lookup',
-      TITLES_TABLE = 'tbl_titles_lookup';
+      CONFIG = require('../config/config');
 
 // Configures email sending
 let transporter = NODEMAILER.createTransport({
@@ -206,7 +201,7 @@ exports.create = function (req, callback) {
             function add_donation_to_db(callback) {
                 let obj = {};
 
-                DB(DONATIONS_TABLE)
+                DB(CONFIG.dbDonationsTable)
                     .insert(request_body)
                     .then(function (data) {
                         console.log("Added donation record with id " + data);
@@ -222,7 +217,7 @@ exports.create = function (req, callback) {
 
             // 2.)
             function select_new_donation(obj, callback) {
-                DB(DONATIONS_TABLE)
+                DB(CONFIG.dbDonationsTable)
                     .select('*')
                     .where({
                         id: obj.id
@@ -300,9 +295,9 @@ exports.create = function (req, callback) {
             break;
         } // end of "" case
 
-        case SUBJECT_AREAS_TABLE:
-        case TITLES_TABLE:
-        case RELATIONSHIPS_TABLE: {
+        case CONFIG.dbSubjectAreasTable:
+        case CONFIG.dbTitlesTable:
+        case CONFIG.dbRelationshipsTable: {
             // Check for valid new_menu_choice property
             let new_menu_choice = typeof request_body.new_menu_choice ===
                                   'string'
@@ -554,7 +549,7 @@ exports.read = function (req, callback) {
                                ? ""
                                : req.query.is_completed.toLowerCase();
 
-            DB(DONATIONS_TABLE)
+            DB(CONFIG.dbDonationsTable)
                 .select('id', 'donor', 'who_to_notify', 'recipient', 'book',
                         'is_completed')
                 .orderBy('created', 'desc')
@@ -607,10 +602,10 @@ exports.read = function (req, callback) {
             break;
         } // end of "" case
 
-        case TITLES_TABLE:
-        case STATES_TABLE:
-        case RELATIONSHIPS_TABLE:
-        case SUBJECT_AREAS_TABLE: {
+        case CONFIG.dbTitlesTable:
+        case CONFIG.dbStatesTable:
+        case CONFIG.dbRelationshipsTable:
+        case CONFIG.dbSubjectAreasTable: {
             /**
              * Lookup table query URLs:
              * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=titles&is_active=true&api_key=API_KEY
@@ -812,7 +807,7 @@ exports.update = function (req, callback) {
 
                 let obj = {};
 
-                DB(DONATIONS_TABLE)
+                DB(CONFIG.dbDonationsTable)
                     .select('id', 'is_completed')
                     .where({
                         id: id
@@ -862,7 +857,7 @@ exports.update = function (req, callback) {
                     return false;
                 }
 
-                DB(DONATIONS_TABLE)
+                DB(CONFIG.dbDonationsTable)
                     .where({
                         id: id
                     })
@@ -909,7 +904,7 @@ exports.update = function (req, callback) {
                     return false;
                 }
 
-                DB(DONATIONS_TABLE)
+                DB(CONFIG.dbDonationsTable)
                     .select('*')
                     .where({
                         id: id
@@ -1025,9 +1020,9 @@ exports.update = function (req, callback) {
             break;
         } // end of "" case
 
-        case SUBJECT_AREAS_TABLE:
-        case TITLES_TABLE:
-        case RELATIONSHIPS_TABLE: {
+        case CONFIG.dbSubjectAreasTable:
+        case CONFIG.dbTitlesTable:
+        case CONFIG.dbRelationshipsTable: {
             let table_field_names = get_table_field_names(table_name);
 
             DB(table_name)
@@ -1161,7 +1156,7 @@ exports.update = function (req, callback) {
 exports.delete = function (req, callback) {
     let id = req.query.id;
 
-    DB(DONATIONS_TABLE)
+    DB(CONFIG.dbDonationsTable)
         .where({
             id: id
         })
@@ -1233,13 +1228,13 @@ const get_table_name = function (tbl) {
         case "":
             return "";
         case "titles":
-            return TITLES_TABLE;
+            return CONFIG.dbTitlesTable;
         case "states":
-            return STATES_TABLE;
+            return CONFIG.dbStatesTable;
         case "relationships":
-            return RELATIONSHIPS_TABLE;
+            return CONFIG.dbRelationshipsTable;
         case "subject_areas":
-            return SUBJECT_AREAS_TABLE;
+            return CONFIG.dbSubjectAreasTable;
         default:
             return null;
     }
@@ -1256,22 +1251,22 @@ const get_table_field_names = function (table_name) {
     let table_field_names = {};
 
     switch(table_name) {
-        case TITLES_TABLE:
+        case CONFIG.dbTitlesTable:
             table_field_names.id = 'title_id',
             table_field_names.display = 'title',
             table_field_names.sort = table_field_names.id;
             break;
-        case STATES_TABLE:
+        case CONFIG.dbStatesTable:
             table_field_names.id = 'state_id',
             table_field_names.display = 'state_full',
             table_field_names.sort = table_field_names.id;
             break;
-        case RELATIONSHIPS_TABLE:
+        case CONFIG.dbRelationshipsTable:
             table_field_names.id = 'relationship_id',
             table_field_names.display = 'relationship',
             table_field_names.sort = table_field_names.id;
             break;
-        case SUBJECT_AREAS_TABLE:
+        case CONFIG.dbSubjectAreasTable:
             table_field_names.id = 'subject_id',
             table_field_names.display = 'subject',
             table_field_names.sort = table_field_names.id;
