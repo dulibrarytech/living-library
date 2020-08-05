@@ -1396,7 +1396,6 @@ function get_menu_choices(table) {
         default:
             console.log('Invalid parameter value for table: ' + table);
             label = '';
-            // table = '';
     }
 
     let page_label_element = document.querySelector('#page-label');
@@ -1553,8 +1552,8 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
             table = living_library_config.get_relationships_table();
             break;
         default:
+            console.log('Invalid parameter value for table: ' + table);
             label = '';
-            // table = '';
     }
 
     let page_label_element = document.querySelector('#page-label');
