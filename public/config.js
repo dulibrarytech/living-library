@@ -57,7 +57,7 @@ const living_library_config = (function () {
         return 'titles';
     };
 
-    /* Form field groups, required fields, etc. */
+    /* Donation Form: form field groups, required fields, etc. */
     let donation_form = {
         // The name attributes of the form fields
         donor_fields: ['donor_title', 'donor_first_name',
@@ -110,6 +110,7 @@ const living_library_config = (function () {
         return donation_form;
     };
 
+    /* Book Plate Form fields */
     let book_plate_form = {
         // The name attributes of the form fields
         book_fields: ["book_author_name", "book_title",
@@ -132,6 +133,7 @@ const living_library_config = (function () {
         return book_plate_form;
     };
 
+    /* Add Menu Choice Form fields */
     let add_menu_choice_form = {
         // The name attributes of the form fields
         menu_choice_fields: ['new_menu_choice'],
@@ -152,6 +154,7 @@ const living_library_config = (function () {
         return add_menu_choice_form;
     };
 
+    /* Update Menu Choice Form fields */
     let update_menu_choice_form = {
         // The name attributes of the form fields
         menu_choice_fields: ['updated_menu_choice'],

@@ -7,6 +7,12 @@
  *
  * University of Denver, June 2020
  */
+
+/**
+ * Processes the Donation Form data, creating a new donation record in the
+ * database.
+ * @param   event   the event triggered by submitting the Donation Form
+ */
 const save_donation = function (event) {
     event.preventDefault();
 
@@ -44,47 +50,16 @@ const save_donation = function (event) {
     console.log("recipient_data_as_JSON = "
                 + JSON.stringify(recipient_data_as_JSON));
 
-    /* Use this code if sending Fetch request with
-     * Content-Type = application/x-www-form-urlencoded:
-
-    let donation_data = new URLSearchParams();
-    donation_data.append('donor', JSON.stringify(donor_data_as_JSON));
-    donation_data.append('who_to_notify', JSON.stringify(notify_data_as_JSON));
-    donation_data.append('recipient', JSON.stringify(recipient_data_as_JSON));
-
-     *
-     */
-
-    /* Use this code if sending Fetch request with
-     * Content-Type = application/json
-     */
     let donation_data = {
         donor: JSON.stringify(donor_data_as_JSON),
         who_to_notify: JSON.stringify(notify_data_as_JSON),
         recipient: JSON.stringify(recipient_data_as_JSON)
     }
 
-
     console.log("donation_data = ");
     console.log(donation_data);
-
     console.log("fetch url = " + living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key());
-
-    /* Use this code if sending Fetch request with
-     * Content-Type = application/x-www-form-urlencoded:
-
-    fetch(living_library_config.get_api() +
-          '?api_key=' + living_library_config.get_api_key(), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: donation_data
-    }).then(response => console.log(response));
-
-     *
-     */
 
     fetch(living_library_config.get_api() +
           '?api_key=' + living_library_config.get_api_key(), {
@@ -135,7 +110,6 @@ const save_donation = function (event) {
         });
 };
 
-
 /**
  * Determines whether the given HTMLCollection contains any non-empty element
  * values.
@@ -152,6 +126,11 @@ const containsNonEmptyElementValue = function (form_elements) {
     return false;
 };
 
+/**
+ * Processes the Book Plate Form data, updating the donation record in the
+ * database.
+ * @param   event   the event triggered by submitting the Book Plate Form
+ */
 const save_book_plate = function (event) {
     event.preventDefault();
 
@@ -214,6 +193,12 @@ const save_book_plate = function (event) {
         });
 };
 
+/**
+ * Processes the Add Menu Choice Form data, creating a new menu choice record
+ * (or updating an existing menu choice record) in the database.
+ * @param   event   the event triggered by submitting the Add Menu Choice Form
+ * @param   table   the lookup table to add to (or update)
+ */
 const add_menu_choice = function (event, table) {
     event.preventDefault();
 
@@ -298,9 +283,10 @@ const add_menu_choice = function (event, table) {
 
 /**
  * Updates the text of the specified lookup table record.
- * @param   table           the lookup table to update
- * @param   id              the id of the menu choice to be updated (i.e. the
- *                          lookup table record id)
+ * @param   event  the event triggered by submitting the Update Menu Choice Form
+ * @param   table  the lookup table to update
+ * @param   id     the id of the menu choice to be updated (i.e. the lookup
+ *                 table record id)
  */
 const update_menu_choice = function (event, table, id) {
     event.preventDefault();
@@ -364,6 +350,8 @@ const update_menu_choice = function (event, table, id) {
 /**
  * Removes the specified lookup table record from view on the website. To
  * remove the record from view, we set is_active = false.
+ * @param   event             the event triggered by submitting the Delete
+ *                            Menu Choice Form
  * @param   table             the lookup table to update
  * @param   id                the id of the menu choice to be removed (i.e. the
  *                            lookup table record id)
@@ -452,10 +440,33 @@ const form_to_JSON = function (expected_form_fields, form_elements) {
     }, {});
 };
 
+/**
+ * Determines whether element_name is a valid field (i.e. if it's a field we
+ * want to store in the database record)
+ * @param  {string}  element_name       the name attribute of the form element
+ * @param  {Array}   valid_form_fields  the list of valid form fields
+ * @return {boolean}                    true if element_name is valid; false
+ *                                      otherwise
+ *
+ * Adapted from: https://www.learnwithjason.dev/blog/get-form-values-as-json/
+ */
 const is_valid_element = function (element_name, valid_form_fields) {
     return valid_form_fields.includes(element_name);
 };
 
+/**
+ * Determines whether the element's value is valid (i.e. if we want to
+ * store it in the database record). Prevents storing checkbox or radio button
+ * values unless they are selected by the user.
+ * @param  {string}  element   the form element
+ * @return {boolean}           - true if element's value is valid (the value is
+ *                             considered valid if it's not a checkbox or radio
+ *                             button; if it's a checkbox or radio button, it
+ *                             must be selected in order to be valid)
+ *                             - false otherwise
+ *
+ * Adapted from: https://www.learnwithjason.dev/blog/get-form-values-as-json/
+ */
 const is_valid_value = function (element) {
     return (!['checkbox', 'radio'].includes(element.type) || element.checked);
 };

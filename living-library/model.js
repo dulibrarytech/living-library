@@ -89,10 +89,6 @@ exports.create = function (req, callback) {
 
     switch(table_name) {
         case "": {
-            /**
-             * Donation Form submission actions
-             */
-
             /* Validate request_body */
 
             // Expected fields

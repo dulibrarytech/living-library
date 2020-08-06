@@ -13,6 +13,9 @@
  */
 let add_person_to_notify_counter = 1;
 
+/**
+ * Builds the Donation Form webpage
+ */
 function create_donation() {
 
     // How many columns to use when displaying subject area checkboxes
@@ -460,10 +463,10 @@ function create_donation() {
 }
 
 /**
- * Adds additional form fields to donation form (so that user can add another
- * person to be notified of donation)
- * @param event   the event triggered by clicking the "Add person to be
- *                nofified" button
+ * Adds additional form fields to the Donation Form (so that the user can add
+ * more persons to be notified of donation)
+ * @param   event   the event triggered by clicking the "Add person to be
+ *                  nofified" button
  */
 function add_person_to_notify(event) {
     console.log("Inside add_person_to_notify function");
@@ -721,6 +724,11 @@ function populate_dropdown_menu(table_name, url, html_elements,
     return true;
 }
 
+/**
+ * Builds the Donation Queue (if is_completed=false) and Completed Donations
+ * (if is_completed=true) webpages
+ * @param    is_completed    the type of donation records desired
+ */
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
@@ -797,8 +805,10 @@ function get_donations(is_completed) {
                                 + donation_status + '/' + donation_id + '">'
                                 + '<img src="' + baseUrl
                                 + (data[i].is_completed
-                                   ? 'img/living_library_application_view_list.png" />'
-                                   : 'img/living_library_application_form.png" />')
+                                   ? 'img/living_library_application_' +
+                                     'view_list.png" />'
+                                   : 'img/living_library_application_' +
+                                     'form.png" />')
                                 + '</a>';
                     }
                     html += '</td>';
@@ -867,10 +877,18 @@ function get_donations(is_completed) {
         })
         .catch((error) => {
             console.log('In the catch block');
-            console.log(error);
+            console.log('Error with fetch request of get_donations ' +
+                        'function: ' + error);
         });
 }
 
+/**
+ * Builds the URL and calls the relevant function for the Book Plate Form (if
+ * is_completed=false) or the Donation Record webpage (if is_completed=true).
+ * @param    is_completed    the donation record's status (i.e. if it's
+ *                           completed or not)
+ * @param    id              the donation record's id
+ */
 function get_donation(is_completed, id) {
     is_completed = validate_is_completed_parameter(is_completed);
     const url = living_library_config.get_api() +
@@ -889,6 +907,10 @@ function get_donation(is_completed, id) {
     }
 }
 
+/**
+ * Builds the Donation Record webpage (for completed donations)
+ * @param    url    the URL to fetch the donation record from the database
+ */
 function get_completed_donation(url) {
     fetch(url)
         .then(response => {
@@ -1097,12 +1119,16 @@ function get_completed_donation(url) {
         })
         .catch((error) => {
             console.log('In the catch block');
-            console.log(error);
+            console.log('Error with fetch request of get_completed_donation ' +
+                        'function: ' + error);
         });
 }
 
+/**
+ * Builds the Book Plate Form webpage (for queued donations)
+ * @param    url    the URL to fetch the donation record from the database
+ */
 function get_queued_donation(url) {
-
     fetch(url)
         .then(response => {
             return response.json();
@@ -1354,10 +1380,9 @@ function get_queued_donation(url) {
         })
         .catch((error) => {
             console.log('In the catch block');
-            console.log(error);
+            console.log('Error with fetch request of get_queued_donation ' +
+                        'function: ' + error);
         });
-
-    //
 }
 
 /**
@@ -1702,8 +1727,8 @@ function hide_table_header_and_content() {
  /**
   * Returns a valid boolean value based on is_completed parameter.
   * Defaults to false for any invalid value or type.
-  * Any number that is not 1 is considered false.
-  * @param is_completed
+  * Any value that is not 1 or true is considered false.
+  * @param    is_completed    the value to validate
   */
 function validate_is_completed_parameter(is_completed) {
     console.log("before switch, is_completed = " + is_completed);
