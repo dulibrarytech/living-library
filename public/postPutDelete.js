@@ -147,11 +147,15 @@ const save_book_plate = function (event) {
     console.log("form_as_JSON.book_author_name === &lt; (encoded) is " + (form_as_JSON.book_author_name === '&lt;'));
     console.log("form_as_JSON.book_title = " + form_as_JSON.book_title);
     console.log("form_as_JSON.book_title === & (decoded) is " + (form_as_JSON.book_title === '&'));
-    console.log("form_as_JSON.book_author_name === &amp; (encoded) is " + (form_as_JSON.book_author_name === '&amp;'));
+    console.log("form_as_JSON.book_title === &amp; (encoded) is " + (form_as_JSON.book_title === '&amp;'));
 
     let book_plate_data = { book: JSON.stringify(form_as_JSON) };
     console.log("book_plate_data = ");
     console.log(book_plate_data);
+    console.log("Is it decoded? book_plate_data.book.includes('<') = " + book_plate_data.book.includes('<'));
+    console.log("Is it encoded? book_plate_data.book.includes('&lt;') = " + book_plate_data.book.includes('&lt;'));
+    console.log("Is it decoded? book_plate_data.book.includes('&') = " + book_plate_data.book.includes('<'));
+    console.log("Is it encoded? book_plate_data.book.includes('&amp;') = " + book_plate_data.book.includes('&amp;'));
     console.log("book_plate_data.book = " + book_plate_data.book);
     console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
 
