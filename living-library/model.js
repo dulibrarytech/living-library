@@ -23,9 +23,7 @@ const LOGGER = require('../libs/log4'),
       DB = require('../config/db')(),
       MOMENT = require('moment'),
       NODEMAILER = require('nodemailer'),
-      CONFIG = require('../config/config'),
-      {JSDOM} = require('jsdom'),
-      DOCUMENT = new JSDOM('').window;
+      CONFIG = require('../config/config');
 
 // Configures email sending
 let transporter = NODEMAILER.createTransport({
@@ -71,7 +69,7 @@ const send_email = function (message, id) {
  * @param callback
  */
 exports.create = function (req, callback) {
-    let request_body = decode_HTML(req.body);
+    let request_body = req.body;
     console.log("request_body = ");
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
@@ -1205,28 +1203,6 @@ const arrays_match = function (array1, array2) {
     }
 
     return true;
-};
-
-/**
- * Decodes the HTML-encoded string into real HTML
- * @param   {string}  html  the string to decode
- * @return  {string}        the decoded string
- *
- * Code courtesy of Rob W on StackOverflow:
- * https://stackoverflow.com/a/7394787/1293256
- * Also mentioned here:
- * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
- */
-const decode_HTML = function (html) {
-    console.log("request body =");
-    console.log(html);
-    let txt = DOCUMENT.document.createElement('textarea');
-    txt.innerHTML = html;
-    console.log("textarea.innerHTML =");
-    console.log(txt);
-    console.log("textarea.value =");
-    console.log(txt.value);
-    return txt.value;
 };
 
 /**
