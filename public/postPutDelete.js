@@ -427,13 +427,14 @@ const form_to_JSON = function (expected_form_fields, form_elements) {
     return [].reduce.call(form_elements, (data, element) => {
         if (is_valid_element(element.name, expected_form_fields) &&
             is_valid_value(element)) {
+            let value = decode_HTML(element.value);
             if (element.type === 'checkbox') {
                 data[element.name] = (data[element.name] || [])
-                                     .concat(element.value.trim());
+                                     .concat(value.trim());
             } else if (element.name === 'donor_amount_of_donation') {
-                data[element.name] = parseFloat(element.value);
+                data[element.name] = parseFloat(value);
             } else {
-                data[element.name] = element.value.trim();
+                data[element.name] = value.trim();
             }
         }
         return data;
@@ -469,4 +470,26 @@ const is_valid_element = function (element_name, valid_form_fields) {
  */
 const is_valid_value = function (element) {
     return (!['checkbox', 'radio'].includes(element.type) || element.checked);
+};
+
+/**
+ * Decodes the HTML-encoded string into real HTML
+ * @param   {string}   html   the string to decode
+ * @return  {string}          the decoded string
+ *
+ * Code courtesy of Rob W on StackOverflow:
+ * https://stackoverflow.com/a/7394787/1293256
+ * Also mentioned here:
+ * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
+ */
+const decode_HTML = function (html) {
+    console.log("before decoding, value =");
+    console.log(html);
+    let txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    console.log("textarea.innerHTML =");
+    console.log(txt);
+    console.log("after decoding, value =");
+    console.log(txt.value);
+    return txt.value;
 };
