@@ -142,6 +142,12 @@ const save_book_plate = function (event) {
                                     .get_book_plate_form_info().book_fields,
                                     form_data);
     console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
+    console.log("form_as_JSON.book_author_name = " + form_as_JSON.book_author_name);
+    console.log("form_as_JSON.book_author_name === < (decoded) is " + (form_as_JSON.book_author_name === '<'));
+    console.log("form_as_JSON.book_author_name === &lt; (encoded) is " + (form_as_JSON.book_author_name === '&lt;'));
+    console.log("form_as_JSON.book_title = " + form_as_JSON.book_title);
+    console.log("form_as_JSON.book_title === & (decoded) is " + (form_as_JSON.book_title === '&'));
+    console.log("form_as_JSON.book_author_name === &amp; (encoded) is " + (form_as_JSON.book_author_name === '&amp;'));
 
     let book_plate_data = { book: JSON.stringify(form_as_JSON) };
     console.log("book_plate_data = ");
