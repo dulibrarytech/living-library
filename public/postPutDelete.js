@@ -142,20 +142,10 @@ const save_book_plate = function (event) {
                                     .get_book_plate_form_info().book_fields,
                                     form_data);
     console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
-    console.log("form_as_JSON.book_author_name = " + form_as_JSON.book_author_name);
-    console.log("form_as_JSON.book_author_name === < (decoded) is " + (form_as_JSON.book_author_name === '<'));
-    console.log("form_as_JSON.book_author_name === &lt; (encoded) is " + (form_as_JSON.book_author_name === '&lt;'));
-    console.log("form_as_JSON.book_title = " + form_as_JSON.book_title);
-    console.log("form_as_JSON.book_title === & (decoded) is " + (form_as_JSON.book_title === '&'));
-    console.log("form_as_JSON.book_title === &amp; (encoded) is " + (form_as_JSON.book_title === '&amp;'));
 
     let book_plate_data = { book: JSON.stringify(form_as_JSON) };
     console.log("book_plate_data = ");
     console.log(book_plate_data);
-    console.log("Is it decoded? book_plate_data.book.includes('<') = " + book_plate_data.book.includes('<'));
-    console.log("Is it encoded? book_plate_data.book.includes('&lt;') = " + book_plate_data.book.includes('&lt;'));
-    console.log("Is it decoded? book_plate_data.book.includes('&') = " + book_plate_data.book.includes('<'));
-    console.log("Is it encoded? book_plate_data.book.includes('&amp;') = " + book_plate_data.book.includes('&amp;'));
     console.log("book_plate_data.book = " + book_plate_data.book);
     console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
 
@@ -437,14 +427,13 @@ const form_to_JSON = function (expected_form_fields, form_elements) {
     return [].reduce.call(form_elements, (data, element) => {
         if (is_valid_element(element.name, expected_form_fields) &&
             is_valid_value(element)) {
-            let value = decode_HTML(element.value);
             if (element.type === 'checkbox') {
                 data[element.name] = (data[element.name] || [])
-                                     .concat(value.trim());
+                                     .concat(element.value.trim());
             } else if (element.name === 'donor_amount_of_donation') {
-                data[element.name] = parseFloat(value);
+                data[element.name] = parseFloat(element.value);
             } else {
-                data[element.name] = value.trim();
+                data[element.name] = element.value.trim();
             }
         }
         return data;
@@ -480,26 +469,4 @@ const is_valid_element = function (element_name, valid_form_fields) {
  */
 const is_valid_value = function (element) {
     return (!['checkbox', 'radio'].includes(element.type) || element.checked);
-};
-
-/**
- * Decodes the HTML-encoded string into real HTML
- * @param   {string}   html   the string to decode
- * @return  {string}          the decoded string
- *
- * Code courtesy of Rob W on StackOverflow:
- * https://stackoverflow.com/a/7394787/1293256
- * Also mentioned here:
- * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
- */
-const decode_HTML = function (html) {
-    console.log("before decoding, value =");
-    console.log(html);
-    let txt = document.createElement('textarea');
-    txt.innerHTML = html;
-    console.log("textarea.innerHTML =");
-    console.log(txt);
-    console.log("after decoding, value =");
-    console.log(txt.value);
-    return txt.value;
 };
