@@ -25,7 +25,7 @@ const LOGGER = require('../libs/log4'),
       NODEMAILER = require('nodemailer'),
       CONFIG = require('../config/config'),
       {JSDOM} = require('jsdom'),
-      DOCUMENT = new JSDOM('').window;
+      WINDOW = new JSDOM('').window;
 
 // Configures email sending
 let transporter = NODEMAILER.createTransport({
@@ -75,8 +75,7 @@ exports.create = function (req, callback) {
     console.log("req.body = ");
     console.log(req.body);
     console.log("typeof req.body = " + typeof req.body);
-    req.body.new_menu_choice = decode_HTML(req.body.new_menu_choice);
-    let request_body = req.body;
+    let request_body = decode_HTML(req.body);
     console.log("After req.body is decoded:");
     console.log("request_body = ");
     console.log(request_body);
@@ -695,8 +694,14 @@ exports.read = function (req, callback) {
  */
 exports.update = function (req, callback) {
     let id = req.query.id;
-    let request_body = req.body;
     console.log("id = " + id);
+
+    console.log("Before req.body is decoded:");
+    console.log("req.body = ");
+    console.log(req.body);
+    console.log("typeof req.body = " + typeof req.body);
+    let request_body = decode_HTML(req.body);
+    console.log("After req.body is decoded:");
     console.log("request_body = ");
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
@@ -1214,26 +1219,37 @@ const arrays_match = function (array1, array2) {
 };
 
 /**
- * Decodes the HTML-encoded string into real HTML
- * @param   {string}  html  the string to decode
- * @return  {string}        the decoded string
+ * Loops through object's own properties and, if the value is a string, decodes
+ * any HTML-encoded entities into real HTML
+ * @param   {string}  obj  the object whose properties need to be decoded
+ * @return  {string}       the modified object with decoded HTML
  *
  * Code courtesy of Rob W on StackOverflow:
  * https://stackoverflow.com/a/7394787/1293256
  * Also mentioned here:
  * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
  */
-const decode_HTML = function (html) {
+const decode_HTML = function (obj) {
     console.log("Inside decode_HTML function");
     console.log("request body =");
-    console.log(html);
-    let txt = DOCUMENT.document.createElement('textarea');
-    txt.innerHTML = html;
-    console.log("textarea.innerHTML =");
-    console.log(txt.innerHTML);
-    console.log("textarea.value =");
-    console.log(txt.value);
-    return txt.value;
+    console.log(obj);
+
+    for (const [key, value] of Object.entries(obj)) {
+        console.log(`${key}: ${value}`);
+
+        if (typeof value === 'string') {
+            let txt = WINDOW.document.createElement('textarea');
+            txt.innerHTML = value;
+            console.log("textarea.innerHTML =");
+            console.log(txt.innerHTML);
+            console.log("textarea.value =");
+            console.log(txt.value);
+
+            obj[key] = txt.value;
+        }
+    }
+
+    return obj;
 };
 
 /**
