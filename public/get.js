@@ -439,8 +439,12 @@ function create_donation() {
                     let label = document.createElement('label');
                     label.htmlFor = checkbox.id;
                     label.className = 'checkbox inline';
+                    label.innerHTML = checkbox.value;
+                    label.insertBefore(checkbox, label.childNodes[0]);
+                    /*
                     label.appendChild(checkbox);
                     label.appendChild(document.createTextNode(checkbox.value));
+                    */
 
                     // decide where to insert cell
                     let row = i % SUBJECT_AREA_COLS == 0
@@ -681,8 +685,9 @@ function populate_dropdown_menu(table_name, url, html_elements,
                 let option;
                 for (let i = 0; i < data.length; i++) {
                     option = document.createElement('option');
-                    option.text = data[i].term;
+                    // option.text = data[i].term;
                     option.value = data[i].term;
+                    option.innerHTML = data[i].term;
                     select.add(option);
                 }
 
@@ -1528,8 +1533,11 @@ function get_menu_choices(table) {
                     let anchor_element = document.createElement('a');
                     anchor_element.href = baseUrl + _editMenuChoiceUrl +
                                           link_text + '/' + data[i].id;
+                    /*
                     anchor_element.appendChild(document
                                                .createTextNode(data[i].term));
+                    */
+                    anchor_element.innerHTML = data[i].term;
 
                     // decide where to insert cell
                     let row = i % MENU_CHOICE_COLS == 0
