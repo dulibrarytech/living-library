@@ -1221,30 +1221,21 @@ const arrays_match = function (array1, array2) {
 /**
  * Loops through object's own properties and, if the value is a string, decodes
  * any HTML-encoded entities into real HTML
- * @param   {string}  obj  the object whose properties need to be decoded
- * @return  {string}       the modified object with decoded HTML
+ * @param   {Object}  obj  the object whose properties need to be decoded
+ * @return  {Object}       the modified object with decoded HTML
  *
- * Code courtesy of Rob W on StackOverflow:
+ * Adapted from Rob W's approach to decoding HTML characters:
  * https://stackoverflow.com/a/7394787/1293256
- * Also mentioned here:
+ * See also:
  * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
  */
 const decode_HTML = function (obj) {
     console.log("Inside decode_HTML function");
-    console.log("request body =");
-    console.log(obj);
 
     for (const [key, value] of Object.entries(obj)) {
-        console.log(`${key}: ${value}`);
-
         if (typeof value === 'string') {
             let txt = WINDOW.document.createElement('textarea');
             txt.innerHTML = value;
-            console.log("textarea.innerHTML =");
-            console.log(txt.innerHTML);
-            console.log("textarea.value =");
-            console.log(txt.value);
-
             obj[key] = txt.value;
         }
     }
