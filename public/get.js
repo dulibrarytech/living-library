@@ -732,6 +732,17 @@ function populate_dropdown_menu(table_name, url, html_elements,
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
+    /* TO-DO: Remove this code block once you've removed these elements from
+     * living-library-view.php
+     */
+    $("#table-header").html('');
+    let table_header_element = document.getElementById("table-header");
+    table_header_element.classList.remove("table-bordered");
+    table_header_element.classList.remove("table");
+    table_header_element.setAttribute("id", "no-table-header");
+
+    $("#table-content").html('');
+
     fetch(living_library_config.get_api() + '?is_completed=' + is_completed +
           '&api_key=' + living_library_config.get_api_key())
         .then(response => {
@@ -748,6 +759,7 @@ function get_donations(is_completed) {
                                   ? "Living Library: Completed Donations"
                                   : "Living Library: Donation Queue");
 
+            /*
             $("#table-header").html("<thead> " +
                                     "<th class='span1_wider'>" +
                                     (is_completed
@@ -759,6 +771,7 @@ function get_donations(is_completed) {
                                     "<th class='span4'>Recipient Name</th> " +
                                     "<th style='align:right'>Date of Donation</th> " +
                                     "</thead>");
+            */
 
             $("#table-content").html('');
             let html = '';
@@ -772,7 +785,21 @@ function get_donations(is_completed) {
             } else {
                 console.log("Found " + data.length + " record(s).");
 
-                html += '<table class="table table-bordered table-striped">';
+                html += '<table id="donations" class="display" ' +
+                        'style="width:100%">';
+                html += '<thead>'
+                        + '<tr>'
+                        + '<th>'
+                        + (is_completed ? 'Full Record' : 'Book Plate Form')
+                        + '</th> '
+                        + '<th>ID</th> '
+                        + '<th>Donor Name</th> '
+                        + '<th>Recipient Name</th> '
+                        + '<th>Date of Donation</th> '
+                        + '</tr>'
+                        + '</thead>';
+                html += '<tbody>';
+
                 for (let i = 0; i < data.length; i++) {
                     const donor = living_library_helper
                                   .get_valid_json(data[i], 'donor'),
@@ -798,8 +825,7 @@ function get_donations(is_completed) {
 
                     html += '<tr>';
 
-                    html += '<td class="span1_wider" '
-                            + 'style="text-align: center">';
+                    html += '<td>';
                     if (typeof donation_id === 'number') {
                         html += '<a href="' + baseUrl + _getDonationUrl
                                 + donation_status + '/' + donation_id + '">'
@@ -813,10 +839,10 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
-                    html += '<td class="span1" style="text-align: center">'
+                    html += '<td>'
                             + donation_id + '</td>';
 
-                    html += '<td class="span4 name-cell4">';
+                    html += '<td>';
                     if (living_library_helper.is_non_null_object(donor)) {
                         html += living_library_helper
                                 .get_field_value(donor, 'donor_title')
@@ -832,7 +858,7 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
-                    html += '<td class="span4 name-cell4">';
+                    html += '<td>';
                     if (living_library_helper.is_non_null_object(recipient)) {
                         html += living_library_helper
                                 .get_field_value(recipient, 'recipient_title')
@@ -850,7 +876,7 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
-                    html += '<td style="text-align: center">';
+                    html += '<td>';
                     if (living_library_helper.is_non_null_object(donor)) {
                         html += living_library_helper
                                 .get_field_value(donor,
@@ -863,6 +889,7 @@ function get_donations(is_completed) {
 
                     html += '</tr>';
                 }
+                html += '</tbody>';
                 html += '</table>';
             }
             // console.log(html);
@@ -874,6 +901,9 @@ function get_donations(is_completed) {
                 table_content_element.innerHTML = html;
             }
 
+            $(document).ready( function () {
+                $('#donations').DataTable();
+            } );
         })
         .catch((error) => {
             console.log('In the catch block');

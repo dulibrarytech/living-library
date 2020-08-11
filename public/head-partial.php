@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/jquery-ui.css" />
 
 <!-- Living Library integration -->
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/DataTables/datatables.min.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/living-library.css" />
 
 <!-- DU Sheild favicon -->
