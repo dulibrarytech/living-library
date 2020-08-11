@@ -759,20 +759,6 @@ function get_donations(is_completed) {
                                   ? "Living Library: Completed Donations"
                                   : "Living Library: Donation Queue");
 
-            /*
-            $("#table-header").html("<thead> " +
-                                    "<th class='span1_wider'>" +
-                                    (is_completed
-                                    ? "Full Record"
-                                    : "Book Plate Form") +
-                                    "</th> " +
-                                    "<th class='span1'>ID</th> " +
-                                    "<th class='span4'>Donor Name</th> " +
-                                    "<th class='span4'>Recipient Name</th> " +
-                                    "<th style='align:right'>Date of Donation</th> " +
-                                    "</thead>");
-            */
-
             $("#table-content").html('');
             let html = '';
 
@@ -825,7 +811,7 @@ function get_donations(is_completed) {
 
                     html += '<tr>';
 
-                    html += '<td>';
+                    html += '<td style="text-align: center;">';
                     if (typeof donation_id === 'number') {
                         html += '<a href="' + baseUrl + _getDonationUrl
                                 + donation_status + '/' + donation_id + '">'
@@ -839,8 +825,9 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
-                    html += '<td>'
-                            + donation_id + '</td>';
+                    html += '<td style="text-align: right;">'
+                            + donation_id
+                            + '</td>';
 
                     html += '<td>';
                     if (living_library_helper.is_non_null_object(donor)) {
@@ -876,7 +863,7 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
-                    html += '<td>';
+                    html += '<td style="text-align: center;">';
                     if (living_library_helper.is_non_null_object(donor)) {
                         html += living_library_helper
                                 .get_field_value(donor,
