@@ -42,11 +42,16 @@
 }
 
 /**
- * Style for "Show x entries" at top of donations table and "Showing x to y of
- * z entries" at bottom of donations table
+ * Style for "Export records" button at top of donations table and
+ * "Showing x to y of z entries" at bottom of donations table
  */
-.dataTables_length, .dataTables_info {
+.dt-buttons, .dataTables_info {
   margin-left: 20px;
+}
+
+/* Style for "Show x entries" at top of donations table */
+.dataTables_length {
+  margin-left: 70px;
 }
 
 /* Style for hyperlinks within menu choices table */

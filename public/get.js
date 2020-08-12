@@ -902,7 +902,7 @@ function get_donations(is_completed) {
 
             $(document).ready( function () {
                 $('#donations').DataTable( {
-                    dom: 'Bfrtip',
+                    dom: 'Blfrtip',
                     select: true,
                     buttons: [
                         {
@@ -914,11 +914,11 @@ function get_donations(is_completed) {
                             }
                         }
                     ],
-                    "columnDefs": [
+                    columnDefs: [
                         {
-                            "targets": [ 4 ],
-                            "visible": false,
-                            "searchable": false
+                            targets: [ 4 ],
+                            visible: false,
+                            searchable: false
                         }
                     ]
                 } );
