@@ -54,6 +54,10 @@
   margin-left: 70px;
 }
 
+#date-range-filter {
+  float: right;
+}
+
 /* Style for hyperlinks within menu choices table */
 #menu_choices a:link, #menu_choices a:visited {
   color: #005580;
