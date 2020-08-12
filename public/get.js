@@ -753,7 +753,7 @@ function get_donations(is_completed) {
             // console.log(data);
 
             $(".content-window").css("height", "770px");
-            $(".pre-scrollable").css("max-height", "485px");
+            $(".pre-scrollable").css("max-height", "550px");
 
             $("#page-label").text(is_completed
                                   ? "Living Library: Completed Donations"
