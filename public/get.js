@@ -781,6 +781,7 @@ function get_donations(is_completed) {
                         + '<th>ID</th> '
                         + '<th>Donor Name</th> '
                         + '<th>Recipient Name</th> '
+                        + '<th>Donation Amount</th> '
                         + '<th>Date of Donation</th> '
                         + '</tr>'
                         + '</thead>';
@@ -863,6 +864,17 @@ function get_donations(is_completed) {
                     }
                     html += '</td>';
 
+                    html += '<td>';
+                    if (living_library_helper.is_non_null_object(donor)) {
+                        html += living_library_helper
+                                .get_field_value(donor,
+                                                 'donor_amount_of_donation');
+                    } else {
+                        html += living_library_config
+                                .get_error_text_for_invalid_json();
+                    }
+                    html += '</td>';
+
                     html += '<td style="text-align: center;">';
                     if (living_library_helper.is_non_null_object(donor)) {
                         html += living_library_helper
@@ -889,7 +901,27 @@ function get_donations(is_completed) {
             }
 
             $(document).ready( function () {
-                $('#donations').DataTable();
+                $('#donations').DataTable( {
+                    dom: 'Bfrtip',
+                    select: true,
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: 'Export records',
+                            filename: 'living_library_donations',
+                            exportOptions: {
+                                columns: [ 1, 2, 3, 4, 5 ]
+                            }
+                        }
+                    ],
+                    "columnDefs": [
+                        {
+                            "targets": [ 4 ],
+                            "visible": false,
+                            "searchable": false
+                        }
+                    ]
+                } );
             } );
         })
         .catch((error) => {
