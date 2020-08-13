@@ -928,7 +928,6 @@ function get_donations(is_completed) {
             // Apply DataTables plugin to donations table
             $(document).ready( function () {
                 let donations_table = $('#donations').DataTable( {
-                    // dom: 'Blf<"toolbar">rtip',
                     dom: 'Blfrtip',
                     select: true,
                     buttons: [
@@ -949,35 +948,6 @@ function get_donations(is_completed) {
                         }
                     ]
                 } );
-
-                // Add date range filtering input boxes
-
-                /*
-                $("div.toolbar").html('<table id="date-range-filter">'
-                                      + '<tr>'
-                                      + '<td>'
-                                      + '<div class="form-group form-inline">'
-                                      + '<label for="start_date_input_box">'
-                                      + 'From:'
-                                      + '</label> '
-                                      + '<input type="text" '
-                                      + 'class="form-control" '
-                                      + 'id="start_date_input_box" '
-                                      + 'name="start_date" '
-                                      + 'placeholder="YYYY-MM-DD" />'
-                                      + '<label for="end_date_input_box">'
-                                      + 'To:'
-                                      + '</label> '
-                                      + '<input type="text" '
-                                      + 'class="form-control" '
-                                      + 'id="end_date_input_box" '
-                                      + 'name="end_date" '
-                                      + 'placeholder="YYYY-MM-DD" />'
-                                      + '</div>'
-                                      + '</td>'
-                                      + '</tr>'
-                                      + '</table>');
-                */
 
                 let start_date_input_element = document.getElementById('start_date_input_box');
                 console.log('hello from get.js');

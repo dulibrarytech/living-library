@@ -50,18 +50,18 @@ $.fn.dataTableExt.afnFiltering.push(
 		var iStartDateCol = 5;
 		var iEndDateCol = 5;
 
-		iFini=iFini.substring(6,10) + iFini.substring(3,5)+ iFini.substring(0,2);
+		iFini=iFini.substring(0,4) + iFini.substring(5,7)+ iFini.substring(8,10);
 		console.log('start date = ' + iFini);
-		iFfin=iFfin.substring(6,10) + iFfin.substring(3,5)+ iFfin.substring(0,2);
+		iFfin=iFfin.substring(0,4) + iFfin.substring(5,7)+ iFfin.substring(8,10);
 		console.log('end date = ' + iFfin);
 
 		console.log('date of donation (start) = ' + aData[iStartDateCol]);
-		console.log('date of donation (start) [6-10] = ' + aData[iStartDateCol].substring(6,10));
-		console.log('date of donation (start) [3-5] = ' + aData[iStartDateCol].substring(3,5));
-		console.log('date of donation (start) [0-2] = ' + aData[iStartDateCol].substring(0,2));
-		var datofini=aData[iStartDateCol].substring(6,10) + aData[iStartDateCol].substring(3,5)+ aData[iStartDateCol].substring(0,2);
+		console.log('date of donation (start) [0-4] = ' + aData[iStartDateCol].substring(0,4));
+		console.log('date of donation (start) [5-7] = ' + aData[iStartDateCol].substring(5,7));
+		console.log('date of donation (start) [8-10] = ' + aData[iStartDateCol].substring(8,10));
+		var datofini=aData[iStartDateCol].substring(0,4) + aData[iStartDateCol].substring(5,7)+ aData[iStartDateCol].substring(8,10);
 		console.log('date of donation (start) = ' + datofini);
-		var datoffin=aData[iEndDateCol].substring(6,10) + aData[iEndDateCol].substring(3,5)+ aData[iEndDateCol].substring(0,2);
+		var datoffin=aData[iEndDateCol].substring(0,4) + aData[iEndDateCol].substring(5,7)+ aData[iEndDateCol].substring(8,10);
 		console.log('date of donation (end) = ' + datoffin);
 
 		if ( iFini === "" && iFfin === "" )
