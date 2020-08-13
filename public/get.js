@@ -772,6 +772,30 @@ function get_donations(is_completed) {
                 console.log("Found " + data.length + " record(s).");
 
                 // Donations table
+                html += '<table id="date-range-filter">'
+                        + '<tr>'
+                        + '<td>'
+                        + '<div class="form-group form-inline">'
+                        + '<label for="start_date_input_box">'
+                        + 'From:'
+                        + '</label> '
+                        + '<input type="text" '
+                        + 'class="form-control" '
+                        + 'id="start_date_input_box" '
+                        + 'name="start_date" '
+                        + 'placeholder="YYYY-MM-DD" /> '
+                        + '<label for="end_date_input_box">'
+                        + 'To:'
+                        + '</label> '
+                        + '<input type="text" '
+                        + 'class="form-control" '
+                        + 'id="end_date_input_box" '
+                        + 'name="end_date" '
+                        + 'placeholder="YYYY-MM-DD" />'
+                        + '</div>'
+                        + '</td>'
+                        + '</tr>'
+                        + '</table>';
                 html += '<table id="donations" class="display" ' +
                         'style="width:100%">';
                 html += '<thead>'
@@ -904,7 +928,8 @@ function get_donations(is_completed) {
             // Apply DataTables plugin to donations table
             $(document).ready( function () {
                 let donations_table = $('#donations').DataTable( {
-                    dom: 'Blf<"toolbar">rtip',
+                    // dom: 'Blf<"toolbar">rtip',
+                    dom: 'Blfrtip',
                     select: true,
                     buttons: [
                         {
@@ -926,6 +951,8 @@ function get_donations(is_completed) {
                 } );
 
                 // Add date range filtering input boxes
+
+                /*
                 $("div.toolbar").html('<table id="date-range-filter">'
                                       + '<tr>'
                                       + '<td>'
@@ -936,22 +963,30 @@ function get_donations(is_completed) {
                                       + '<input type="text" '
                                       + 'class="form-control" '
                                       + 'id="start_date_input_box" '
-                                      + 'name="start_date"/> '
-                                      + '<label for="end_date_to_input_box">'
+                                      + 'name="start_date" '
+                                      + 'placeholder="YYYY-MM-DD" />'
+                                      + '<label for="end_date_input_box">'
                                       + 'To:'
                                       + '</label> '
                                       + '<input type="text" '
                                       + 'class="form-control" '
-                                      + 'id="end_date_to_input_box" '
-                                      + 'name="end_date"/>'
+                                      + 'id="end_date_input_box" '
+                                      + 'name="end_date" '
+                                      + 'placeholder="YYYY-MM-DD" />'
                                       + '</div>'
                                       + '</td>'
                                       + '</tr>'
                                       + '</table>');
+                */
+
+                let start_date_input_element = document.getElementById('start_date_input_box');
+                console.log('hello from get.js');
+            		console.log('From get.js, start_date_input_element =');
+            		console.log(start_date_input_element);
 
                 // Add event listeners to the two date range filtering inputs
                 $('#start_date_input_box').keyup( function() { donations_table.draw(); } );
-                $('#end_date_to_input_box').keyup( function() { donations_table.draw(); } );
+                $('#end_date_input_box').keyup( function() { donations_table.draw(); } );
             } );
         })
         .catch((error) => {
