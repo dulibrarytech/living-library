@@ -949,11 +949,6 @@ function get_donations(is_completed) {
                     ]
                 } );
 
-                let start_date_input_element = document.getElementById('start_date_input_box');
-                console.log('hello from get.js');
-            		console.log('From get.js, start_date_input_element =');
-            		console.log(start_date_input_element);
-
                 // Add event listeners to the two date range filtering inputs
                 $('#start_date_input_box').keyup( function() { donations_table.draw(); } );
                 $('#end_date_input_box').keyup( function() { donations_table.draw(); } );

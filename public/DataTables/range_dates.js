@@ -19,7 +19,7 @@
  *
  *  @example
  *    $(document).ready(function() {
- *        var table = $('#example').DataTable();
+ *        let table = $('#example').DataTable();
  *
  *        // Add event listeners to the two range filtering inputs
  *        $('#min').keyup( function() { table.draw(); } );
@@ -31,54 +31,43 @@
 $.fn.dataTableExt.afnFiltering.push(
 	function( oSettings, aData, iDataIndex ) {
 
-		let start_date_input_element = document.getElementById('start_date_input_box');
-		console.log('From range_dates.js, start_date_input_element =');
-		console.log(start_date_input_element);
-		var iFini;
-		if (start_date_input_element) {
-				iFini = document.getElementById('start_date_input_box').value;
-		    console.log('start_date_input_box.value = ' + iFini);
+		let from_date_element = document.getElementById('start_date_input_box');
+		console.log('From range_dates.js, from_date_element =');
+		console.log(from_date_element);
+		var from_date;
+		if (from_date_element) {
+				from_date = from_date_element.value;
+		    console.log('FROM date = ' + from_date);
 		}
-		let end_date_input_element = document.getElementById('end_date_input_box');
-		console.log('From range_dates.js, end_date_input_element =');
-		console.log(end_date_input_element);
-		var iFfin;
-		if (end_date_input_element) {
-				iFfin = document.getElementById('end_date_input_box').value;
-		    console.log('end_date_input_box.value = ' + iFfin);
-		}
-		var iStartDateCol = 5;
-		var iEndDateCol = 5;
 
-		iFini=iFini.substring(0,4) + iFini.substring(5,7)+ iFini.substring(8,10);
-		console.log('start date = ' + iFini);
-		iFfin=iFfin.substring(0,4) + iFfin.substring(5,7)+ iFfin.substring(8,10);
-		console.log('end date = ' + iFfin);
+		let to_date_element = document.getElementById('end_date_input_box');
+		console.log('From range_dates.js, to_date_element =');
+		console.log(to_date_element);
+		var to_date;
+		if (to_date_element) {
+				to_date = to_date_element.value;
+		    console.log('TO date = ' + to_date);
+		}
 
-		console.log('date of donation (start) = ' + aData[iStartDateCol]);
-		console.log('date of donation (start) [0-4] = ' + aData[iStartDateCol].substring(0,4));
-		console.log('date of donation (start) [5-7] = ' + aData[iStartDateCol].substring(5,7));
-		console.log('date of donation (start) [8-10] = ' + aData[iStartDateCol].substring(8,10));
-		var datofini=aData[iStartDateCol].substring(0,4) + aData[iStartDateCol].substring(5,7)+ aData[iStartDateCol].substring(8,10);
-		console.log('date of donation (start) = ' + datofini);
-		var datoffin=aData[iEndDateCol].substring(0,4) + aData[iEndDateCol].substring(5,7)+ aData[iEndDateCol].substring(8,10);
-		console.log('date of donation (end) = ' + datoffin);
+		var date_col = 5;
 
-		if ( iFini === "" && iFfin === "" )
-		{
-			return true;
-		}
-		else if ( iFini <= datofini && iFfin === "")
-		{
-			return true;
-		}
-		else if ( iFfin >= datoffin && iFini === "")
-		{
-			return true;
-		}
-		else if (iFini <= datofini && iFfin >= datoffin)
-		{
-			return true;
+		from_date = from_date.substring(0,4) + from_date.substring(5,7)+ from_date.substring(8,10);
+		console.log('start date = ' + from_date);
+		to_date = to_date.substring(0,4) + to_date.substring(5,7)+ to_date.substring(8,10);
+		console.log('end date = ' + to_date);
+
+		console.log('date of donation = ' + aData[date_col]);
+		console.log('date of donation [0-4] = ' + aData[date_col].substring(0,4));
+		console.log('date of donation [5-7] = ' + aData[date_col].substring(5,7));
+		console.log('date of donation [8-10] = ' + aData[date_col].substring(8,10));
+		var donation_date = aData[date_col].substring(0,4) + aData[date_col].substring(5,7) + aData[date_col].substring(8,10);
+		console.log('date of donation (after substring functions) = ' + donation_date);
+
+		if ( (from_date === "" && to_date === "") ||
+				 (from_date <= donation_date && to_date === "") ||
+				 (to_date >= donation_date && from_date === "") ||
+				 (from_date <= donation_date && to_date >= donation_date) ) {
+				return true;
 		}
 		return false;
 	}
