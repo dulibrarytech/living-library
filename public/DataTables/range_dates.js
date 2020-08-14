@@ -52,9 +52,9 @@ $.fn.dataTableExt.afnFiltering.push(
 		var date_col = 5;
 
 		from_date = from_date.substring(0,4) + from_date.substring(5,7)+ from_date.substring(8,10);
-		console.log('start date = ' + from_date);
+		console.log('FROM date (after substring functions) = ' + from_date);
 		to_date = to_date.substring(0,4) + to_date.substring(5,7)+ to_date.substring(8,10);
-		console.log('end date = ' + to_date);
+		console.log('TO date (after substring functions) = ' + to_date);
 
 		console.log('date of donation = ' + aData[date_col]);
 		console.log('date of donation [0-4] = ' + aData[date_col].substring(0,4));
