@@ -41,6 +41,12 @@
   display: block;
 }
 
+/* Style for table with Date Range Filter input boxes (above donations table) */
+#date-range-filter {
+  float: right;
+  margin-bottom: 7px;
+}
+
 /**
  * Style for "Export records" button at top of donations table and
  * "Showing x to y of z entries" at bottom of donations table
@@ -52,10 +58,6 @@
 /* Style for "Show x entries" at top of donations table */
 .dataTables_length {
   margin-left: 70px;
-}
-
-#date-range-filter {
-  float: right;
 }
 
 /* Style for hyperlinks within menu choices table */
