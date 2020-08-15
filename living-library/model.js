@@ -1196,8 +1196,6 @@ exports.delete = function (req, callback) {
                 id: id
             })
             .then(function (data) {
-                let id_parsed = parseInt(id, 10);
-
                 if (data.length === 1) {
                     if (data[0].is_completed === 1) {
                         LOGGER.module()
@@ -1205,7 +1203,7 @@ exports.delete = function (req, callback) {
                                      "model module (delete/" +
                                      "confirm_donation_is_in_the_queue)] " +
                                      "Cannot delete because donation record " +
-                                     "with id " + id_parsed +
+                                     "with id " + parseInt(id, 10) +
                                      " is already completed.");
 
                         obj.status = 409,
@@ -1220,7 +1218,7 @@ exports.delete = function (req, callback) {
                                  "donation_is_in_the_queue)] " +
                                  "Delete failed. Couldn't find " +
                                  "donation record with id = " +
-                                 (isNaN(id_parsed) ? id : id_parsed));
+                                 parseInt(id, 10));
 
                     obj.status = 404,
                     obj.message = 'Record not found.';
