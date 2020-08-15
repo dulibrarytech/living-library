@@ -942,6 +942,10 @@ function get_donations(is_completed) {
                     ],
                     columnDefs: [
                         {
+                            targets: [ 0 ],
+                            searchable: false
+                        },
+                        {
                             targets: [ 4 ],
                             visible: false,
                             searchable: false
