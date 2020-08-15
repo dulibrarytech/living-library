@@ -852,8 +852,8 @@ exports.update = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/confirm_donation_is_not_already_completed)] Unable to retrieve record: ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/confirm_donation_is_not_already_completed)] Unable to retrieve record: ' + error;
+                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
                     });
             }
 
@@ -899,8 +899,8 @@ exports.update = function (req, callback) {
                         }
                     })
                     .catch(function (error) {
-                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record ' + error;
+                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record with id ' + id + ': ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record with id ' + id + ': ' + error;
                     });
             }
 
@@ -924,8 +924,8 @@ exports.update = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record: ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record: ' + error;
+                        LOGGER.module().error('FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record with id ' + id + ': ' + error);
+                        // throw 'FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record with id ' + id + ': ' + error;
                     });
             }
 
@@ -995,8 +995,8 @@ exports.update = function (req, callback) {
                               '<strong>Book Title:</strong> ' + book_info
                     }, id);
                 } catch (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error);
-                    // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: ' + error;
+                    LOGGER.module().error('ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: Unable to send notification email for record with donation id ' + id + ': ' + error);
+                    // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: Unable to send notification email for record with donation id ' + id + ': ' + error;
                 } finally {
                     console.log('Inside "finally" block');
                     callback(null, obj);
@@ -1167,56 +1167,138 @@ exports.delete = function (req, callback) {
     console.log('id = ' + id);
     console.log('typeof id = ' + typeof id);
 
-    if ((typeof id !== 'string' && typeof id !== 'number') || isNaN(id)) {
-        LOGGER.module().fatal("FATAL: [/living-library/model module (delete)] Unable to delete donation record with id = " + id);
+    if ((typeof id !== 'string' && typeof id !== 'number') || isNaN(id) ||
+        isNaN(parseInt(id, 10))) {
+        LOGGER.module().fatal('FATAL: [/living-library/model module (delete)] '
+                              + 'Request query contains invalid value for '
+                              + 'id parameter: ' + id);
 
         callback({
             status: 400,
             message: 'Request query does not contain a valid id parameter.'
         });
 
+        console.log("\nEnd of DELETE query from model\n" +
+                    "=====================\n");
+
         return false;
     }
 
-    DB(CONFIG.dbDonationsTable)
-        .where({
-            id: id
-        })
-        .del()
-        .then(function (count) {
-            switch(count) {
-                case 0:
-                    LOGGER.module().error("ERROR: [/living-library/model module (delete)] Nothing to delete: No donation record found with id " + id);
+    // 1.)
+    function confirm_donation_is_in_the_queue(callback) {
+        console.log("Inside confirm_donation_is_in_the_queue");
 
-                    callback({
-                        status: 404,
-                        message: 'Record not found.'
-                    });
+        let obj = {};
 
-                    break;
-                case 1:
-                    console.log('Deleted record with id ' + parseInt(id, 10));
+        DB(CONFIG.dbDonationsTable)
+            .select('id', 'is_completed')
+            .where({
+                id: id
+            })
+            .then(function (data) {
+                let id_parsed = parseInt(id, 10);
 
-                    callback({
-                        status: 204,
-                        message: 'Record deleted.'
-                    });
+                if (data.length === 1) {
+                    if (data[0].is_completed === 1) {
+                        LOGGER.module()
+                              .fatal("FATAL: [/living-library/" +
+                                     "model module (delete/" +
+                                     "confirm_donation_is_in_the_queue)] " +
+                                     "Cannot delete because donation record " +
+                                     "with id " + id_parsed +
+                                     " is already completed.");
 
-                    break;
-                default:
-                    console.log('Deleted ' + count + ' records.');
+                        obj.status = 409,
+                        obj.message = 'Record already completed. Cannot delete.';
+                    }
 
-                    callback({
-                        status: 204,
-                        message: 'Records deleted.'
-                    });
-            }
+                    obj.id = data[0].id;
+                } else {
+                    LOGGER.module()
+                          .fatal("FATAL: [/living-library/" +
+                                 "model module (delete/confirm_" +
+                                 "donation_is_in_the_queue)] " +
+                                 "Delete failed. Couldn't find " +
+                                 "donation record with id = " +
+                                 (isNaN(id_parsed) ? id : id_parsed));
 
-        })
-        .catch(function (error) {
-            LOGGER.module().fatal('FATAL: [/living-library/model module (delete)] Unable to delete record with id ' + id + ": " + error);
-            // throw 'FATAL: Unable to delete record ' + error;
+                    obj.status = 404,
+                    obj.message = 'Record not found.';
+                }
+
+                callback(null, obj);
+                return false;
+            })
+            .catch(function (error) {
+                LOGGER.module().fatal('FATAL: [/living-library/model module (delete/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error);
+                // throw 'FATAL: [/living-library/model module (delete/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
+            });
+    }
+
+    // 2.)
+    function delete_donation_in_db(obj, callback) {
+        console.log("Inside delete_donation_in_db");
+
+        if (obj.status === 409 || obj.status === 404) {
+            callback(null, obj);
+            return false;
+        }
+
+        DB(CONFIG.dbDonationsTable)
+            .where({
+                id: obj.id
+            })
+            .del()
+            .then(function (count) {
+                switch(count) {
+                    case 0:
+                        LOGGER.module().error("ERROR: [/living-library/model module (delete)] Nothing to delete: No donation record found with id " + obj.id);
+
+                        obj.status = 404,
+                        obj.message = 'Record not found.';
+
+                        break;
+                    case 1:
+                        console.log('Deleted record with id ' + obj.id);
+
+                        obj.status = 204,
+                        obj.message = 'Record deleted.';
+
+                        break;
+                    default:
+                        console.log('Deleted ' + count + ' records.');
+
+                        obj.status = 204,
+                        obj.message = 'Records deleted.';
+                }
+
+                callback(null, obj);
+                return false;
+            })
+            .catch(function (error) {
+                LOGGER.module().fatal('FATAL: [/living-library/model module (delete)] Unable to delete record with id ' + obj.id + ': ' + error);
+                // throw 'FATAL: Unable to delete record with id ' + obj.id + ': ' + error;
+            });
+    }
+
+    ASYNC.waterfall([
+       confirm_donation_is_in_the_queue,
+       delete_donation_in_db
+    ], function (error, results) {
+        console.log("Inside waterfall function");
+
+        if (error) {
+            LOGGER.module().error('ERROR: [/living-library/model module (delete)] Error deleting donation record with id ' + results.id + ': ' + error);
+        }
+
+        console.log("\nEnd of DELETE query from model\n" +
+                    "=====================\n");
+
+        callback({
+            status: results.status,
+            message: results.message
         });
+    });
 };
 
 /**
