@@ -1164,6 +1164,19 @@ exports.update = function (req, callback) {
  */
 exports.delete = function (req, callback) {
     let id = req.query.id;
+    console.log('id = ' + id);
+    console.log('typeof id = ' + typeof id);
+
+    if ((typeof id !== 'string' && typeof id !== 'number') || isNaN(id)) {
+        LOGGER.module().fatal("FATAL: [/living-library/model module (delete)] Unable to delete donation record with id = " + id);
+
+        callback({
+            status: 400,
+            message: 'Request query does not contain a valid id parameter.'
+        });
+
+        return false;
+    }
 
     DB(CONFIG.dbDonationsTable)
         .where({
@@ -1172,31 +1185,37 @@ exports.delete = function (req, callback) {
         .del()
         .then(function (count) {
             switch(count) {
-                /**
-                 *  Would it be better to throw an error for case 0?
-                 *  If not, 204 seems like an appropriate status code even if
-                 *  nothing is deleted. But I need a more accurate callback
-                 *  message that works for all cases here.
-                 */
                 case 0:
-                    console.log(id + " doesn't exist. Nothing to delete.");
+                    LOGGER.module().error("ERROR: [/living-library/model module (delete)] Nothing to delete: No donation record found with id " + id);
+
+                    callback({
+                        status: 404,
+                        message: 'Record not found.'
+                    });
+
                     break;
                 case 1:
-                    console.log("Deleted " + id);
+                    console.log('Deleted record with id ' + parseInt(id, 10));
+
+                    callback({
+                        status: 204,
+                        message: 'Record deleted.'
+                    });
+
                     break;
                 default:
-                    console.log("Deleted " + count + " records.");
-            }
+                    console.log('Deleted ' + count + ' records.');
 
-            callback({
-                status: 204,
-                message: 'Record deleted.'
-            });
+                    callback({
+                        status: 204,
+                        message: 'Records deleted.'
+                    });
+            }
 
         })
         .catch(function (error) {
-            LOGGER.module().fatal('FATAL: Unable to delete record ' + error);
-            throw 'FATAL: Unable to delete record ' + error;
+            LOGGER.module().fatal('FATAL: [/living-library/model module (delete)] Unable to delete record with id ' + id + ": " + error);
+            // throw 'FATAL: Unable to delete record ' + error;
         });
 };
 
