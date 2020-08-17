@@ -1228,7 +1228,10 @@ exports.delete = function (req, callback) {
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().fatal('FATAL: [/living-library/model module (delete/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error);
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(delete/confirm_donation_is_in_the_' +
+                                      'queue)] Unable to retrieve record ' +
+                                      'with id ' + id + ': ' + error);
                 // throw 'FATAL: [/living-library/model module (delete/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
             });
     }
@@ -1250,7 +1253,10 @@ exports.delete = function (req, callback) {
             .then(function (count) {
                 switch(count) {
                     case 0:
-                        LOGGER.module().error("ERROR: [/living-library/model module (delete)] Nothing to delete: No donation record found with id " + obj.id);
+                        LOGGER.module().error('ERROR: [/living-library/model ' +
+                                              'module (delete)] Nothing to ' +
+                                              'delete: No donation record ' +
+                                              'found with id ' + obj.id);
 
                         obj.status = 404,
                         obj.message = 'Record not found.';
@@ -1274,7 +1280,9 @@ exports.delete = function (req, callback) {
                 return false;
             })
             .catch(function (error) {
-                LOGGER.module().fatal('FATAL: [/living-library/model module (delete)] Unable to delete record with id ' + obj.id + ': ' + error);
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(delete)] Unable to delete record ' +
+                                      'with id ' + obj.id + ': ' + error);
                 // throw 'FATAL: Unable to delete record with id ' + obj.id + ': ' + error;
             });
     }
@@ -1286,7 +1294,9 @@ exports.delete = function (req, callback) {
         console.log("Inside waterfall function");
 
         if (error) {
-            LOGGER.module().error('ERROR: [/living-library/model module (delete)] Error deleting donation record with id ' + results.id + ': ' + error);
+            LOGGER.module().error('ERROR: [/living-library/model module ' +
+                                  '(delete)] Error deleting donation record ' +
+                                  'with id ' + results.id + ': ' + error);
         }
 
         console.log("\nEnd of DELETE query from model\n" +

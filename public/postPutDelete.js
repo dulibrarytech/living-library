@@ -412,6 +412,42 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
 };
 
 /**
+ * Deletes the specified donation record.
+ * @param   event             the event triggered by clicking the donation
+ *                            record's Delete hyperlink (in the table of the
+ *                            Donation Queue webpage)
+ * @param   id                the id of the donation record to be deleted
+ */
+const delete_donation = function (event, id) {
+    event.preventDefault();
+
+    console.log("Inside delete_donation function");
+    console.log("id = " + id);
+
+    fetch(living_library_config.get_api() +
+          '?id=' + id +
+          '&api_key=' + living_library_config.get_api_key(), {
+        method: 'DELETE',
+        mode: 'cors'
+    })
+        .then(function (response) {
+            console.log('Inside delete_donation fetch "then" function');
+            console.log('response = ');
+            console.log(response);
+
+            if (response.ok) {
+                console.log('Donation ' + id + ' deleted.');
+            } else {
+                console.log('An error occurred trying to delete Donation ' + id);
+            }
+        })
+        .catch(function (error) {
+            console.log('ERROR: [delete_donation] An error occurred during '
+                        + 'or after DELETE request: ' + error);
+        });
+};
+
+/**
  * Retrieves input data from a form and returns it as a JSON object.
  * @param  {Array}            expected_form_fields  the form fields that will be
  *                                                  matched

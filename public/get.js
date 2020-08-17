@@ -807,8 +807,11 @@ function get_donations(is_completed) {
                         + '<th>Donor Name</th> '
                         + '<th>Recipient Name</th> '
                         + '<th>Donation Amount</th> '
-                        + '<th>Date of Donation</th> '
-                        + '</tr>'
+                        + '<th>Date of Donation</th> ';
+                if (!is_completed) {
+                    html += '<th>Delete Record?</th> ';
+                }
+                html += '</tr>'
                         + '</thead>';
                 html += '<tbody>';
 
@@ -910,6 +913,16 @@ function get_donations(is_completed) {
                                 .get_error_text_for_invalid_json();
                     }
                     html += '</td>';
+
+                    if (!is_completed) {
+                        html += '<td style="text-align: center;">'
+                                + '<a href="#" '
+                                + 'onclick="delete_donation(event, '
+                                + donation_id + ');">'
+                                + 'Delete'
+                                + '</a>'
+                                + '</td> ';
+                    }
 
                     html += '</tr>';
                 }
