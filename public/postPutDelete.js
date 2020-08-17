@@ -424,27 +424,30 @@ const delete_donation = function (event, id) {
     console.log("Inside delete_donation function");
     console.log("id = " + id);
 
-    fetch(living_library_config.get_api() +
-          '?id=' + id +
-          '&api_key=' + living_library_config.get_api_key(), {
-        method: 'DELETE',
-        mode: 'cors'
-    })
-        .then(function (response) {
-            console.log('Inside delete_donation fetch "then" function');
-            console.log('response = ');
-            console.log(response);
-
-            if (response.ok) {
-                console.log('Donation ' + id + ' deleted.');
-            } else {
-                console.log('An error occurred trying to delete Donation ' + id);
-            }
+    if (confirm("Delete Donation " + id + "?")) {
+        fetch(living_library_config.get_api() +
+              '?id=' + id +
+              '&api_key=' + living_library_config.get_api_key(), {
+            method: 'DELETE',
+            mode: 'cors'
         })
-        .catch(function (error) {
-            console.log('ERROR: [delete_donation] An error occurred during '
-                        + 'or after DELETE request: ' + error);
-        });
+            .then(function (response) {
+                console.log('Inside delete_donation fetch "then" function');
+                console.log('response = ');
+                console.log(response);
+
+                if (response.ok) {
+                    console.log('Donation ' + id + ' deleted.');
+                } else {
+                    console.log('An error occurred trying to delete Donation ' +
+                                id);
+                }
+            })
+            .catch(function (error) {
+                console.log('ERROR: [delete_donation] An error occurred during '
+                            + 'or after DELETE request: ' + error);
+            });
+    }
 };
 
 /**
