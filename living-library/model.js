@@ -591,7 +591,7 @@ exports.read = function (req, callback) {
 
                     callback({
                         status: 200,
-                        message: 'Records retrieved.',
+                        message: 'Record(s) retrieved.',
                         data: data
                     });
 
@@ -660,7 +660,7 @@ exports.read = function (req, callback) {
 
                     callback({
                         status: 200,
-                        message: 'Records retrieved.',
+                        message: 'Record(s) retrieved.',
                         data: data
                     });
 

@@ -5,8 +5,10 @@
  *
  * Author: Scott Salvaggio
  *
- * University of Denver, June 2020
+ * University of Denver, August 2020
  */
+
+'use strict';
 
 /**
  * Processes the Donation Form data, creating a new donation record in the
@@ -118,7 +120,7 @@ const save_donation = function (event) {
  *                                             element
  */
 const containsNonEmptyElementValue = function (form_elements) {
-    for (element of form_elements) {
+    for (let element of form_elements) {
         if (element.value.trim().length > 0) {
             return true;
         }

@@ -5,8 +5,10 @@
  *
  * Author: Scott Salvaggio
  *
- * University of Denver, June 2020
+ * University of Denver, August 2020
  */
+
+'use strict';
 
 const living_library_config = (function () {
 

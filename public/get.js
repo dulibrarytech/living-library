@@ -5,8 +5,10 @@
  *
  * Author: Scott Salvaggio
  *
- * University of Denver, June 2020
+ * University of Denver, August 2020
  */
+
+'use strict';
 
 /* The number of "person to be notified of donation" form field groups that
  * are present on the donation form (the user can add more as needed)
