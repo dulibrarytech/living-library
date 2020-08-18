@@ -940,6 +940,8 @@ function get_donations(is_completed) {
 
             // Apply DataTables plugin to donations table
             $(document).ready( function () {
+                let cols_not_to_be_searched = is_completed ? [ 0 ] : [ 0, 6 ];
+
                 let donations_table = $('#donations').DataTable( {
                     dom: 'Blfrtip',
                     select: true,
@@ -955,7 +957,7 @@ function get_donations(is_completed) {
                     ],
                     columnDefs: [
                         {
-                            targets: [ 0 ],
+                            targets: cols_not_to_be_searched,
                             searchable: false
                         },
                         {

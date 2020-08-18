@@ -437,11 +437,27 @@ const delete_donation = function (event, id) {
                 console.log(response);
 
                 if (response.ok) {
-                    console.log('Donation ' + id + ' deleted.');
+                    alert('Donation ' + id + ' deleted.');
                 } else {
-                    console.log('An error occurred trying to delete Donation ' +
-                                id);
+                    let error_msg;
+                    switch (response.status) {
+                        case 404:
+                            error_msg = 'Error -- Donation ' + id +
+                                        ' not found.';
+                            break;
+                        case 409:
+                            error_msg = 'Error -- Donation ' + id + ' is ' +
+                                        'already completed and therefore ' +
+                                        'cannot be deleted.';
+                            break;
+                        default:
+                            error_msg = 'Error -- Unable to delete Donation ' +
+                                        id;
+                    }
+                    alert(error_msg);
                 }
+
+                location.reload(true);
             })
             .catch(function (error) {
                 console.log('ERROR: [delete_donation] An error occurred during '
