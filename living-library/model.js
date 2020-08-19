@@ -426,6 +426,7 @@ exports.create = function (req, callback) {
                         i = 0;
 
                     while ((i < obj.data.length) && record_not_yet_updated) {
+                        console.log('Inside while loop: i = ' + i + ', record_not_yet_updated = ' + record_not_yet_updated);
                         console.log(obj.data[i]);
                         console.log('typeof record_payload = ' +
                                     typeof obj.data[i]);
@@ -462,6 +463,8 @@ exports.create = function (req, callback) {
                                         is_active: 1
                                     })
                                     .then(function (data) {
+                                        console.log("Knex query response:");
+                                        console.log(data);
                                         if (data === 1) {
                                             console.log("Updated " + table_name +
                                                         " record with id " +
@@ -507,9 +510,9 @@ exports.create = function (req, callback) {
                                                   error + '\nid = ' +
                                                   obj.data[i].id);
                             // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
+                        } finally {
+                            i++;
                         }
-
-                        i++;
                     } // end of while
                 } else {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
