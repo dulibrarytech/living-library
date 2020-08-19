@@ -425,8 +425,12 @@ exports.create = function (req, callback) {
                     let record_not_yet_updated = true,
                         i = 0;
 
-                    while ((i < obj.data.length) && record_not_yet_updated) {
-                        console.log('Inside while loop: i = ' + i + ', record_not_yet_updated = ' + record_not_yet_updated);
+                    let update_existing_record = function() {
+                        // while ((i < obj.data.length) && record_not_yet_updated) {
+                        console.log('Inside update_existing_record function');
+                        console.log('i = ' + i + ', record_not_yet_updated = ' +
+                                    record_not_yet_updated);
+                        console.log('obj.data[i] = ');
                         console.log(obj.data[i]);
                         console.log('typeof record_payload = ' +
                                     typeof obj.data[i]);
@@ -510,10 +514,10 @@ exports.create = function (req, callback) {
                                                   error + '\nid = ' +
                                                   obj.data[i].id);
                             // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
-                        } finally {
-                            i++;
                         }
-                    } // end of while
+                    } // end of update_existing_record
+
+                    update_existing_record();
                 } else {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (create/update_db)] Unable ' +
