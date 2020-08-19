@@ -55,9 +55,13 @@ const send_email = function (message, id) {
 
     transporter.sendMail(message, function(error, info) {
         if (error) {
-            LOGGER.module().error('ERROR: [/living-library/model module (send_email)] Unable to send notification email for record with donation id ' + id + ': ' + error);
+            LOGGER.module().error('ERROR: [/living-library/model module ' +
+                                  '(send_email)] Unable to send notification ' +
+                                  'email for record with donation id ' + id +
+                                  ': ' + error);
         } else {
-            console.log('Notification email sent successfully for record with donation id ' + id + ":");
+            console.log('Notification email sent successfully for record ' +
+                        'with donation id ' + id + ":");
             console.log(info.envelope);
         }
 
@@ -124,9 +128,12 @@ exports.create = function (req, callback) {
             console.log("donation_keys.length = " + donation_keys.length);
 
             if (!arrays_match(donation_keys, donation_fields)) {
-                console.log('Request body is valid JSON, but does not ' +
-                            'exclusively contain these properties in this ' +
-                            'order:\n' + donation_fields.join('\n'));
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(create)] Unable to create record: ' +
+                                      'Request body is valid JSON, but does ' +
+                                      'not exclusively contain these ' +
+                                      'properties in this order:\n' +
+                                      donation_fields.join('\n'));
                 callback({
                     status: 400,
                     message: 'Request body does not contain the expected ' +
@@ -143,9 +150,10 @@ exports.create = function (req, callback) {
                 try {
                     json_field = JSON.parse(request_body[key]);
                 } catch (error) {
-                    console.log('Error parsing ' + key +
-                                ' field of request_body: ' + error);
-
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (create)] Unable to create ' +
+                                          'record: Error parsing ' + key +
+                                          ' field of request body: ' + error);
                     callback({
                         status: 400,
                         message: 'Invalid syntax in request body.'
@@ -178,11 +186,15 @@ exports.create = function (req, callback) {
 
                     if (!arrays_match(json_field_keys,
                                       donation_field_keys[key])) {
-                        console.log('Request body is valid JSON, but ' + key +
-                                    ' does not exclusively contain these ' +
-                                    'properties in this order:\n' +
-                                    donation_field_keys[key].join('\n'));
-
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (create)] Unable to ' +
+                                              'create record: Request body ' +
+                                              'is valid JSON, but ' + key +
+                                              ' does not exclusively contain ' +
+                                              'these properties in this ' +
+                                              'order:\n' +
+                                              donation_field_keys[key]
+                                              .join('\n'));
                         callback({
                             status: 400,
                             message: 'Request body does not contain the ' +
@@ -213,7 +225,10 @@ exports.create = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error);
+                        LOGGER.module().fatal('FATAL [/living-library/model ' +
+                                              'module (create/add_donation_' +
+                                              'to_db)] Unable to create ' +
+                                              'record: ' + error);
                         // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error;
                     });
             }
@@ -232,7 +247,10 @@ exports.create = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to retrieve new record: ' + error);
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (create/select_new_' +
+                                              'donation)] Unable to retrieve ' +
+                                              'new record: ' + error);
                         // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record: ' + error;
                     });
             }
@@ -282,7 +300,10 @@ exports.create = function (req, callback) {
                 console.log("Inside waterfall function");
 
                 if (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (create/async.waterfall)] Error creating or retrieving new donation record: ' + error);
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (create/async.waterfall)] ' +
+                                          'Error creating or retrieving new ' +
+                                          'donation record: ' + error);
                 }
 
                 console.log("\nEnd of CREATE query from model\n" +
@@ -351,7 +372,7 @@ exports.create = function (req, callback) {
                     .catch(function (error) {
                         console.log('Inside catch function of lookup table ' +
                                     'case');
-                        LOGGER.module().error('FATAL [/living-library/model ' +
+                        LOGGER.module().fatal('FATAL [/living-library/model ' +
                                               'module (create/' +
                                               'search_db_for_menu_choice)] ' +
                                               'Unable to read record: ' + error);
@@ -364,7 +385,11 @@ exports.create = function (req, callback) {
                 console.log("Inside update_db");
 
                 if (!Array.isArray(obj.data)) {
-                    LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data);
+                    LOGGER.module().fatal('FATAL [/living-library/model ' +
+                                          'module (create/update_db)] ' +
+                                          'search_db_for_menu_choice knex ' +
+                                          'query did not return an array: ' +
+                                          obj.data);
                     // throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
                 } else if (obj.data.length === 0) {
                     console.log('No match found for ' + new_menu_choice);
@@ -386,7 +411,11 @@ exports.create = function (req, callback) {
                             return false;
                         })
                         .catch(function (error) {
-                            LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error);
+                            LOGGER.module().fatal('FATAL [/living-library/' +
+                                                  'model module (create/' +
+                                                  'update_db)] Unable to ' +
+                                                  'create record in ' +
+                                                  table_name + ': ' + error);
                             // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error;
                         });
                 } else if (obj.data.length === 1) {
@@ -402,10 +431,14 @@ exports.create = function (req, callback) {
 
                     try {
                         if (obj.data[0].is_active) {
-                            console.log('Active record already exists with ' +
-                                        table_field_names.display + ' = ' +
-                                        obj.data[0].term +
-                                        '\nSo database left unchanged.');
+                            LOGGER.module().error('ERROR: [/living-library/' +
+                                                  'model module (create/' +
+                                                  'update_db)] Active record ' +
+                                                  'already exists with ' +
+                                                  table_field_names.display +
+                                                  ' = ' + obj.data[0].term +
+                                                  '\nSo database left ' +
+                                                  'unchanged.');
 
                             obj.status = 409,
                             obj.message = 'Record already exists.';
@@ -414,10 +447,9 @@ exports.create = function (req, callback) {
                             return false;
                         } else {
                             console.log('Record exists with ' +
-                                        table_field_names.display +
-                                        ' = ' + obj.data[0].term +
-                                        '\nBut is_active = ' +
-                                        obj.data[0].is_active);
+                                        table_field_names.display + ' = ' +
+                                        obj.data[0].term + '\nBut is_active' +
+                                        ' = ' + obj.data[0].is_active);
 
                             DB(table_name)
                                 .where(table_field_names.id, obj.data[0].id)
@@ -433,10 +465,15 @@ exports.create = function (req, callback) {
                                         obj.status = 200,
                                         obj.message = 'Record updated.';
                                     } else {
-                                        console.log("Update failed. Couldn't " +
-                                                    "find " + table_name +
-                                                    " record with id " +
-                                                    obj.data[0].id + ".");
+                                        LOGGER
+                                        .module().fatal('FATAL: [/living-' +
+                                                        'library/model ' +
+                                                        'module (create/' +
+                                                        'update_db)] Update ' +
+                                                        "failed. Couldn't " +
+                                                        'find ' + table_name +
+                                                        ' record with id ' +
+                                                        obj.data[0].id);
 
                                         obj.status = 404,
                                         obj.message = 'Record not found.';
@@ -446,16 +483,38 @@ exports.create = function (req, callback) {
                                     return false;
                                 })
                                 .catch(function (error) {
-                                    LOGGER.module().fatal('FATAL: Unable to update record: ' + error);
+                                    LOGGER
+                                    .module().fatal('FATAL: [/living-library/' +
+                                                    'model module (create/' +
+                                                    'update_db)] Unable to ' +
+                                                    'update record: ' + error +
+                                                    '\nid = ' + obj.data[0].id);
                                     // throw 'FATAL: Unable to update record: ' + error;
                                 });
                         }
                     } catch (error) {
-                        LOGGER.module().error('FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error);
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (create/update_db)] ' +
+                                              'Menu choice found, but ' +
+                                              'is_active field is undefined: ' +
+                                              error + '\nid = ' +
+                                              obj.data[0].id);
                         // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
                     }
                 } else {
-                    LOGGER.module().error('ERROR [/living-library/model module (create/update_db)] search_db_for_menu_choice returned more than one result.');
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (create/update_db)] Unable ' +
+                                          'to create record: search_db_for_' +
+                                          'menu_choice returned ' +
+                                          obj.data.length + ' results for ' +
+                                          table_field_names.display + ' = ' +
+                                          new_menu_choice);
+                                          
+                    obj.status = 409,
+                    obj.message = 'Records already exist.';
+
+                    callback(null, obj);
+                    return false;
                 }
             }
 
@@ -477,7 +536,11 @@ exports.create = function (req, callback) {
                             return false;
                         })
                         .catch(function (error) {
-                            LOGGER.module().error('FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error);
+                            LOGGER.module().fatal('FATAL: [/living-library/' +
+                                                  'model module (create/' +
+                                                  'select_new_menu_choice)] ' +
+                                                  'Unable retrieve new menu ' +
+                                                  'choice: ' + error);
                             // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
                         });
                 }
@@ -491,7 +554,10 @@ exports.create = function (req, callback) {
                 console.log("Inside waterfall function");
 
                 if (error) {
-                    LOGGER.module().error('ERROR [/living-library/model module (create/async.waterfall)] Error adding menu choice to ' + table_name + ': ' + error);
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (create/async.waterfall)] ' +
+                                          'Error adding menu choice to ' +
+                                          table_name + ': ' + error);
                 }
 
                 console.log("Results object = ");
@@ -514,8 +580,9 @@ exports.create = function (req, callback) {
         } // end of lookup table cases
 
         default: {
-            LOGGER.module().fatal('FATAL: Request query contains invalid value '
-                                  + 'for tbl parameter: ' + tbl);
+            LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                  '(create)] Request query contains invalid ' +
+                                  'value for tbl parameter: ' + tbl);
 
             callback({
                 status: 400,
@@ -580,11 +647,12 @@ exports.read = function (req, callback) {
                             id: id
                         })
                     } else {
-                        console.log("id = " + id +
-                                    ", so no adjustment to SQL query\n");
+                        console.log("id = " + id + ", so no adjustment to " +
+                                    "SQL query\n");
                     }
                 })
                 .then(function (data) {
+                    // TODO: If data.length === 0, return 404 HTTP status code
                     console.log("Found " + data.length + " record(s).");
                     console.log("End of READ query from model" +
                                 "\n=====================\n");
@@ -598,8 +666,11 @@ exports.read = function (req, callback) {
                 })
                 .catch(function (error) {
                     console.log('Inside catch function of donations table case');
-                    LOGGER.module().fatal('FATAL: Unable to read record ' +
-                                          error);
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (read)] Unable to read ' +
+                                          'donation record(s): ' + error +
+                                          '\nis_completed = ' + is_completed +
+                                          '\nid = ' + id);
                     // throw 'FATAL: Unable to read record ' + error;
                 });
             break;
@@ -631,28 +702,30 @@ exports.read = function (req, callback) {
                         || is_active === '1' || is_active === '0') {
                         // convert from string to boolean
                         is_active = is_active === 'true' || is_active === '1';
-                        console.log("is_active = " + is_active + "\n");
+                        console.log("is_active = " + is_active +
+                                    ", so adding to SQL query\n");
 
                         queryBuilder.where({
                             is_active: is_active
                         })
                     } else {
-                        console.log("No where clause because is_active = "
-                                    + is_active + "\n");
+                        console.log("is_active = " + is_active +
+                                    "\n... so no adjustment to SQL query\n");
                     }
                 })
                 .modify(function(queryBuilder) {
-                    if (typeof id !== 'undefined') {
+                    if (typeof id !== 'undefined' && id !== '') {
                         console.log("id = " + id +
                                     ", so adding to SQL query\n");
 
                         queryBuilder.where(table_field_names.id, id)
                     } else {
                         console.log("id = " + id +
-                                    ", so no adjustment to SQL query\n");
+                                    "\n... so no adjustment to SQL query\n");
                     }
                 })
                 .then(function (data) {
+                    // TODO: If data.length === 0, return 404 HTTP status code
                     console.log("Populating " + table_field_names.display +
                                 " choices. " + data.length + " choice(s) found.");
                     console.log("\nEnd of READ query from model" +
@@ -667,16 +740,21 @@ exports.read = function (req, callback) {
                 })
                 .catch(function (error) {
                     console.log('Inside catch function of lookup table case');
-                    LOGGER.module().fatal('FATAL: Unable to read record: ' +
-                                          error);
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (read)] Unable to read ' +
+                                          table_field_names.display +
+                                          ' record(s): ' + error +
+                                          '\nis_active = ' + is_active +
+                                          '\nid = ' + id);
                     // throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
         } // end of lookup table cases
 
         default: {
-            LOGGER.module().fatal('FATAL: Request query contains invalid value '
-                                  + 'for tbl parameter: ' + tbl);
+            LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                  '(read)] Request query contains invalid ' +
+                                  'value for tbl parameter: ' + tbl);
 
             callback({
                 status: 400,
@@ -727,7 +805,9 @@ exports.update = function (req, callback) {
              */
 
             if (typeof id === 'undefined') {
-                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: id parameter of query is undefined.');
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(update)] Invalid request: id ' +
+                                      'parameter of query is undefined.');
 
                 callback({
                     status: 400,
@@ -742,7 +822,9 @@ exports.update = function (req, callback) {
 
             // Check for book field
             if (typeof book === 'undefined') {
-                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: Request body does not contain book field.');
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(update)] Invalid request: Request ' +
+                                      'body does not contain book field.');
 
                 callback({
                     status: 400,
@@ -756,7 +838,9 @@ exports.update = function (req, callback) {
             try {
                 book = JSON.parse(book);
             } catch (error) {
-                LOGGER.module().fatal('FATAL: [/living-library/model module (update)] Invalid request: Error parsing JSON: ' + error);
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(update)] Invalid request: Error ' +
+                                      'parsing JSON: ' + error);
 
                 callback({
                     status: 400,
@@ -777,9 +861,10 @@ exports.update = function (req, callback) {
             console.log(book_keys);
             console.log("book_keys.length = " + book_keys.length);
             if (!arrays_match(book_keys, book_fields)) {
-                LOGGER.module().fatal('Request body is valid JSON, but does ' +
-                                      'not exclusively contain these ' +
-                                      'properties in this order:\n' +
+                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                      '(update)] Request body is valid JSON, ' +
+                                      'but does not exclusively contain ' +
+                                      'these properties in this order:\n' +
                                       book_fields.join('\n'));
                 callback({
                     status: 400,
@@ -852,7 +937,11 @@ exports.update = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error);
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (update/confirm_' +
+                                              'donation_is_in_the_queue)] ' +
+                                              'Unable to retrieve record ' +
+                                              'with id ' + id + ': ' + error);
                         // throw 'FATAL: [/living-library/model module (update/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
                     });
             }
@@ -899,7 +988,11 @@ exports.update = function (req, callback) {
                         }
                     })
                     .catch(function (error) {
-                        LOGGER.module().fatal('FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record with id ' + id + ': ' + error);
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (update/update_' +
+                                              'donation_in_db)] Unable to ' +
+                                              'update record with id ' + id +
+                                              ': ' + error);
                         // throw 'FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record with id ' + id + ': ' + error;
                     });
             }
@@ -924,7 +1017,11 @@ exports.update = function (req, callback) {
                         return false;
                     })
                     .catch(function (error) {
-                        LOGGER.module().error('FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record with id ' + id + ': ' + error);
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (update/select_updated_' +
+                                              'donation)] Unable to retrieve ' +
+                                              'updated record with id ' + id +
+                                              ': ' + error);
                         // throw 'FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record with id ' + id + ': ' + error;
                     });
             }
@@ -946,6 +1043,9 @@ exports.update = function (req, callback) {
                 if (obj.data.length === 1) {
                     let donor, book;
 
+                    obj.data[0].donor = '[10';
+                    obj.data[0].book = '11}';
+
                     if (typeof obj.data[0].donor !== 'undefined') {
                         try {
                             donor = JSON.parse(obj.data[0].donor);
@@ -954,8 +1054,16 @@ exports.update = function (req, callback) {
                                           donor.donor_first_name + " " +
                                           donor.donor_last_name;
                         } catch (error) {
-                            console.log('ERROR: Could not parse donor field of '
-                                        + 'retrieved donation record: ' + error);
+                            LOGGER
+                            .module().error('ERROR: [/living-library/model ' +
+                                            'module (update/send_email_' +
+                                            'notification_about_completed_' +
+                                            'donation)] Could not parse ' +
+                                            'donor field of retrieved ' +
+                                            'donation record: ' + error +
+                                            '\nid = ' + id +
+                                            '\ndata[0].donor = ' +
+                                            obj.data[0].donor);
                         }
                     }
                     console.log('donor = ');
@@ -967,8 +1075,16 @@ exports.update = function (req, callback) {
 
                             book_info += book.book_title;
                         } catch (error) {
-                            console.log('ERROR: Could not parse book field of '
-                                        + 'retrieved donation record: ' + error);
+                            LOGGER
+                            .module().error('ERROR: [/living-library/model ' +
+                                            'module (update/send_email_' +
+                                            'notification_about_completed_' +
+                                            'donation)] Could not parse ' +
+                                            'book field of retrieved ' +
+                                            'donation record: ' + error +
+                                            '\nid = ' + id +
+                                            '\ndata[0].book = ' +
+                                            obj.data[0].book);
                         }
                     }
                     console.log('book = ');
@@ -995,7 +1111,13 @@ exports.update = function (req, callback) {
                               '<strong>Book Title:</strong> ' + book_info
                     }, id);
                 } catch (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: Unable to send notification email for record with donation id ' + id + ': ' + error);
+                    LOGGER.module().error('ERROR: [/living-library/model ' +
+                                          'module (update/send_email_' +
+                                          'notification_about_completed_' +
+                                          'donation)]: Unable to send ' +
+                                          'notification email for record ' +
+                                          'with donation id ' + id + ': ' +
+                                          error);
                     // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: Unable to send notification email for record with donation id ' + id + ': ' + error;
                 } finally {
                     console.log('Inside "finally" block');
@@ -1013,7 +1135,10 @@ exports.update = function (req, callback) {
                 console.log("Inside waterfall function");
 
                 if (error) {
-                    LOGGER.module().error('ERROR: [/living-library/model module (update/async.waterfall)] Error updating or retrieving donation record: ' + error);
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (update/async.waterfall)] ' +
+                                          'Error updating or retrieving ' +
+                                          'donation record: ' + error);
                 }
 
                 console.log("\nEnd of UPDATE query from model\n" +
@@ -1103,8 +1228,11 @@ exports.update = function (req, callback) {
 
                             LOGGER.module().fatal('FATAL: [/living-library/' +
                                                   'model module (update)] ' +
-                                                  error_msg);
-                            throw 'ERROR: ' + error_msg;
+                                                  error_msg +
+                                                  '\nupdated_menu_choice = ' +
+                                                  updated_menu_choice +
+                                                  '\nis_active = ' + is_active);
+                            throw 'FATAL: ' + error_msg;
                         }
                     }
 
@@ -1121,8 +1249,10 @@ exports.update = function (req, callback) {
                             message: 'Record updated.'
                         });
                     } else {
-                        console.log("Update failed. Couldn't find " + tbl +
-                                    " record with id " + id);
+                        LOGGER.module().fatal('FATAL: [/living-library/' +
+                                              'model module (update)] ' +
+                                              "Update failed. Couldn't find " +
+                                              tbl + ' record with id ' + id);
 
                         callback({
                             status: 404,
@@ -1134,8 +1264,9 @@ exports.update = function (req, callback) {
                                 "=====================\n");
                 })
                 .catch(function (error) {
-                    LOGGER.module().fatal('FATAL: Unable to update ' + tbl +
-                                          ' record with id ' + id + ': ' +
+                    LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                          'module (update)] Unable to update ' +
+                                          tbl + ' record with id ' + id + ': ' +
                                           error);
                     /* throw 'FATAL: Unable to update ' + tbl +
                              ' record with id ' + id + ': ' + error;
@@ -1145,8 +1276,9 @@ exports.update = function (req, callback) {
         } // end of lookup table cases
 
         default: {
-            LOGGER.module().fatal('FATAL: Request query contains invalid value '
-                                  + 'for tbl parameter: ' + tbl);
+            LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                                  '(update)] Request query contains invalid ' +
+                                  'value for tbl parameter: ' + tbl);
 
             callback({
                 status: 400,
@@ -1199,12 +1331,11 @@ exports.delete = function (req, callback) {
                 if (data.length === 1) {
                     if (data[0].is_completed === 1) {
                         LOGGER.module()
-                              .fatal("FATAL: [/living-library/" +
-                                     "model module (delete/" +
-                                     "confirm_donation_is_in_the_queue)] " +
-                                     "Cannot delete because donation record " +
-                                     "with id " + parseInt(id, 10) +
-                                     " is already completed.");
+                              .fatal("FATAL: [/living-library/model module " +
+                                     "(delete/confirm_donation_is_in_the" +
+                                     "_queue)] Cannot delete because " +
+                                     "donation record with id " +
+                                     parseInt(id, 10) + " is already completed.");
 
                         obj.status = 409,
                         obj.message = 'Record already completed. Cannot delete.';
@@ -1213,12 +1344,10 @@ exports.delete = function (req, callback) {
                     obj.id = data[0].id;
                 } else {
                     LOGGER.module()
-                          .fatal("FATAL: [/living-library/" +
-                                 "model module (delete/confirm_" +
-                                 "donation_is_in_the_queue)] " +
-                                 "Delete failed. Couldn't find " +
-                                 "donation record with id = " +
-                                 parseInt(id, 10));
+                          .fatal("FATAL: [/living-library/model module " +
+                                 "(delete/confirm_donation_is_in_the_queue)] " +
+                                 "Delete failed. Couldn't find donation " +
+                                 "record with id = " + parseInt(id, 10));
 
                     obj.status = 404,
                     obj.message = 'Record not found.';
@@ -1253,8 +1382,9 @@ exports.delete = function (req, callback) {
             .then(function (count) {
                 switch(count) {
                     case 0:
-                        LOGGER.module().error('ERROR: [/living-library/model ' +
-                                              'module (delete)] Nothing to ' +
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (delete/delete_' +
+                                              'donation_in_db)] Nothing to ' +
                                               'delete: No donation record ' +
                                               'found with id ' + obj.id);
 
@@ -1281,8 +1411,9 @@ exports.delete = function (req, callback) {
             })
             .catch(function (error) {
                 LOGGER.module().fatal('FATAL: [/living-library/model module ' +
-                                      '(delete)] Unable to delete record ' +
-                                      'with id ' + obj.id + ': ' + error);
+                                      '(delete/delete_donation_in_db)] ' +
+                                      'Unable to delete record with id ' +
+                                      obj.id + ': ' + error);
                 // throw 'FATAL: Unable to delete record with id ' + obj.id + ': ' + error;
             });
     }
@@ -1294,7 +1425,7 @@ exports.delete = function (req, callback) {
         console.log("Inside waterfall function");
 
         if (error) {
-            LOGGER.module().error('ERROR: [/living-library/model module ' +
+            LOGGER.module().fatal('FATAL: [/living-library/model module ' +
                                   '(delete)] Error deleting donation record ' +
                                   'with id ' + results.id + ': ' + error);
         }
