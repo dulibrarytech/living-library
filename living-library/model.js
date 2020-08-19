@@ -418,89 +418,99 @@ exports.create = function (req, callback) {
                                                   table_name + ': ' + error);
                             // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error;
                         });
-                } else if (obj.data.length === 1) {
-                    console.log('Found 1 record matching ' + new_menu_choice +
-                                ':');
-                    console.log(obj.data[0]);
-                    console.log('typeof record_payload = ' +
-                                typeof obj.data[0]);
-                    console.log('is_active = ' + obj.data[0].is_active);
+                } else if (obj.data.length > 0) {
+                    console.log('Found ' + obj.data.length + ' record(s) ' +
+                                'matching ' + new_menu_choice);
 
-                    obj.id = obj.data[0].id;
-                    console.log('id = ' + obj.id);
+                    let record_not_yet_updated = true,
+                        i = 0;
 
-                    try {
-                        if (obj.data[0].is_active) {
-                            LOGGER.module().error('ERROR: [/living-library/' +
-                                                  'model module (create/' +
-                                                  'update_db)] Active record ' +
-                                                  'already exists with ' +
-                                                  table_field_names.display +
-                                                  ' = ' + obj.data[0].term +
-                                                  '\nSo database left ' +
-                                                  'unchanged.');
+                    while ((i < obj.data.length) && record_not_yet_updated) {
+                        console.log(obj.data[i]);
+                        console.log('typeof record_payload = ' +
+                                    typeof obj.data[i]);
+                        console.log('is_active = ' + obj.data[i].is_active);
 
-                            obj.status = 409,
-                            obj.message = 'Record already exists.';
+                        obj.id = obj.data[i].id;
+                        console.log('id = ' + obj.id);
 
-                            callback(null, obj);
-                            return false;
-                        } else {
-                            console.log('Record exists with ' +
-                                        table_field_names.display + ' = ' +
-                                        obj.data[0].term + '\nBut is_active' +
-                                        ' = ' + obj.data[0].is_active);
+                        try {
+                            if (obj.data[i].is_active) {
+                                LOGGER.module().error('ERROR: [/living-library/' +
+                                                      'model module (create/' +
+                                                      'update_db)] Active record ' +
+                                                      'already exists with ' +
+                                                      table_field_names.display +
+                                                      ' = ' + obj.data[i].term +
+                                                      '\nSo database left ' +
+                                                      'unchanged.');
 
-                            DB(table_name)
-                                .where(table_field_names.id, obj.data[0].id)
-                                .update({
-                                    is_active: 1
-                                })
-                                .then(function (data) {
-                                    if (data === 1) {
-                                        console.log("Updated " + table_name +
-                                                    " record with id " +
-                                                    obj.data[0].id + ".");
+                                obj.status = 409,
+                                obj.message = 'Record already exists.';
 
-                                        obj.status = 200,
-                                        obj.message = 'Record updated.';
-                                    } else {
+                                callback(null, obj);
+                                return false;
+                            } else {
+                                console.log('Record exists with ' +
+                                            table_field_names.display + ' = ' +
+                                            obj.data[i].term + '\nBut is_active' +
+                                            ' = ' + obj.data[i].is_active);
+
+                                DB(table_name)
+                                    .where(table_field_names.id, obj.data[i].id)
+                                    .update({
+                                        is_active: 1
+                                    })
+                                    .then(function (data) {
+                                        if (data === 1) {
+                                            console.log("Updated " + table_name +
+                                                        " record with id " +
+                                                        obj.data[i].id + ".");
+
+                                            obj.status = 200,
+                                            obj.message = 'Record updated.';
+
+                                            record_not_yet_updated = true;
+                                        } else {
+                                            LOGGER
+                                            .module().fatal('FATAL: [/living-' +
+                                                            'library/model ' +
+                                                            'module (create/' +
+                                                            'update_db)] Update ' +
+                                                            "failed. Couldn't " +
+                                                            'find ' + table_name +
+                                                            ' record with id ' +
+                                                            obj.data[i].id);
+
+                                            obj.status = 404,
+                                            obj.message = 'Record not found.';
+                                        }
+
+                                        callback(null, obj);
+                                        return false;
+                                    })
+                                    .catch(function (error) {
                                         LOGGER
-                                        .module().fatal('FATAL: [/living-' +
-                                                        'library/model ' +
-                                                        'module (create/' +
-                                                        'update_db)] Update ' +
-                                                        "failed. Couldn't " +
-                                                        'find ' + table_name +
-                                                        ' record with id ' +
-                                                        obj.data[0].id);
-
-                                        obj.status = 404,
-                                        obj.message = 'Record not found.';
-                                    }
-
-                                    callback(null, obj);
-                                    return false;
-                                })
-                                .catch(function (error) {
-                                    LOGGER
-                                    .module().fatal('FATAL: [/living-library/' +
-                                                    'model module (create/' +
-                                                    'update_db)] Unable to ' +
-                                                    'update record: ' + error +
-                                                    '\nid = ' + obj.data[0].id);
-                                    // throw 'FATAL: Unable to update record: ' + error;
-                                });
+                                        .module().fatal('FATAL: [/living-library/' +
+                                                        'model module (create/' +
+                                                        'update_db)] Unable to ' +
+                                                        'update record: ' + error +
+                                                        '\nid = ' + obj.data[i].id);
+                                        // throw 'FATAL: Unable to update record: ' + error;
+                                    });
+                            }
+                        } catch (error) {
+                            LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                                  'module (create/update_db)] ' +
+                                                  'Menu choice found, but ' +
+                                                  'is_active field is undefined: ' +
+                                                  error + '\nid = ' +
+                                                  obj.data[i].id);
+                            // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
                         }
-                    } catch (error) {
-                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
-                                              'module (create/update_db)] ' +
-                                              'Menu choice found, but ' +
-                                              'is_active field is undefined: ' +
-                                              error + '\nid = ' +
-                                              obj.data[0].id);
-                        // throw 'FATAL [/living-library/model module (create/update_db)] menu choice found, but is_active field is undefined: ' + error;
-                    }
+
+                        i++;
+                    } // end of while
                 } else {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (create/update_db)] Unable ' +
@@ -509,7 +519,7 @@ exports.create = function (req, callback) {
                                           obj.data.length + ' results for ' +
                                           table_field_names.display + ' = ' +
                                           new_menu_choice);
-                                          
+
                     obj.status = 409,
                     obj.message = 'Records already exist.';
 
