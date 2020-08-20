@@ -432,8 +432,6 @@ exports.create = function (req, callback) {
                     let found_first_inactive_record = false,
                         index_to_update = 0;
 
-                    obj.data = 4;
-
                     for (let i = 0; i < obj.data.length; i++) {
                         console.log('\nobj.data[' + i + '] = ');
                         console.log(obj.data[i]);
