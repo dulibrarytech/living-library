@@ -422,66 +422,66 @@ exports.create = function (req, callback) {
                     console.log('Found ' + obj.data.length + ' record(s) '+
                                 'matching ' + new_menu_choice);
 
-                    // Check whether all records have is_active = 0
+                    /*
+                     * Check whether all records have is_active = 0. If so,
+                     * update the first record to have is_active = 1.
+                     */
                     let found_first_inactive_record = false,
                         index_to_update = 0;
 
-                    // if (obj.data.length > 1) {
-                        for (let i = 0; i < obj.data.length; i++) {
-                            console.log('obj.data[' + i + '] = ');
-                            console.log(obj.data[i]);
-                            console.log('typeof record_payload = ' +
-                                        typeof obj.data[i]);
-                            console.log('is_active = ' + obj.data[i].is_active);
+                    for (let i = 0; i < obj.data.length; i++) {
+                        console.log('\nobj.data[' + i + '] = ');
+                        console.log(obj.data[i]);
 
-                            // obj.id = obj.data[i].id;
-                            console.log('id = ' + obj.data[i].id);
+                        if (obj.data[i].is_active) {
+                            LOGGER.module().error('ERROR: [/living-library/' +
+                                                  'model module (create/' +
+                                                  'update_db)] Active record ' +
+                                                  'already exists (id = ' +
+                                                  obj.data[i].id + ') with ' +
+                                                  table_field_names.display +
+                                                  ' = ' + obj.data[i].term +
+                                                  '\nSo database left ' +
+                                                  'unchanged. Record(s) ' +
+                                                  'found:\n' +
+                                                  JSON.stringify(obj.data));
 
-                            if (obj.data[i].is_active) {
-                                LOGGER.module().error('ERROR: [/living-library/' +
-                                                      'model module (create/' +
-                                                      'update_db)] Active record ' +
-                                                      'already exists (id = ' + obj.data[i].id + ') with ' +
-                                                      table_field_names.display +
-                                                      ' = ' + obj.data[i].term +
-                                                      '\nSo database left ' +
-                                                      'unchanged. Record(s) found:\n' +
-                                                      JSON.stringify(obj.data));
+                            obj.status = 409,
+                            obj.message = 'Record(s) already exist.';
 
-                                obj.status = 409,
-                                obj.message = 'Record(s) already exist.';
-
-                                callback(null, obj);
-                                return false;
+                            callback(null, obj);
+                            return false;
+                        } else {
+                            /*
+                             * Ensure that index_to_update contains the
+                             * first index where is_active = false
+                             */
+                            if (!found_first_inactive_record) {
+                                console.log('Found first inactive record ' +
+                                            'at index ' + i);
+                                index_to_update = i;
+                                found_first_inactive_record = true;
                             } else {
-                                /*
-                                 * Ensure that index_to_update contains the
-                                 * first index where is_active = false
-                                 */
-                                if (!found_first_inactive_record) {
-                                    console.log('Found first inactive record ' +
-                                                'at index ' + i);
-                                    index_to_update = i;
-                                    found_first_inactive_record = true;
-                                } else {
-                                    console.log('Found another inactive ' +
-                                                'record at index ' + i);
-                                }
+                                console.log('Found another inactive ' +
+                                            'record at index ' + i);
                             }
-                            console.log('After iteration ' + i + ' of for loop, ' +
-                                        'index_to_update = ' + index_to_update);
-                        } // end of for loop
-                    // } // end of 'if (obj.data.length > 1)' block
+                        }
+                        console.log('After iteration ' + i + ' of for loop, ' +
+                                    'index_to_update = ' + index_to_update);
+                    } // end of for loop
 
-                    console.log('Record exists with ' +
+                    console.log('\nRecord with id ' +
+                                obj.data[index_to_update].id + ' exists with ' +
                                 table_field_names.display + ' = ' +
-                                obj.data[index_to_update].term + '\nBut is_active' +
-                                ' = ' + obj.data[index_to_update].is_active);
+                                obj.data[index_to_update].term +
+                                '\nBut is_active = ' +
+                                obj.data[index_to_update].is_active);
 
                     obj.id = obj.data[index_to_update].id;
 
                     DB(table_name)
-                        .where(table_field_names.id, obj.data[index_to_update].id)
+                        .where(table_field_names.id,
+                               obj.data[index_to_update].id)
                         .update({
                             is_active: 1
                         })
@@ -513,32 +513,16 @@ exports.create = function (req, callback) {
                         })
                         .catch(function (error) {
                             LOGGER
-                            .module().fatal('FATAL: [/living-library/' +
-                                            'model module (create/' +
-                                            'update_db)] Unable to ' +
-                                            'update record: ' + error +
-                                            '\nid = ' + obj.data[index_to_update].id);
+                            .module().fatal('FATAL: [/living-library/model ' +
+                                            'module (create/update_db)] ' +
+                                            'Unable to update record: ' +
+                                            error + '\nid = ' +
+                                            obj.data[index_to_update].id);
                             // throw 'FATAL: Unable to update record: ' + error;
                         });
                     /*
                     try {
-                        if (obj.data[0].is_active) {
-                            LOGGER.module().error('ERROR: [/living-library/' +
-                                                  'model module (create/' +
-                                                  'update_db)] Active record ' +
-                                                  'already exists with ' +
-                                                  table_field_names.display +
-                                                  ' = ' + obj.data[0].term +
-                                                  '\nSo database left ' +
-                                                  'unchanged.');
 
-                            obj.status = 409,
-                            obj.message = 'Record already exists.';
-
-                            callback(null, obj);
-                            return false;
-                        } else {
-                        }
                     } catch (error) {
                         LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                               'module (create/update_db)] ' +
