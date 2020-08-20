@@ -423,10 +423,10 @@ exports.create = function (req, callback) {
                                 'matching ' + new_menu_choice);
 
                     // Check whether all records have is_active = 0
-                    let record_needs_to_be_updated = false,
+                    let found_first_inactive_record = false,
                         index_to_update = 0;
 
-                    if (obj.data.length > 1) {
+                    // if (obj.data.length > 1) {
                         for (let i = 0; i < obj.data.length; i++) {
                             console.log('obj.data[' + i + '] = ');
                             console.log(obj.data[i]);
@@ -445,7 +445,8 @@ exports.create = function (req, callback) {
                                                       table_field_names.display +
                                                       ' = ' + obj.data[i].term +
                                                       '\nSo database left ' +
-                                                      'unchanged.');
+                                                      'unchanged. Record(s) found:\n' +
+                                                      JSON.stringify(obj.data));
 
                                 obj.status = 409,
                                 obj.message = 'Record(s) already exist.';
@@ -457,12 +458,20 @@ exports.create = function (req, callback) {
                                  * Ensure that index_to_update contains the
                                  * first index where is_active = false
                                  */
-                                if (index_to_update === 0) {
+                                if (!found_first_inactive_record) {
+                                    console.log('Found first inactive record ' +
+                                                'at index ' + i);
                                     index_to_update = i;
+                                    found_first_inactive_record = true;
+                                } else {
+                                    console.log('Found another inactive ' +
+                                                'record at index ' + i);
                                 }
                             }
+                            console.log('After iteration ' + i + ' of for loop, ' +
+                                        'index_to_update = ' + index_to_update);
                         } // end of for loop
-                    } // end of 'if (obj.data.length > 1)' block
+                    // } // end of 'if (obj.data.length > 1)' block
 
                     console.log('Record exists with ' +
                                 table_field_names.display + ' = ' +
