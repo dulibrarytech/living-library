@@ -14,9 +14,9 @@ class LivingLibrary extends CI_Controller {
 
   function __construct()
   {
-      parent::__construct();
-      $this->load->helper('url');
-      $this->load->helper('sanitizer_helper');
+    parent::__construct();
+    $this->load->helper('url');
+    $this->load->helper('sanitizer_helper');
   }
 
 	/**
@@ -64,18 +64,22 @@ class LivingLibrary extends CI_Controller {
    * @param   donationStatus     either "queued" (the default) or "completed"
    * @param   donationID         id of donation record
 	 */
-  public function getDonation($donationStatus = "queued", $donationID)
+  public function getDonation($donationStatus = "queued", $donationID = NULL)
 	{
     $donationStatus = is_string($donationStatus)
                       ? strtolower($donationStatus)
                       : $donationStatus;
 
-		$data['pageLoader'] = $donationStatus == "completed"
-                          ? "<script>get_donation(true, '"
-                          : "<script>get_donation(false, '";
-    $data['pageLoader'] .= $donationID . "');</script>";
+    if ($this->isIntegerOrIntegerString($donationID)) {
+      $data['pageLoader'] = $donationStatus == "completed"
+                            ? "<script>get_donation(true, '"
+                            : "<script>get_donation(false, '";
+      $data['pageLoader'] .= $donationID . "');</script>";
 
-		$this->load->view('living-library-view', $data);
+      $this->load->view('living-library-view', $data);
+    } else {
+      $this->load->view('living-library-error');
+    }
 	}
 
   /**
@@ -100,15 +104,31 @@ class LivingLibrary extends CI_Controller {
    * @param   id              the id of the menu choice (i.e. the lookup table
    *                          record id)
 	 */
-  public function editMenuChoice($table, $id)
+  public function editMenuChoice($table, $id = NULL)
 	{
     $table_name = is_string($table)
                   ? strtolower($table)
                   : $table;
 
-    $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', '" .
-                          $id . "', '" . $table . "');</script>";
+    if ($this->isIntegerOrIntegerString($id)) {
+      $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', '"
+                            . $id . "', '" . $table . "');</script>";
 
-    $this->load->view('living-library-view', $data);
+      $this->load->view('living-library-view', $data);
+    } else {
+      $this->load->view('living-library-error');
+    }
 	}
+
+  /**
+   * Checks whether value is an integer or a string representing an integer.
+   * @param   {string or integer}  $value   the value to check
+   * @returns {boolean}                     true if $value is an integer or a
+   *                                        string representing an integer;
+   *                                        false otherwise
+   */
+  function isIntegerOrIntegerString($value)
+  {
+    return ctype_digit($value) || is_int($value);
+  }
 }
