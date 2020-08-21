@@ -1067,9 +1067,6 @@ exports.update = function (req, callback) {
                 if (obj.data.length === 1) {
                     let donor, book;
 
-                    obj.data[0].donor = '[10';
-                    obj.data[0].book = '11}';
-
                     if (typeof obj.data[0].donor !== 'undefined') {
                         try {
                             donor = JSON.parse(obj.data[0].donor);

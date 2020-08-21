@@ -71,9 +71,9 @@ class LivingLibrary extends CI_Controller {
                       : $donationStatus;
 
 		$data['pageLoader'] = $donationStatus == "completed"
-                          ? "<script>get_donation(true, "
-                          : "<script>get_donation(false, ";
-    $data['pageLoader'] .= $donationID . ");</script>";
+                          ? "<script>get_donation(true, '"
+                          : "<script>get_donation(false, '";
+    $data['pageLoader'] .= $donationID . "');</script>";
 
 		$this->load->view('living-library-view', $data);
 	}
@@ -106,8 +106,8 @@ class LivingLibrary extends CI_Controller {
                   ? strtolower($table)
                   : $table;
 
-    $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', " .
-                          $id . ", '" . $table . "');</script>";
+    $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', '" .
+                          $id . "', '" . $table . "');</script>";
 
     $this->load->view('living-library-view', $data);
 	}

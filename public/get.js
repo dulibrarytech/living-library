@@ -1689,7 +1689,7 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
     // 'Update menu choice' form
     let html = '<form id="update-menu-choice-form" method="post" ' +
                `onsubmit="update_menu_choice(event, '${table}', `
-               + `${menu_choice_id});">`;
+               + `'${menu_choice_id}');">`;
     console.log("update menu choice form tag = " + html);
     html += '<table class="table">';
 
@@ -1732,8 +1732,8 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
 
     // 'Delete menu choice' form
     html += '<form id="delete-menu-choice-form" method="post" ' +
-            `onsubmit="delete_menu_choice(event, '${table}', ${menu_choice_id},`
-            + ` '${table_link_text}');">`;
+            `onsubmit="delete_menu_choice(event, '${table}', ` +
+            `'${menu_choice_id}', '${table_link_text}');">`;
 
     html += '<table class="table">';
 

@@ -55,31 +55,22 @@
 
 		<table style="width: 100%"><tr>
 			<td>
-				<div class="container generic-label" id="page-label"></div>
+				<div class="container generic-label" id="page-label">Living Library</div>
 			</td>
 			<td align="right" style="text-align: right;">
 				<div class="small-label" id="username-label"></div>
 			</td>
 		</tr></table>
 
-		<!-- Results Table Section -->
-		<div id="table-section">
-
-			<div id="jumpTo"></div>
-
-			<!-- Stationary table header -->
-			<div class="table table-bordered" id="table-header"></div>
-
-			<!-- Table content section -->
-			<div class="container pre-scrollable" id="scroll-section">
-
-	 			<div id="table-content"></div>
-
-				<div class="donor-info-form-section" id="record-content"></div>
-				<div id="form-content"></div>
-
-			</div><!--/Table content section -->
-		</div><!--/Results Table Section -->
+		<!-- Content Section -->
+		<div class="generic-label error">Error:</div>
+		<div class="error-block">
+			For help, contact the
+			<a href="https://library.du.edu/contact/department-directory.html">
+				Digital Infrastructure &amp; Technology Coordinator in Library
+				Technology Services</a>.
+		</div>
+		<!--/Content Section -->
 
 	</div><!--/Main Content Window -->
 
@@ -97,6 +88,6 @@
 	<?php $this->load->view("partials/javascript-partial.php"); ?>
 
 	<!-- Run page loader for requested page (set in CI controller) -->
-	<?php if ($pageLoader) echo $pageLoader; ?>
+	<!--?php if ($pageLoader) echo $pageLoader; ?> -->
 
 </footer>

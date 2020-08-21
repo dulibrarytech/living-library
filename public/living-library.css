@@ -118,3 +118,9 @@ abbr[title] {
 .error {
   color: FireBrick;
 }
+
+/* Style for blocks of error text */
+.error-block {
+  margin-left: 20px;
+  font-size: 16px;
+}
