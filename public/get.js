@@ -1226,25 +1226,8 @@ function get_completed_donation(url) {
                     record_content_element.innerHTML = html;
                 }
             } else {
-                let table_section_element = document
-                                            .getElementById('table-section');
-
-                if (table_section_element) {
-                    table_section_element.innerHTML = 'For help, contact the ' +
-                        '<a href="https://library.du.edu/contact/' +
-                        'department-directory.html">' +
-                  			'Digital Infrastructure &amp; Technology Coordinator ' +
-                        'in Library Technology Services</a>.';
-                    table_section_element.className = 'error-block';
-                }
-
-                let error_header_element = document.createElement('div');
-                error_header_element.className = 'generic-label error';
-                error_header_element.innerHTML = 'Error: No donation record ' +
-                                                 'found.'
-                table_section_element.parentNode
-                                     .insertBefore(error_header_element,
-                                                   table_section_element);
+                living_library_helper
+                .insert_error_message('Error: No donation record found.');
             }
         })
         .catch((error) => {

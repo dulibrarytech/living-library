@@ -120,6 +120,32 @@ const living_library_helper = (function () {
         }
     };
 
+    /**
+     * Inserts the given error message onto the page.
+     * @param   {string}   error_header_text    the text to be inserted into
+     *                                          the error message header
+     */
+    obj.insert_error_message = function (error_header_text) {
+        let table_section_element = document
+                                    .getElementById('table-section');
+
+        if (table_section_element) {
+            table_section_element.innerHTML = 'For help, contact the ' +
+                '<a href="https://library.du.edu/contact/' +
+                'department-directory.html">' +
+                'Digital Infrastructure &amp; Technology Coordinator ' +
+                'in Library Technology Services</a>.';
+            table_section_element.className = 'error-block';
+        }
+
+        let error_header_element = document.createElement('div');
+        error_header_element.className = 'generic-label error';
+        error_header_element.innerHTML = error_header_text;
+        table_section_element.parentNode
+                             .insertBefore(error_header_element,
+                                           table_section_element);
+    }
+
     return obj;
 
 }());
