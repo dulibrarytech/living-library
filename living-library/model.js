@@ -676,17 +676,23 @@ exports.read = function (req, callback) {
                     }
                 })
                 .then(function (data) {
-                    // TODO: If data.length === 0, return 404 HTTP status code
                     console.log("Found " + data.length + " record(s).");
                     console.log("End of READ query from model" +
                                 "\n=====================\n");
 
-                    callback({
-                        status: 200,
-                        message: 'Record(s) retrieved.',
-                        data: data
-                    });
-
+                    if (data.length > 0) {
+                        callback({
+                            status: 200,
+                            message: 'Record(s) retrieved.',
+                            data: data
+                        });
+                    } else {
+                        callback({
+                            status: 404,
+                            message: 'No records found.',
+                            data: data
+                        });
+                    }
                 })
                 .catch(function (error) {
                     console.log('Inside catch function of donations table case');
@@ -749,18 +755,24 @@ exports.read = function (req, callback) {
                     }
                 })
                 .then(function (data) {
-                    // TODO: If data.length === 0, return 404 HTTP status code
                     console.log("Populating " + table_field_names.display +
                                 " choices. " + data.length + " choice(s) found.");
                     console.log("\nEnd of READ query from model" +
                                 "\n=====================\n");
 
-                    callback({
-                        status: 200,
-                        message: 'Record(s) retrieved.',
-                        data: data
-                    });
-
+                    if (data.length > 0) {
+                        callback({
+                            status: 200,
+                            message: 'Record(s) retrieved.',
+                            data: data
+                        });
+                    } else {
+                        callback({
+                            status: 404,
+                            message: 'No records found.',
+                            data: data
+                        });
+                    }
                 })
                 .catch(function (error) {
                     console.log('Inside catch function of lookup table case');
