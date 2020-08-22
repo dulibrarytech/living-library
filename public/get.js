@@ -1020,8 +1020,6 @@ function get_completed_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
 
-            let html;
-
             if (data.length > 0) {
                 const donor = living_library_helper
                               .get_valid_json(data[0], 'donor'),
@@ -1048,7 +1046,7 @@ function get_completed_donation(url) {
                 console.log(book);
                 console.log('typeof book = ' + typeof book);
 
-                html = '<h4>Person making donation</h4>';
+                let html = '<h4>Person making donation</h4>';
                 html += '<dl>';
                 html += '<dt>Title: </dt>'
                         + '<dd>' +
@@ -1791,6 +1789,11 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
                 console.warn('Looks like there was a problem fetching ' + table
                              + ' with id = ' + menu_choice_id
                              + '. Status Code: ' + response.status);
+
+                living_library_helper
+                .insert_error_message('Error: No ' + label.toLowerCase() +
+                                      ' record found.');
+
                 return false;
             }
 
