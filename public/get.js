@@ -1020,6 +1020,9 @@ function get_completed_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
 
+            let html;
+
+            if (data.length > 0) {
             const donor = living_library_helper
                           .get_valid_json(data[0], 'donor'),
                   who_to_notify = living_library_helper
@@ -1045,7 +1048,7 @@ function get_completed_donation(url) {
             console.log(book);
             console.log('typeof book = ' + typeof book);
 
-            let html = '<h4>Person making donation</h4>';
+            html = '<h4>Person making donation</h4>';
             html += '<dl>';
             html += '<dt>Title: </dt>'
                     + '<dd>' +
@@ -1208,6 +1211,15 @@ function get_completed_donation(url) {
                     .get_field_value(book, 'book_call_number')
                     + '</dd>';
             html += '</dl>';
+            } else {
+                html = `<div class="generic-label error">Error: No donation records found.</div>
+            		<div class="error-block">
+            			For help, contact the
+            			<a href="https://library.du.edu/contact/department-directory.html">
+            				Digital Infrastructure &amp; Technology Coordinator in Library
+            				Technology Services</a>.
+            		</div>`;
+            }
 
             console.log(html);
             let record_content_element = document
