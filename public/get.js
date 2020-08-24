@@ -1240,6 +1240,8 @@ function get_completed_donation(url) {
  * @param    url    the URL to fetch the donation record from the database
  */
 function get_queued_donation(url) {
+    let has_required_input_boxes = true;
+
     fetch(url)
         .then(response => {
             return response.json();
@@ -1248,246 +1250,267 @@ function get_queued_donation(url) {
             console.log(data);
             $("#page-label").html('Living Library: Book Plate Form');
 
-            const donor = living_library_helper
-                          .get_valid_json(data[0], 'donor'),
-                  who_to_notify = living_library_helper
-                                  .get_valid_json(data[0], 'who_to_notify'),
-                  recipient = living_library_helper
-                              .get_valid_json(data[0], 'recipient');
+            if (data.length > 0) {
+                const donor = living_library_helper
+                              .get_valid_json(data[0], 'donor'),
+                      who_to_notify = living_library_helper
+                                      .get_valid_json(data[0], 'who_to_notify'),
+                      recipient = living_library_helper
+                                  .get_valid_json(data[0], 'recipient');
 
-            /* Add information from the donation record */
-            let html = '<dl>';
+                /* Add information from the donation record */
+                let html = '<dl>';
 
-            html += '<dt>Person making donation: </dt>'
-                    + '<dd>';
-            if (living_library_helper.is_non_null_object(donor)) {
-                html += living_library_helper
-                        .get_field_value(donor, 'donor_title')
-                        + ' ' +
-                        living_library_helper
-                        .get_field_value(donor, 'donor_first_name')
-                        + ' ' +
-                        living_library_helper
-                        .get_field_value(donor, 'donor_last_name');
-            } else {
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
-
-            html += '<dt>Notes: </dt>'
-                    + '<dd>';
-            if (living_library_helper.is_non_null_object(donor)) {
-                html += living_library_helper
-                        .get_field_value(donor, 'donor_notes');
-            } else {
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
-
-            html += '<dt>Person(s) to be notified of donation: </dt>'
-                    + '<dd>';
-            if (Array.isArray(who_to_notify) && who_to_notify.length > 0) {
-                let persons_to_be_notified = [];
-                for (let i = 0; i < who_to_notify.length; i++) {
-                    if (living_library_helper
-                        .is_non_null_object(who_to_notify[i])) {
-                        let person = [];
-
-                        let notify_title = living_library_helper
-                                           .get_field_value(who_to_notify[i],
-                                                            'notify_title');
-                        if (notify_title !== '') {
-                            person.push(notify_title);
-                        }
-
-                        let notify_first_name =
+                html += '<dt>Person making donation: </dt>'
+                        + '<dd>';
+                if (living_library_helper.is_non_null_object(donor)) {
+                    html += living_library_helper
+                            .get_field_value(donor, 'donor_title')
+                            + ' ' +
                             living_library_helper
-                            .get_field_value(who_to_notify[i],
-                                             'notify_first_name');
-                        if (notify_first_name !== '') {
-                            person.push(notify_first_name);
-                        }
-
-                        let notify_last_name =
+                            .get_field_value(donor, 'donor_first_name')
+                            + ' ' +
                             living_library_helper
-                            .get_field_value(who_to_notify[i],
-                                             'notify_last_name');
-                        if (notify_last_name !== '') {
-                            person.push(notify_last_name);
-                        }
+                            .get_field_value(donor, 'donor_last_name');
+                } else {
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
+                }
+                html += '</dd>';
 
-                        if (person.length > 0) {
-                            persons_to_be_notified.push(person.join(' '));
+                html += '<dt>Notes: </dt>'
+                        + '<dd>';
+                if (living_library_helper.is_non_null_object(donor)) {
+                    html += living_library_helper
+                            .get_field_value(donor, 'donor_notes');
+                } else {
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
+                }
+                html += '</dd>';
+
+                html += '<dt>Person(s) to be notified of donation: </dt>'
+                        + '<dd>';
+                if (Array.isArray(who_to_notify) && who_to_notify.length > 0) {
+                    let persons_to_be_notified = [];
+                    for (let i = 0; i < who_to_notify.length; i++) {
+                        if (living_library_helper
+                            .is_non_null_object(who_to_notify[i])) {
+                            let person = [];
+
+                            let notify_title = living_library_helper
+                                               .get_field_value(who_to_notify[i],
+                                                                'notify_title');
+                            if (notify_title !== '') {
+                                person.push(notify_title);
+                            }
+
+                            let notify_first_name =
+                                living_library_helper
+                                .get_field_value(who_to_notify[i],
+                                                 'notify_first_name');
+                            if (notify_first_name !== '') {
+                                person.push(notify_first_name);
+                            }
+
+                            let notify_last_name =
+                                living_library_helper
+                                .get_field_value(who_to_notify[i],
+                                                 'notify_last_name');
+                            if (notify_last_name !== '') {
+                                person.push(notify_last_name);
+                            }
+
+                            if (person.length > 0) {
+                                persons_to_be_notified.push(person.join(' '));
+                            }
                         }
                     }
+                    html += persons_to_be_notified.join('; ');
+                } else {
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
                 }
-                html += persons_to_be_notified.join('; ');
-            } else {
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
+                html += '</dd>';
 
-            html += '<dt>Person receiving donation: </dt>'
-                    + '<dd>';
-            if (living_library_helper.is_non_null_object(recipient)) {
-                html += living_library_helper
-                        .get_field_value(recipient, 'recipient_title')
-                        + ' ' +
-                        living_library_helper
-                        .get_field_value(recipient, 'recipient_first_name')
-                        + ' ' +
-                        living_library_helper
-                        .get_field_value(recipient, 'recipient_last_name')
-                        + ' (' +
-                        living_library_helper
-                        .get_field_value(recipient, 'recipient_donation_type')
-                        + ')';
-            } else {
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
+                html += '<dt>Person receiving donation: </dt>'
+                        + '<dd>';
+                if (living_library_helper.is_non_null_object(recipient)) {
+                    html += living_library_helper
+                            .get_field_value(recipient, 'recipient_title')
+                            + ' ' +
+                            living_library_helper
+                            .get_field_value(recipient, 'recipient_first_name')
+                            + ' ' +
+                            living_library_helper
+                            .get_field_value(recipient, 'recipient_last_name')
+                            + ' (' +
+                            living_library_helper
+                            .get_field_value(recipient,
+                                             'recipient_donation_type')
+                            + ')';
+                } else {
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
+                }
+                html += '</dd>';
 
-            html += '<dt>Date of donation: </dt>'
-                    + '<dd>';
-            if (living_library_helper.is_non_null_object(donor)) {
-                html += living_library_helper
-                        .get_field_value(donor, 'donor_date_of_donation');
-            } else {
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
+                html += '<dt>Date of donation: </dt>'
+                        + '<dd>';
+                if (living_library_helper.is_non_null_object(donor)) {
+                    html += living_library_helper
+                            .get_field_value(donor, 'donor_date_of_donation');
+                } else {
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
+                }
+                html += '</dd>';
 
-            html += '<dt>Selected subject areas: </dt>'
-                    + '<dd>';
-            if (living_library_helper.is_non_null_object(donor) &&
-                Array.isArray(donor.donor_subject_areas) &&
-                donor.donor_subject_areas.length > 0) {
-                console.log('donor.donor_subject_areas is a non-empty array');
+                html += '<dt>Selected subject areas: </dt>'
+                        + '<dd>';
+                if (living_library_helper.is_non_null_object(donor) &&
+                    Array.isArray(donor.donor_subject_areas) &&
+                    donor.donor_subject_areas.length > 0) {
+                    console.log('donor.donor_subject_areas is a non-empty ' +
+                                'array');
 
-                let subject_areas = [];
-                for (let i = 0; i < donor.donor_subject_areas.length; i++) {
-                    let subject =
-                        living_library_helper
-                        .get_field_value(donor.donor_subject_areas, i);
-                    if (subject !== '') {
-                        subject_areas.push(subject);
+                    let subject_areas = [];
+                    for (let i = 0; i < donor.donor_subject_areas.length; i++) {
+                        let subject =
+                            living_library_helper
+                            .get_field_value(donor.donor_subject_areas, i);
+                        if (subject !== '') {
+                            subject_areas.push(subject);
+                        }
                     }
+
+                    html += subject_areas.join('; ');
+                } else {
+                    console.log('donor.donor_subject_areas is empty or not ' +
+                                'valid');
+                    html += living_library_config
+                            .get_error_text_for_invalid_json();
+                }
+                html += '</dd>';
+
+                html += '</dl>';
+
+                console.log(html);
+                let record_content_element = document
+                                             .querySelector('#record-content');
+
+                if (record_content_element) {
+                    record_content_element.innerHTML = html;
                 }
 
-                html += subject_areas.join('; ');
+                /* Add book plate form */
+                let form_html = '<form id="book-plate-form" method="post" '
+                                + 'onsubmit="save_book_plate(event);">';
+
+                form_html += '<table class="table">';
+
+                form_html += '<tr>';
+                form_html += '<td colspan="2">'
+                             + '<h4>Book Plate Information</h4>'
+                             + '</td>';
+                form_html += '</tr>';
+
+                form_html += '<tr>';
+                form_html += '<td colspan="2">'
+                             + living_library_config
+                               .get_form_symbol_explanation_text()
+                             + '</td>';
+                form_html += '</tr>';
+
+                form_html += '<tr>';
+                form_html += '<td>'
+                             + '<label for="book_author_name_input_box" '
+                             + 'class="form-label-text">Author Name:'
+                             + '</label>'
+                             + '<input type="text" '
+                             + 'id="book_author_name_input_box" '
+                             + 'class="input_form-default" '
+                             + 'name="book_author_name"/>'
+                             + '</td>';
+
+                form_html += '<td>'
+                             + '<label for="book_title_input_box" '
+                             + 'class="form-label-text">Book Title:'
+                             + '</label>'
+                             + '<input type="text" id="book_title_input_box" '
+                             + 'class="input_form-default" name="book_title"/>'
+                             + '</td>';
+                form_html += '</tr>';
+
+                form_html += '<tr>';
+                form_html += '<td>'
+                             + '<label '
+                             + 'for="book_bibliographic_number_input_box" '
+                             + 'class="form-label-text">Bibliographic Number:'
+                             + '</label>'
+                             + '<input type="text" '
+                             + 'id="book_bibliographic_number_input_box" '
+                             + 'class="input_form-default" '
+                             + 'name="book_bibliographic_number"/>'
+                             + '</td>';
+
+                form_html += '<td>'
+                             + '<label for="book_call_number_input_box" '
+                             + 'class="form-label-text">Call Number:'
+                             + '</label>'
+                             + '<input type="text" '
+                             + 'id="book_call_number_input_box" '
+                             + 'class="input_form-default" '
+                             + 'name="book_call_number"/>'
+                             + '</td>';
+                form_html += '</tr>';
+
+                form_html += '</table>'; // close table with text input boxes
+
+                form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                             + 'name="donation_id" value=""/>';
+
+                form_html += '<table class="table lower_controls">'
+                             + '<tr>'
+                             + '<td class="span1">'
+                             + '<button type="submit" '
+                             + 'class="btn-grey" id="save_book_plate_button">'
+                             + 'Save Book Plate'
+                             + '</button>'
+                             + '<div id="book-plate-form-confirmation">'
+                             + '</div>'
+                             + '</td>'
+                             + '</tr>'
+                             + '</table>';
+
+                form_html += '</form>';
+
+                let form_content_element = document
+                                           .querySelector('#form-content');
+
+                if (form_content_element) {
+                    form_content_element.innerHTML = form_html;
+                }
+
+                let donation_id_hidden_box =
+                    document.querySelector('#donation_id_hidden_box');
+
+                console.log("donation id = " + data[0].id);
+                if (donation_id_hidden_box) {
+                    donation_id_hidden_box.setAttribute('value', data[0].id);
+                }
             } else {
-                console.log('donor.donor_subject_areas is empty or not valid');
-                html += living_library_config
-                        .get_error_text_for_invalid_json();
-            }
-            html += '</dd>';
+                living_library_helper
+                .insert_error_message('Error: No donation record found.');
 
-            html += '</dl>';
-
-            console.log(html);
-            let record_content_element = document.querySelector('#record-content');
-
-            if (record_content_element) {
-                record_content_element.innerHTML = html;
-            }
-
-            /* Add book plate form */
-            let form_html = '<form id="book-plate-form" method="post" '
-                            + 'onsubmit="save_book_plate(event);">';
-
-            form_html += '<table class="table">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="2"><h4>Book Plate Information</h4></td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="2">'
-                         + living_library_config
-                           .get_form_symbol_explanation_text()
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="book_author_name_input_box" '
-                         + 'class="form-label-text">Author Name:'
-                         + '</label>'
-                         + '<input type="text" id="book_author_name_input_box" '
-                         + 'class="input_form-default" name="book_author_name"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="book_title_input_box" '
-                         + 'class="form-label-text">Book Title:'
-                         + '</label>'
-                         + '<input type="text" id="book_title_input_box" '
-                         + 'class="input_form-default" name="book_title"/>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="book_bibliographic_number_input_box" '
-                         + 'class="form-label-text">Bibliographic Number:'
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="book_bibliographic_number_input_box" '
-                         + 'class="input_form-default" '
-                         + 'name="book_bibliographic_number"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="book_call_number_input_box" '
-                         + 'class="form-label-text">Call Number:'
-                         + '</label>'
-                         + '<input type="text" id="book_call_number_input_box" '
-                         + 'class="input_form-default" name="book_call_number"/>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close table with text input boxes
-
-            form_html += '<input type="hidden" id="donation_id_hidden_box" '
-                         + 'name="donation_id" value=""/>';
-
-            form_html += '<table class="table lower_controls">'
-                         + '<tr>'
-                         + '<td class="span1">'
-                         + '<button type="submit" '
-                         + 'class="btn-grey" id="save_book_plate_button">'
-                         + 'Save Book Plate'
-                         + '</button>'
-                         + '<div id="book-plate-form-confirmation">'
-                         + '</div>'
-                         + '</td>'
-                         + '</tr>'
-                         + '</table>';
-
-            form_html += '</form>';
-
-            let form_content_element = document.querySelector('#form-content');
-
-            if (form_content_element) {
-                form_content_element.innerHTML = form_html;
-            }
-
-            let donation_id_hidden_box =
-                document.querySelector('#donation_id_hidden_box');
-
-            console.log("donation id = " + data[0].id);
-            if (donation_id_hidden_box) {
-                donation_id_hidden_box.setAttribute('value', data[0].id);
+                has_required_input_boxes = false;
             }
         })
         .then(() => {
-            update_required_fields_in_form(living_library_config
-                                           .get_book_plate_form_info());
+            if (has_required_input_boxes) {
+                update_required_fields_in_form(living_library_config
+                                               .get_book_plate_form_info());
+            }
         })
         .catch((error) => {
             console.log('In the catch block');
