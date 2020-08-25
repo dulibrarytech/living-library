@@ -1029,12 +1029,17 @@ function get_completed_donation(url) {
                 if (!is_completed) {
                     living_library_helper
                     .insert_error_message('Donation not yet completed. ' +
-                                          'Redirecting to Book Plate Form...');
+                                          '<a href="' + baseUrl +
+                                          _getDonationUrl + 'queued/' +
+                                          data[0].id + '">' +
+                                          'View Book Plate Form</a>.');
 
+                    /*
                     setTimeout(function () {
                         window.location.href = baseUrl + _getDonationUrl +
                                                'queued/' + data[0].id;
                     }, 4000);
+                    */
 
                     return false;
                 }
@@ -1278,12 +1283,17 @@ function get_queued_donation(url) {
                 if (is_completed) {
                     living_library_helper
                     .insert_error_message('Donation already completed. ' +
-                                          'Redirecting to Full Record...');
+                                          '<a href="' + baseUrl +
+                                          _getDonationUrl + 'completed/' +
+                                          data[0].id + '">' +
+                                          'View Full Record</a>.');
 
+                    /*
                     setTimeout(function () {
                         window.location.href = baseUrl + _getDonationUrl +
                                                'completed/' + data[0].id;
                     }, 4000);
+                    */
 
                     has_required_input_boxes = false;
 
