@@ -311,6 +311,7 @@ const update_menu_choice = function (event, table, id) {
     fetch(living_library_config.get_api() +
           '?tbl=' + table +
           '&id=' + id +
+          '&is_active=true' +
           '&api_key=' + living_library_config.get_api_key(), {
         method: 'PUT',
         headers: {
@@ -371,6 +372,7 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
     fetch(living_library_config.get_api() +
           '?tbl=' + table +
           '&id=' + id +
+          '&is_active=true' +
           '&api_key=' + living_library_config.get_api_key(), {
         method: 'PUT',
         headers: {

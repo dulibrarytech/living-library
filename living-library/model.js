@@ -1190,10 +1190,27 @@ exports.update = function (req, callback) {
         case CONFIG.dbSubjectAreasTable:
         case CONFIG.dbTitlesTable:
         case CONFIG.dbRelationshipsTable: {
-            let table_field_names = get_table_field_names(table_name);
+            let table_field_names = get_table_field_names(table_name),
+                is_active_from_query = get_empty_or_lowercase_string(req.query.is_active);
 
             DB(table_name)
                 .where(table_field_names.id, id)
+                .modify(function(queryBuilder) {
+                    if (is_active_from_query === 'true' || is_active_from_query === 'false'
+                        || is_active_from_query === '1' || is_active_from_query === '0') {
+                        // convert from string to boolean
+                        is_active_from_query = is_active_from_query === 'true' || is_active_from_query === '1';
+                        console.log("is_active_from_query = " + is_active_from_query +
+                                    ", so adding to SQL query\n");
+
+                        queryBuilder.where({
+                            is_active: is_active_from_query
+                        })
+                    } else {
+                        console.log("is_active (from request query) = " + is_active_from_query +
+                                    "\n... so no adjustment to SQL query\n");
+                    }
+                })
                 .modify(function(queryBuilder) {
                     let data_to_update = {};
 
@@ -1218,14 +1235,14 @@ exports.update = function (req, callback) {
                                     ', so no adjustment to SQL query\n');
                     }
 
-                    // Check for valid is_active property
+                    // Check request body for valid is_active property
                     let is_active = request_body.is_active;
 
                     if (typeof is_active === 'string') {
                         is_active = is_active.toLowerCase();
                     }
 
-                    console.log('After typeof check, is_active = ' + is_active);
+                    console.log('After typeof check, is_active (from request body) = ' + is_active);
 
                     if (typeof is_active === 'boolean' ||
                         is_active === 'true' || is_active === 'false' ||
@@ -1237,12 +1254,12 @@ exports.update = function (req, callback) {
                                         is_active === '1' ||
                                         is_active === 1;
                         }
-                        console.log('is_active = ' + is_active +
+                        console.log('is_active (from request body) = ' + is_active +
                                     ', so adding to SQL query\n');
 
                         data_to_update.is_active = is_active;
                     } else {
-                        console.log('is_active = ' + is_active +
+                        console.log('is_active (from request body) = ' + is_active +
                                     ', so no adjustment to SQL query\n');
 
                         if (updated_menu_choice === '') {
@@ -1285,7 +1302,12 @@ exports.update = function (req, callback) {
                         LOGGER.module().fatal('FATAL: [/living-library/' +
                                               'model module (update)] ' +
                                               "Update failed. Couldn't find " +
-                                              tbl + ' record with id ' + id);
+                                              tbl + ' record with:\n' +
+                                              'id = ' + id +
+                                              (is_active_from_query === ''
+                                               ? ''
+                                               : '\nis_active = ' +
+                                                 is_active_from_query));
 
                         callback({
                             status: 404,
@@ -1299,8 +1321,13 @@ exports.update = function (req, callback) {
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (update)] Unable to update ' +
-                                          tbl + ' record with id ' + id + ': ' +
-                                          error);
+                                          tbl + ' record with:\n' +
+                                          'id = ' + id +
+                                          (is_active_from_query === ''
+                                           ? ''
+                                           : '\nis_active = ' +
+                                             is_active_from_query) +
+                                          '\nError: ' + error);
                     /* throw 'FATAL: Unable to update ' + tbl +
                              ' record with id ' + id + ': ' + error;
                      */
