@@ -1001,7 +1001,7 @@ function get_donation(is_completed, id) {
         get_completed_donation(url, is_completed);
         console.log("Based on URL parameter, this is a completed donation");
     } else {
-        get_queued_donation(url);
+        get_queued_donation(url, is_completed);
         console.log("Based on URL parameter, this is a queued donation");
     }
 }
@@ -1044,8 +1044,6 @@ function get_completed_donation(url, donation_status_based_on_url) {
 
                     return false;
                 }
-
-                console.log('Building completed donation page...');
 
                 const donor = living_library_helper
                               .get_valid_json(data[0], 'donor'),
@@ -1263,9 +1261,13 @@ function get_completed_donation(url, donation_status_based_on_url) {
 
 /**
  * Builds the Book Plate Form webpage (for queued donations)
- * @param    url    the URL to fetch the donation record from the database
+ * @param   url    the URL to fetch the donation record from the database
+ * @param   donation_status_based_on_url  the donation record's status as
+ *                                        determined from the URL (i.e. true
+ *                                        if URL parameter says 'completed';
+ *                                        false otherwise
  */
-function get_queued_donation(url) {
+function get_queued_donation(url, donation_status_based_on_url) {
     let has_required_input_boxes = true;
 
     fetch(url)
@@ -1277,6 +1279,29 @@ function get_queued_donation(url) {
             $("#page-label").html('Living Library: Book Plate Form');
 
             if (data.length > 0) {
+                let donation_status_from_record =
+                    validate_is_completed_parameter(data[0].is_completed);
+                console.log('donation_status_based_on_url = ' +
+                            donation_status_based_on_url);
+                console.log('donation_status_from_record = ' +
+                            donation_status_from_record);
+
+                if (donation_status_based_on_url !==
+                    donation_status_from_record) {
+                    living_library_helper
+                    .insert_error_message('Error: Donation already completed. '
+                                          + 'Redirecting to Full Record...');
+
+                    setTimeout(function () {
+                        window.location.href = baseUrl + _getDonationUrl +
+                                               'completed/' + data[0].id;
+                    }, 4000);
+
+                    has_required_input_boxes = false;
+
+                    return false;
+                }
+
                 const donor = living_library_helper
                               .get_valid_json(data[0], 'donor'),
                       who_to_notify = living_library_helper
