@@ -139,7 +139,7 @@ const living_library_helper = (function () {
         }
 
         let error_header_element = document.createElement('div');
-        error_header_element.className = 'generic-label error';
+        error_header_element.className = 'error-header error';
         error_header_element.innerHTML = error_header_text;
         table_section_element.parentNode
                              .insertBefore(error_header_element,

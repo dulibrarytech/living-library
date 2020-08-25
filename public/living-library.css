@@ -119,6 +119,13 @@ abbr[title] {
   color: FireBrick;
 }
 
+/* Style for error message headers */
+.error-header {
+  padding: 20px;
+	font-size: 19px;
+	font-weight: bold;
+}
+
 /* Style for blocks of error text */
 .error-block {
   margin-left: 20px;
