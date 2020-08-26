@@ -183,10 +183,19 @@ const save_book_plate = function (event) {
             } else {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
-                                          "Error when saving book plate -- " +
-                                          "Couldn't find donation record " +
-                                          "with ID " +
-                                          form_data.donation_id.value);
+                                          response.status === 409
+                                          ? 'Error -- This donation (ID = ' +
+                                            form_data.donation_id.value +
+                                            ') is already completed (' +
+                                            '<a href="' + baseUrl +
+                                            _getCompletedDonationUrl +
+                                            form_data.donation_id.value + '">' +
+                                            'view full record</a>). ' +
+                                            'Cannot save book plate.'
+                                          : "Error when saving book plate -- " +
+                                            "Couldn't find donation record " +
+                                            "with ID " +
+                                            form_data.donation_id.value);
             }
         })
         .catch(function (error) {
