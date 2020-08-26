@@ -1286,7 +1286,7 @@ function get_queued_donation(url) {
                                           '<a href="' + baseUrl +
                                           _getDonationUrl + 'completed/' +
                                           data[0].id + '">' +
-                                          'View Full Record</a>.');
+                                          'View full record</a>.');
 
                     /*
                     setTimeout(function () {

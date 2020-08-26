@@ -166,19 +166,18 @@ const save_book_plate = function (event) {
             console.log('response = ');
             console.log(response);
 
-            let confirmation_div_element =
-                document.getElementById('book-plate-form-confirmation');
+            let completed_donation_url = baseUrl + _getCompletedDonationUrl +
+                                         form_data.donation_id.value,
+                confirmation_div_element =
+                    document.getElementById('book-plate-form-confirmation');
 
             if (response.ok) {
-                let redirect_url = baseUrl + _getCompletedDonationUrl +
-                                   form_data.donation_id.value;
-
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
                                           'Success -- book plate saved!',
                                           function () {
                                               window.location.href =
-                                                  redirect_url;
+                                                  completed_donation_url;
                                           });
             } else {
                 living_library_helper
@@ -187,9 +186,8 @@ const save_book_plate = function (event) {
                                           ? 'Error -- This donation (ID = ' +
                                             form_data.donation_id.value +
                                             ') is already completed (' +
-                                            '<a href="' + baseUrl +
-                                            _getCompletedDonationUrl +
-                                            form_data.donation_id.value + '">' +
+                                            '<a href="' +
+                                            completed_donation_url + '">' +
                                             'view full record</a>). ' +
                                             'Cannot save book plate.'
                                           : "Error when saving book plate -- " +
