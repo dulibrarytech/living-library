@@ -63,7 +63,7 @@
 		</tr></table>
 
 		<!-- Content Section -->
-		<div class="generic-label error">Error:</div>
+		<div class="generic-label error">Error loading page</div>
 		<div class="error-block">
 			For help, contact the
 			<a href="https://library.du.edu/contact/department-directory.html">
