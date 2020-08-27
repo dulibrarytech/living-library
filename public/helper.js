@@ -124,17 +124,25 @@ const living_library_helper = (function () {
      * Inserts the given error message onto the page.
      * @param   {string}   error_header_text    the text to be inserted into
      *                                          the error message header
+     * @param   {boolean}  display_help_msg     whether or not to display the
+     *                                          default help message within
+     *                                          table_section_element
      */
-    obj.insert_error_message = function (error_header_text) {
+    obj.insert_error_message = function (error_header_text,
+                                         display_help_msg = false) {
         let table_section_element = document
                                     .getElementById('table-section');
 
         if (table_section_element) {
-            table_section_element.innerHTML = 'For help, contact the ' +
-                '<a href="https://library.du.edu/contact/' +
-                'department-directory.html">' +
-                'Digital Infrastructure &amp; Technology Coordinator ' +
-                'in Library Technology Services</a>.';
+            table_section_element.innerHTML =
+                display_help_msg
+                ? 'For help, contact the ' +
+                  '<a href="https://library.du.edu/contact/' +
+                  'department-directory.html">' +
+                  'Digital Infrastructure &amp; Technology Coordinator ' +
+                  'in Library Technology Services</a>.'
+                : '';
+
             table_section_element.className = 'error-block';
         }
 

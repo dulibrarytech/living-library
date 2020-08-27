@@ -1032,14 +1032,7 @@ function get_completed_donation(url) {
                                           '<a href="' + baseUrl +
                                           _getDonationUrl + 'queued/' +
                                           data[0].id + '">' +
-                                          'View Book Plate Form</a>.');
-
-                    /*
-                    setTimeout(function () {
-                        window.location.href = baseUrl + _getDonationUrl +
-                                               'queued/' + data[0].id;
-                    }, 4000);
-                    */
+                                          'View Book Plate Form</a>.', false);
 
                     return false;
                 }
@@ -1248,7 +1241,7 @@ function get_completed_donation(url) {
                 }
             } else {
                 living_library_helper
-                .insert_error_message('Error: No donation record found.');
+                .insert_error_message('Error: No donation record found.', true);
             }
         })
         .catch((error) => {
@@ -1286,14 +1279,7 @@ function get_queued_donation(url) {
                                           '<a href="' + baseUrl +
                                           _getDonationUrl + 'completed/' +
                                           data[0].id + '">' +
-                                          'View full record</a>.');
-
-                    /*
-                    setTimeout(function () {
-                        window.location.href = baseUrl + _getDonationUrl +
-                                               'completed/' + data[0].id;
-                    }, 4000);
-                    */
+                                          'View full record</a>.', false);
 
                     has_required_input_boxes = false;
 
@@ -1550,7 +1536,7 @@ function get_queued_donation(url) {
                 }
             } else {
                 living_library_helper
-                .insert_error_message('Error: No donation record found.');
+                .insert_error_message('Error: No donation record found.', true);
 
                 has_required_input_boxes = false;
             }
@@ -1603,8 +1589,10 @@ function get_menu_choices(table) {
             break;
         default:
             console.warn('Invalid parameter value for table: ' + table);
+
             living_library_helper
-            .insert_error_message('Error: No records found.');
+            .insert_error_message('Error: No records found.', true);
+
             valid_table = false;
     }
 
@@ -1770,7 +1758,7 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
             console.warn('Invalid parameter value for table: ' + table);
 
             living_library_helper
-            .insert_error_message('Error: No record found.');
+            .insert_error_message('Error: No record found.', true);
 
             valid_table = false;
     }
@@ -1882,7 +1870,7 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
 
                 living_library_helper
                 .insert_error_message('Error: No ' + label.toLowerCase() +
-                                      ' record found.');
+                                      ' record found.', true);
 
                 return false;
             }
