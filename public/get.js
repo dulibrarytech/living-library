@@ -1583,7 +1583,7 @@ function get_menu_choices(table) {
 
     hide_table_header_and_content();
 
-    let label, link_text;
+    let label, link_text, valid_table = true;
 
     switch (table) {
         case 'subjectarea':
@@ -1602,14 +1602,22 @@ function get_menu_choices(table) {
             table = living_library_config.get_relationships_table();
             break;
         default:
-            console.log('Invalid parameter value for table: ' + table);
-            label = '';
+            console.warn('Invalid parameter value for table: ' + table);
+            living_library_helper
+            .insert_error_message('Error: No records found.');
+            valid_table = false;
     }
 
     let page_label_element = document.querySelector('#page-label');
 
     if (page_label_element) {
-        page_label_element.innerHTML = 'Living Library: ' + label + 's';
+        page_label_element.innerHTML = valid_table
+                                       ? 'Living Library: ' + label + 's'
+                                       : 'Living Library';
+    }
+
+    if (!valid_table) {
+        return false;
     }
 
     // Add menu choice form
@@ -1743,7 +1751,7 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
 
     hide_table_header_and_content();
 
-    let label;
+    let label, valid_table = true;
 
     switch (table) {
         case 'subjectarea':
@@ -1759,14 +1767,24 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
             table = living_library_config.get_relationships_table();
             break;
         default:
-            console.log('Invalid parameter value for table: ' + table);
-            label = '';
+            console.warn('Invalid parameter value for table: ' + table);
+
+            living_library_helper
+            .insert_error_message('Error: No record found.');
+
+            valid_table = false;
     }
 
     let page_label_element = document.querySelector('#page-label');
 
     if (page_label_element) {
-        page_label_element.innerHTML = 'Living Library: ' + label + 's';
+        page_label_element.innerHTML = valid_table
+                                       ? 'Living Library: ' + label + 's'
+                                       : 'Living Library';
+    }
+
+    if (!valid_table) {
+        return false;
     }
 
     // 'Update menu choice' form

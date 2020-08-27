@@ -86,16 +86,21 @@ class LivingLibrary extends CI_Controller {
 	 * Loads page for adding to and editing the specified lookup table's records.
    * @param   table     the lookup table to display
 	 */
-  public function getMenuChoices($table)
+  public function getMenuChoices($table = NULL)
 	{
     $table_name = is_string($table)
                   ? strtolower($table)
                   : $table;
 
-    $data['pageLoader'] = "<script>get_menu_choices('" . $table_name .
-                          "');</script>";
+    if ($table_name !== NULL) {
+      $data['pageLoader'] = "<script>get_menu_choices('" . $table_name .
+                            "');</script>";
 
-    $this->load->view('living-library-view', $data);
+      $this->load->view('living-library-view', $data);
+    } else {
+      $this->load->view('living-library-error');
+    }
+
 	}
 
   /**
@@ -104,13 +109,13 @@ class LivingLibrary extends CI_Controller {
    * @param   id              the id of the menu choice (i.e. the lookup table
    *                          record id)
 	 */
-  public function editMenuChoice($table, $id = NULL)
+  public function editMenuChoice($table = NULL, $id = NULL)
 	{
     $table_name = is_string($table)
                   ? strtolower($table)
                   : $table;
 
-    if ($this->isIntegerOrIntegerString($id)) {
+    if ($table_name !== NULL && $this->isIntegerOrIntegerString($id)) {
       $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', '"
                             . $id . "', '" . $table . "');</script>";
 
