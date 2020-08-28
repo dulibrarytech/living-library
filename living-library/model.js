@@ -639,9 +639,8 @@ exports.read = function (req, callback) {
              * GET completed donations: SITE_URL/api/v1/living-library/donations?is_completed=true&api_key=API_KEY
              * GET a single donation record: SITE_URL/api/v1/living-library/donations?id=[id]&api_key=API_KEY
              */
-            let is_completed = typeof req.query.is_completed === 'undefined'
-                               ? ""
-                               : req.query.is_completed.toLowerCase();
+            let is_completed =
+                get_empty_or_lowercase_string(req.query.is_completed);
 
             DB(CONFIG.dbDonationsTable)
                 .select('id', 'donor', 'who_to_notify', 'recipient', 'book',
@@ -717,11 +716,8 @@ exports.read = function (req, callback) {
              * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=relationships&is_active=true&api_key=API_KEY
              * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=subject_areas&is_active=true&api_key=API_KEY
              */
-            let is_active = typeof req.query.is_active === 'undefined'
-                            ? ""
-                            : req.query.is_active.toLowerCase();
-
-            let table_field_names = get_table_field_names(table_name);
+            let is_active = get_empty_or_lowercase_string(req.query.is_active),
+                table_field_names = get_table_field_names(table_name);
 
             DB(table_name)
                 .select(table_field_names.id + ' as id',
@@ -1191,23 +1187,29 @@ exports.update = function (req, callback) {
         case CONFIG.dbTitlesTable:
         case CONFIG.dbRelationshipsTable: {
             let table_field_names = get_table_field_names(table_name),
-                is_active_from_query = get_empty_or_lowercase_string(req.query.is_active);
+                is_active_from_query =
+                    get_empty_or_lowercase_string(req.query.is_active);
 
             DB(table_name)
                 .where(table_field_names.id, id)
                 .modify(function(queryBuilder) {
-                    if (is_active_from_query === 'true' || is_active_from_query === 'false'
-                        || is_active_from_query === '1' || is_active_from_query === '0') {
+                    if (is_active_from_query === 'true' ||
+                        is_active_from_query === 'false' ||
+                        is_active_from_query === '1' ||
+                        is_active_from_query === '0') {
                         // convert from string to boolean
-                        is_active_from_query = is_active_from_query === 'true' || is_active_from_query === '1';
-                        console.log("is_active_from_query = " + is_active_from_query +
+                        is_active_from_query = is_active_from_query === 'true'
+                                               || is_active_from_query === '1';
+                        console.log("is_active_from_query = " +
+                                    is_active_from_query +
                                     ", so adding to SQL query\n");
 
                         queryBuilder.where({
                             is_active: is_active_from_query
                         })
                     } else {
-                        console.log("is_active (from request query) = " + is_active_from_query +
+                        console.log("is_active (from request query) = " +
+                                    is_active_from_query +
                                     "\n... so no adjustment to SQL query\n");
                     }
                 })
@@ -1242,7 +1244,8 @@ exports.update = function (req, callback) {
                         is_active = is_active.toLowerCase();
                     }
 
-                    console.log('After typeof check, is_active (from request body) = ' + is_active);
+                    console.log('After typeof check, is_active (from request ' +
+                                'body) = ' + is_active);
 
                     if (typeof is_active === 'boolean' ||
                         is_active === 'true' || is_active === 'false' ||
@@ -1254,13 +1257,14 @@ exports.update = function (req, callback) {
                                         is_active === '1' ||
                                         is_active === 1;
                         }
-                        console.log('is_active (from request body) = ' + is_active +
-                                    ', so adding to SQL query\n');
+                        console.log('is_active (from request body) = ' +
+                                    is_active + ', so adding to SQL query\n');
 
                         data_to_update.is_active = is_active;
                     } else {
-                        console.log('is_active (from request body) = ' + is_active +
-                                    ', so no adjustment to SQL query\n');
+                        console.log('is_active (from request body) = ' +
+                                    is_active + ', so no adjustment to SQL ' +
+                                    'query\n');
 
                         if (updated_menu_choice === '') {
                             let error_msg = "Request body is invalid: Must " +
