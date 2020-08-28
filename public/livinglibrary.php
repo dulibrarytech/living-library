@@ -46,9 +46,7 @@ class LivingLibrary extends CI_Controller {
 	 */
   public function getDonations($donationStatus = "queued")
 	{
-    $donationStatus = is_string($donationStatus)
-                      ? strtolower($donationStatus)
-                      : $donationStatus;
+    $donationStatus = $this->toLowerCaseIfString($donationStatus);
 
 		$data['pageLoader'] = $donationStatus == "completed"
                           ? "<script>get_donations(true);</script>"
@@ -66,9 +64,7 @@ class LivingLibrary extends CI_Controller {
 	 */
   public function getDonation($donationStatus = "queued", $donationID = NULL)
 	{
-    $donationStatus = is_string($donationStatus)
-                      ? strtolower($donationStatus)
-                      : $donationStatus;
+    $donationStatus = $this->toLowerCaseIfString($donationStatus);
 
     if ($this->isIntegerOrIntegerString($donationID)) {
       $data['pageLoader'] = $donationStatus == "completed"
@@ -88,12 +84,10 @@ class LivingLibrary extends CI_Controller {
 	 */
   public function getMenuChoices($table = NULL)
 	{
-    $table_name = is_string($table)
-                  ? strtolower($table)
-                  : $table;
+    $table = $this->toLowerCaseIfString($table);
 
-    if ($table_name !== NULL) {
-      $data['pageLoader'] = "<script>get_menu_choices('" . $table_name .
+    if ($table !== NULL) {
+      $data['pageLoader'] = "<script>get_menu_choices('" . $table .
                             "');</script>";
 
       $this->load->view('living-library-view', $data);
@@ -111,13 +105,11 @@ class LivingLibrary extends CI_Controller {
 	 */
   public function editMenuChoice($table = NULL, $id = NULL)
 	{
-    $table_name = is_string($table)
-                  ? strtolower($table)
-                  : $table;
+    $table_lowercase = $this->toLowerCaseIfString($table);
 
-    if ($table_name !== NULL && $this->isIntegerOrIntegerString($id)) {
-      $data['pageLoader'] = "<script>edit_menu_choice('" . $table_name . "', '"
-                            . $id . "', '" . $table . "');</script>";
+    if ($table_lowercase !== NULL && $this->isIntegerOrIntegerString($id)) {
+      $data['pageLoader'] = "<script>edit_menu_choice('" . $table_lowercase
+                            . "', '" . $id . "', '" . $table . "');</script>";
 
       $this->load->view('living-library-view', $data);
     } else {
@@ -135,5 +127,18 @@ class LivingLibrary extends CI_Controller {
   function isIntegerOrIntegerString($value)
   {
     return ctype_digit($value) || is_int($value);
+  }
+
+  /**
+   * Converts $value to lowercase if it's a string.
+   * @param   {string or other data type}  $value   the value to be made
+   *                                                lowercase (if it's a string)
+   * @returns {same data type as $value}            $value (if not a string);
+   *                                                otherwise, the lowercase
+   *                                                string
+   */
+  function toLowerCaseIfString($value)
+  {
+    return is_string($value) ? strtolower($value) : $value;
   }
 }
