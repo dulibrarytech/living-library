@@ -30,7 +30,7 @@ class LivingLibrary extends CI_Controller {
 	}
 
   /**
-	 * Loads Living Library: Donation Form
+	 * Loads Living Library Donation Form
 	 */
   public function createDonation()
 	{
@@ -42,7 +42,9 @@ class LivingLibrary extends CI_Controller {
   /**
 	 * Loads table of Living Library donations (either queued donations or
    * completed donations) based on $donationStatus.
-   * @param   donationStatus   either "queued" (the default) or "completed"
+   * Defaults to loading queued donations.
+   * @param  {string}   $donationStatus   the type of records to load; either
+   *                                      "queued" (the default) or "completed"
 	 */
   public function getDonations($donationStatus = "queued")
 	{
@@ -56,11 +58,13 @@ class LivingLibrary extends CI_Controller {
 	}
 
   /**
-	 * Loads individual Living Library donation record. For a queued donation,
-   * it loads the book plate form. For a completed donation, it loads the
-   * full record view.
-   * @param   donationStatus     either "queued" (the default) or "completed"
-   * @param   donationID         id of donation record
+	 * Loads individual Living Library donation record.
+   * For a queued donation, it loads the book plate form.
+   * For a completed donation, it loads the full record view.
+   * Defaults to loading the book plate form.
+   * @param  {string}  $donationStatus   the type of records to load; either
+   *                                     "queued" (the default) or "completed"
+   * @param  {number}  $donationID       the ID of the donation record
 	 */
   public function getDonation($donationStatus = "queued", $donationID = NULL)
 	{
@@ -80,7 +84,7 @@ class LivingLibrary extends CI_Controller {
 
   /**
 	 * Loads page for adding to and editing the specified lookup table's records.
-   * @param   table     the lookup table to display
+   * @param   {string}    $table     the lookup table to display
 	 */
   public function getMenuChoices($table = NULL)
 	{
@@ -99,9 +103,9 @@ class LivingLibrary extends CI_Controller {
 
   /**
 	 * Loads page for updating or deleting the specified lookup table record.
-   * @param   table           the lookup table to display
-   * @param   id              the id of the menu choice (i.e. the lookup table
-   *                          record id)
+   * @param   {string}    $table     the lookup table to display
+   * @param   {number}    $id        the ID of the menu choice (i.e. the lookup
+   *                                 table record ID)
 	 */
   public function editMenuChoice($table = NULL, $id = NULL)
 	{
