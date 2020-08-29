@@ -69,6 +69,10 @@
   color: Navy;
 }
 
+#menu_choices a {
+  line-height: 16px;
+}
+
 /* Style for label-value pairs */
 dt {
   float: left;
@@ -107,6 +111,7 @@ abbr[title] {
 /* Style for form submission confirmations */
 .form-submit-confirmation {
   padding-top: 16px;
+  line-height: 20px;
 }
 
 /* Style for success messages */

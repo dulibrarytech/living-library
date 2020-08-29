@@ -323,17 +323,28 @@ exports.create = function (req, callback) {
         case CONFIG.dbTitlesTable:
         case CONFIG.dbRelationshipsTable: {
             // Check for valid new_menu_choice property
-            let new_menu_choice = typeof request_body.new_menu_choice ===
+            let table_field_names = get_table_field_names(table_name),
+                new_menu_choice = typeof request_body.new_menu_choice ===
                                   'string'
                                   ? request_body.new_menu_choice.trim()
                                   : '';
 
             console.log('new_menu_choice = ' + new_menu_choice);
+            console.log('new_menu_choice.length = ' + new_menu_choice.length);
 
-            if (new_menu_choice === '') {
-                let error_msg = "Request body is invalid: Must contain a " +
-                                "property named 'new_menu_choice' with a " +
-                                "non-empty string value";
+            if (new_menu_choice === '' ||
+                new_menu_choice.length >
+                table_field_names.display_field_char_limit) {
+                let error_msg = "Request body is invalid: " +
+                                (new_menu_choice === ''
+                                ? "Must contain a " +
+                                  "property named 'new_menu_choice' with a " +
+                                  "non-empty string value"
+                                : "The property 'new_menu_choice' contains " +
+                                  new_menu_choice.length + " characters, " +
+                                  "whereas the " + table_field_names.display +
+                                  " field's character limit is " +
+                                  table_field_names.display_field_char_limit);
                 callback({
                     status: 400,
                     message: error_msg
@@ -344,8 +355,6 @@ exports.create = function (req, callback) {
 
                 return false;
             }
-
-            let table_field_names = get_table_field_names(table_name);
 
             // 1.)
             function search_db_for_menu_choice(callback) {
@@ -1224,6 +1233,31 @@ exports.update = function (req, callback) {
                                                 .updated_menu_choice.trim()
                                               : '';
 
+                    console.log('updated_menu_choice.length = ' +
+                                updated_menu_choice.length);
+
+                    if (updated_menu_choice.length >
+                        table_field_names.display_field_char_limit) {
+                        let error_msg = "Request body is invalid: The " +
+                                        "property 'updated_menu_choice' " +
+                                        "contains " +
+                                        updated_menu_choice.length +
+                                        " characters, whereas the " +
+                                        table_field_names.display +
+                                        " field's character limit is " +
+                                        table_field_names
+                                        .display_field_char_limit;
+                        callback({
+                            status: 400,
+                            message: error_msg
+                        });
+
+                        LOGGER.module().fatal('FATAL: [/living-library/model ' +
+                                              'module (update)] ' + error_msg);
+
+                        throw 'FATAL: ' + error_msg;
+                    }
+
                     if (updated_menu_choice !== '') {
                         console.log('updated_menu_choice = ' +
                                     updated_menu_choice +
@@ -1592,22 +1626,26 @@ const get_table_field_names = function (table_name) {
         case CONFIG.dbTitlesTable:
             table_field_names.id = 'title_id',
             table_field_names.display = 'title',
-            table_field_names.sort = table_field_names.id;
+            table_field_names.sort = table_field_names.id,
+            table_field_names.display_field_char_limit = 20;
             break;
         case CONFIG.dbStatesTable:
             table_field_names.id = 'state_id',
             table_field_names.display = 'state_full',
-            table_field_names.sort = table_field_names.id;
+            table_field_names.sort = table_field_names.id,
+            table_field_names.display_field_char_limit = 255;
             break;
         case CONFIG.dbRelationshipsTable:
             table_field_names.id = 'relationship_id',
             table_field_names.display = 'relationship',
-            table_field_names.sort = table_field_names.id;
+            table_field_names.sort = table_field_names.id,
+            table_field_names.display_field_char_limit = 255;
             break;
         case CONFIG.dbSubjectAreasTable:
             table_field_names.id = 'subject_id',
             table_field_names.display = 'subject',
-            table_field_names.sort = table_field_names.id;
+            table_field_names.sort = table_field_names.id,
+            table_field_names.display_field_char_limit = 255;
             break;
         default:
             table_field_names = null;
