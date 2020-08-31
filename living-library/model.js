@@ -236,7 +236,7 @@ exports.create = function (req, callback) {
             // 2.)
             function select_new_donation(obj, callback) {
                 DB(CONFIG.dbDonationsTable)
-                    .select('*')
+                    .select('id')
                     .where({
                         id: obj.id
                     })
@@ -1049,7 +1049,7 @@ exports.update = function (req, callback) {
                 }
 
                 DB(CONFIG.dbDonationsTable)
-                    .select('*')
+                    .select('id', 'donor', 'book')
                     .where({
                         id: id
                     })
