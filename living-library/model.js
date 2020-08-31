@@ -909,7 +909,8 @@ exports.update = function (req, callback) {
                                       book_fields.join('\n'));
                 callback({
                     status: 400,
-                    message: 'Request body does not contain the expected properties.'
+                    message: 'Request body does not contain the expected ' +
+                             'properties.'
                 });
 
                 return false;

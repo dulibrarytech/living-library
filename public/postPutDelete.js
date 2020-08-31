@@ -180,20 +180,28 @@ const save_book_plate = function (event) {
                                                   completed_donation_url;
                                           });
             } else {
+                let error_msg;
+                switch (response.status) {
+                    case 404:
+                        error_msg = "Error when saving book plate -- " +
+                                    "Couldn't find donation record " +
+                                    "with ID " + form_data.donation_id.value;
+                        break;
+                    case 409:
+                        error_msg = 'Error -- This donation (ID = ' +
+                                    form_data.donation_id.value +
+                                    ') is already completed (<a href="' +
+                                    completed_donation_url + '">' +
+                                    'view full record</a>). ' +
+                                    'Cannot save book plate.';
+                        break;
+                    default:
+                        error_msg = 'Error -- Unable to save book plate';
+                }
+
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, false,
-                                          response.status === 409
-                                          ? 'Error -- This donation (ID = ' +
-                                            form_data.donation_id.value +
-                                            ') is already completed (' +
-                                            '<a href="' +
-                                            completed_donation_url + '">' +
-                                            'view full record</a>). ' +
-                                            'Cannot save book plate.'
-                                          : "Error when saving book plate -- " +
-                                            "Couldn't find donation record " +
-                                            "with ID " +
-                                            form_data.donation_id.value);
+                                          error_msg);
             }
         })
         .catch(function (error) {
