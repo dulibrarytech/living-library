@@ -76,11 +76,19 @@ const save_donation = function (event) {
             console.log('Inside save_donation fetch: first "then" function');
             console.log('response = ');
             console.log(response);
-            return response.json().then(data => ({
-                data: data,
-                status: response.status,
-                ok: response.ok
-            }));
+
+            if (response.ok) {
+                return response.json().then(data => ({
+                    data: data,
+                    status: response.status,
+                    ok: response.ok
+                }));
+            } else {
+                return ({
+                    status: response.status,
+                    ok: response.ok
+                });
+            }
         })
         .then(function (response) {
             console.log('Inside second "then" function');
