@@ -655,7 +655,7 @@ exports.read = function (req, callback) {
                 .select('id', 'donor', 'who_to_notify', 'recipient', 'book',
                         'is_completed')
                 .orderBy('created', 'desc')
-                .modify(function(queryBuilder) {
+                .modify(function(query_builder) {
                     console.log('Before converting to boolean, is_completed' +
                                 ' = ' + is_completed + ", with type = " +
                                 typeof is_completed);
@@ -663,44 +663,14 @@ exports.read = function (req, callback) {
                     console.log('After converting to boolean, is_completed' +
                                 ' = ' + is_completed + ", with type = " +
                                 typeof is_completed);
-                    if (is_completed === null) {
-                        console.log("No where clause because is_completed = "
-                                    + is_completed + "\n");
-                    } else {
-                        console.log("is_completed = " + is_completed +
-                                    ", so adding to SQL query\n");
 
-                        queryBuilder.where({
-                            is_completed: is_completed
-                        })
-                    }
-                    /*
-                    if (is_completed === 'true' || is_completed === 'false'
-                        || is_completed === '1' || is_completed === '0') {
-                        // convert from string to boolean
-                        is_completed = is_completed === 'true' ||
-                                       is_completed === '1';
-                        console.log("is_completed = " + is_completed + "\n");
-
-                        queryBuilder.where({
-                            is_completed: is_completed
-                        })
-                    } else {
-                        console.log("No where clause because is_completed = "
-                                    + is_completed + "\n");
-                    */
+                    modify_query_if_needed(is_completed !== null,
+                                           'is_completed', is_completed,
+                                           query_builder);
                 })
-                .modify(function(queryBuilder) {
-                    if (typeof id !== 'undefined') {
-                        console.log("id = " + id + ", so adding to SQL query\n");
-
-                        queryBuilder.where({
-                            id: id
-                        })
-                    } else {
-                        console.log("id = " + id + ", so no adjustment to " +
-                                    "SQL query\n");
-                    }
+                .modify(function(query_builder) {
+                    modify_query_if_needed(typeof id !== 'undefined', 'id', id,
+                                           query_builder);
                 })
                 .then(function (data) {
                     console.log("Found " + data.length + " record(s).");
@@ -1690,4 +1660,24 @@ const get_table_field_names = function (table_name) {
     }
 
     return table_field_names;
+};
+
+/**
+ * Modifies the given query builder object if needed.
+ * @param   {boolean}   requires_modification   whether the query should be
+ *                                              modified
+ * @param   {string}    field                   the field name
+ * @param   {string}    value                   the field value
+ * @param   {Object}    query_builder           the knex query builder object to
+ *                                              modify
+ */
+const modify_query_if_needed = function (requires_modification, field, value,
+                                         query_builder) {
+    console.log(field + ' = ' + value);
+    if (requires_modification) {
+        console.log('... so adding to SQL query\n');
+        query_builder.where(field, value);
+    } else {
+        console.log('... so no adjustment to SQL query\n');
+    }
 };
