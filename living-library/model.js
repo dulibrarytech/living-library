@@ -656,6 +656,25 @@ exports.read = function (req, callback) {
                         'is_completed')
                 .orderBy('created', 'desc')
                 .modify(function(queryBuilder) {
+                    console.log('Before converting to boolean, is_completed' +
+                                ' = ' + is_completed + ", with type = " +
+                                typeof is_completed);
+                    is_completed = convert_to_boolean(is_completed);
+                    console.log('After converting to boolean, is_completed' +
+                                ' = ' + is_completed + ", with type = " +
+                                typeof is_completed);
+                    if (is_completed === null) {
+                        console.log("No where clause because is_completed = "
+                                    + is_completed + "\n");
+                    } else {
+                        console.log("is_completed = " + is_completed +
+                                    ", so adding to SQL query\n");
+
+                        queryBuilder.where({
+                            is_completed: is_completed
+                        })
+                    }
+                    /*
                     if (is_completed === 'true' || is_completed === 'false'
                         || is_completed === '1' || is_completed === '0') {
                         // convert from string to boolean
@@ -669,7 +688,7 @@ exports.read = function (req, callback) {
                     } else {
                         console.log("No where clause because is_completed = "
                                     + is_completed + "\n");
-                    }
+                    */
                 })
                 .modify(function(queryBuilder) {
                     if (typeof id !== 'undefined') {
@@ -1555,6 +1574,24 @@ const arrays_match = function (array1, array2) {
     }
 
     return true;
+};
+
+/**
+ * Converts the given value to the corresponding boolean value.
+ * Returns null if value does not specifically refer to a boolean value.
+ * @param   {string or number}     value    the value to convert
+ * @return  {boolean}                       the corresponding boolean value;
+ *                                          otherwise, null
+ */
+const convert_to_boolean = function (value) {
+    if (typeof value === 'boolean') {
+        return value;
+    } else if (value === 'true' || value === 'false' || value === '1' ||
+               value === '0' || value === 1 || value === 0) {
+        return value === 'true' || value === '1' || value === 1;
+    } else {
+        return null;
+    }
 };
 
 /**
