@@ -721,32 +721,22 @@ exports.read = function (req, callback) {
                 .select(table_field_names.id + ' as id',
                         table_field_names.display + ' as term')
                 .orderBy(table_field_names.sort)
-                .modify(function(queryBuilder) {
-                    if (is_active === 'true' || is_active === 'false'
-                        || is_active === '1' || is_active === '0') {
-                        // convert from string to boolean
-                        is_active = is_active === 'true' || is_active === '1';
-                        console.log("is_active = " + is_active +
-                                    ", so adding to SQL query\n");
+                .modify(function(query_builder) {
+                    console.log('Before converting to boolean, is_active' +
+                                ' = ' + is_active + ", with type = " +
+                                typeof is_active);
+                    is_active = convert_to_boolean(is_active);
+                    console.log('After converting to boolean, is_active' +
+                                ' = ' + is_active + ", with type = " +
+                                typeof is_active);
 
-                        queryBuilder.where({
-                            is_active: is_active
-                        })
-                    } else {
-                        console.log("is_active = " + is_active +
-                                    "\n... so no adjustment to SQL query\n");
-                    }
+                    modify_query_if_needed(is_active !== null, 'is_active',
+                                           is_active, query_builder);
                 })
-                .modify(function(queryBuilder) {
-                    if (typeof id !== 'undefined' && id !== '') {
-                        console.log("id = " + id +
-                                    ", so adding to SQL query\n");
-
-                        queryBuilder.where(table_field_names.id, id)
-                    } else {
-                        console.log("id = " + id +
-                                    "\n... so no adjustment to SQL query\n");
-                    }
+                .modify(function(query_builder) {
+                    modify_query_if_needed(typeof id !== 'undefined',
+                                           table_field_names.id, id,
+                                           query_builder);
                 })
                 .then(function (data) {
                     console.log("Populating " + table_field_names.display +
@@ -803,6 +793,18 @@ exports.read = function (req, callback) {
 exports.update = function (req, callback) {
     let id = req.query.id;
     console.log("id = " + id);
+    if (typeof id === 'undefined') {
+        LOGGER.module().fatal('FATAL: [/living-library/model module ' +
+                              '(update)] Invalid request: id ' +
+                              'parameter of query is undefined.');
+
+        callback({
+            status: 400,
+            message: 'Request query does not contain id parameter.'
+        });
+
+        return false;
+    }
 
     console.log("Before req.body is decoded:");
     console.log("req.body = ");
@@ -833,19 +835,6 @@ exports.update = function (req, callback) {
              * This updates the book field (and sets is_completed = 1). Any
              * other field from the request_body is ignored.
              */
-
-            if (typeof id === 'undefined') {
-                LOGGER.module().fatal('FATAL: [/living-library/model module ' +
-                                      '(update)] Invalid request: id ' +
-                                      'parameter of query is undefined.');
-
-                callback({
-                    status: 400,
-                    message: 'Request query does not contain id parameter.'
-                });
-
-                return false;
-            }
 
             let book = request_body.book;
             console.log("\ntypeof book = " + typeof book);
@@ -1191,28 +1180,21 @@ exports.update = function (req, callback) {
 
             DB(table_name)
                 .where(table_field_names.id, id)
-                .modify(function(queryBuilder) {
-                    if (is_active_from_query === 'true' ||
-                        is_active_from_query === 'false' ||
-                        is_active_from_query === '1' ||
-                        is_active_from_query === '0') {
-                        // convert from string to boolean
-                        is_active_from_query = is_active_from_query === 'true'
-                                               || is_active_from_query === '1';
-                        console.log("is_active_from_query = " +
-                                    is_active_from_query +
-                                    ", so adding to SQL query\n");
+                .modify(function(query_builder) {
+                    console.log('Before converting to boolean, is_active_' +
+                                'from_query = ' + is_active_from_query +
+                                ", with type = " + typeof is_active_from_query);
+                    is_active_from_query =
+                        convert_to_boolean(is_active_from_query);
+                    console.log('After converting to boolean, is_active_' +
+                                'from_query = ' + is_active_from_query +
+                                ", with type = " + typeof is_active_from_query);
 
-                        queryBuilder.where({
-                            is_active: is_active_from_query
-                        })
-                    } else {
-                        console.log("is_active (from request query) = " +
-                                    is_active_from_query +
-                                    "\n... so no adjustment to SQL query\n");
-                    }
+                    modify_query_if_needed(is_active_from_query !== null,
+                                           'is_active', is_active_from_query,
+                                           query_builder);
                 })
-                .modify(function(queryBuilder) {
+                .modify(function(query_builder) {
                     let data_to_update = {};
 
                     // Check for valid updated_menu_choice property
@@ -1268,19 +1250,15 @@ exports.update = function (req, callback) {
                         is_active = is_active.toLowerCase();
                     }
 
-                    console.log('After typeof check, is_active (from request ' +
-                                'body) = ' + is_active);
+                    console.log('Before converting to boolean, is_active ' +
+                                '(from request body) = ' + is_active +
+                                ", with type = " + typeof is_active);
+                    is_active = convert_to_boolean(is_active);
+                    console.log('After converting to boolean, is_active ' +
+                                '(from request body) = ' + is_active +
+                                ", with type = " + typeof is_active);
 
-                    if (typeof is_active === 'boolean' ||
-                        is_active === 'true' || is_active === 'false' ||
-                        is_active === '1' || is_active === '0' ||
-                        is_active === 1 || is_active === 0) {
-                        // convert to boolean if needed
-                        if (typeof is_active !== 'boolean') {
-                            is_active = is_active === 'true' ||
-                                        is_active === '1' ||
-                                        is_active === 1;
-                        }
+                    if (is_active !== null) {
                         console.log('is_active (from request body) = ' +
                                     is_active + ', so adding to SQL query\n');
 
@@ -1316,7 +1294,7 @@ exports.update = function (req, callback) {
 
                     console.log('data_to_update = ');
                     console.log(data_to_update);
-                    queryBuilder.update(data_to_update);
+                    query_builder.update(data_to_update);
                 })
                 .then(function (data) {
                     if (data === 1) {
