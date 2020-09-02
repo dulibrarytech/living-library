@@ -755,9 +755,6 @@ function get_donations(is_completed) {
             return response.json();
         })
         .then(data => {
-            $(".content-window").css("height", "770px");
-            $(".pre-scrollable").css("max-height", "550px");
-
             $("#page-label").text(is_completed
                                   ? "Living Library: Completed Donations"
                                   : "Living Library: Donation Queue");

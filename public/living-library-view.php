@@ -48,7 +48,7 @@
 	</div>
 
 	<!-- Main Content Window -->
-	<div class="container content-window">
+	<div class="container content-window" style="height: 750px;">
 
 		<!-- Menu Bar -->
 		<?php $this->load->view("partials/menu-bar.php"); ?>
@@ -66,7 +66,8 @@
 		<div id="content-section">
 
 			<!-- Scrollable Section -->
-			<div class="container pre-scrollable" id="scroll-section">
+			<div class="container pre-scrollable" id="scroll-section"
+					 style="max-height: 600px">
 
 	 			<div id="table-content"></div>
 
