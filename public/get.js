@@ -23,7 +23,7 @@ function create_donation() {
     // How many columns to use when displaying subject area checkboxes
     const SUBJECT_AREA_COLS = 3;
 
-    hide_table_header_and_content();
+    hide_table_content();
 
     let page_label_element = document.querySelector('#page-label');
 
@@ -746,15 +746,6 @@ function populate_dropdown_menu(table_name, url, html_elements,
 function get_donations(is_completed) {
     is_completed = validate_is_completed_parameter(is_completed);
 
-    /* TO-DO: Remove this code block once you've removed these elements from
-     * living-library-view.php
-     */
-    $("#table-header").html('');
-    let table_header_element = document.getElementById("table-header");
-    table_header_element.classList.remove("table-bordered");
-    table_header_element.classList.remove("table");
-    table_header_element.setAttribute("id", "no-table-header");
-
     $("#table-content").html('');
 
     fetch(living_library_config.get_api() + '?is_completed=' + is_completed +
@@ -1009,7 +1000,7 @@ function get_donation(is_completed, id) {
                 '?id=' + id +
                 '&api_key=' + living_library_config.get_api_key();
 
-    hide_table_header_and_content();
+    hide_table_content();
 
     if (is_completed) {
         get_completed_donation(url);
@@ -1581,7 +1572,7 @@ function get_menu_choices(table) {
 
     console.log('table = ' + table);
 
-    hide_table_header_and_content();
+    hide_table_content();
 
     let label, link_text, valid_table = true;
 
@@ -1751,7 +1742,7 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
     console.log('menu choice id = ' + menu_choice_id);
     console.log('table link text = ' + table_link_text);
 
-    hide_table_header_and_content();
+    hide_table_content();
 
     let label, valid_table = true;
 
@@ -1917,15 +1908,9 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
 }
 
 /**
- * Removes table header and table content elements from view.
+ * Removes table content element from view.
  */
-function hide_table_header_and_content() {
-    $("#table-header").html('');
-    let table_header_element = document.getElementById("table-header");
-    table_header_element.classList.remove("table-bordered");
-    table_header_element.classList.remove("table");
-    table_header_element.setAttribute("id", "no-table-header");
-
+function hide_table_content() {
     $("#table-content").html('');
     document.getElementById("table-content")
             .setAttribute("id", "no-table-content");

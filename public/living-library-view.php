@@ -62,15 +62,10 @@
 			</td>
 		</tr></table>
 
-		<!-- Results Table Section -->
-		<div id="table-section">
+		<!-- Content Section -->
+		<div id="content-section">
 
-			<div id="jumpTo"></div>
-
-			<!-- Stationary table header -->
-			<div class="table table-bordered" id="table-header"></div>
-
-			<!-- Table content section -->
+			<!-- Scrollable Section -->
 			<div class="container pre-scrollable" id="scroll-section">
 
 	 			<div id="table-content"></div>
@@ -78,8 +73,8 @@
 				<div class="donor-info-form-section" id="record-content"></div>
 				<div id="form-content"></div>
 
-			</div><!--/Table content section -->
-		</div><!--/Results Table Section -->
+			</div><!--/Scrollable Section -->
+		</div><!--/Content Section -->
 
 	</div><!--/Main Content Window -->
 

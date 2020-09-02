@@ -126,15 +126,15 @@ const living_library_helper = (function () {
      *                                          the error message header
      * @param   {boolean}  display_help_msg     whether or not to display the
      *                                          default help message within
-     *                                          table_section_element
+     *                                          content_section_element
      */
     obj.insert_error_message = function (error_header_text,
                                          display_help_msg = false) {
-        let table_section_element = document
-                                    .getElementById('table-section');
+        let content_section_element = document
+                                      .getElementById('content-section');
 
-        if (table_section_element) {
-            table_section_element.innerHTML =
+        if (content_section_element) {
+            content_section_element.innerHTML =
                 display_help_msg
                 ? 'For help, contact the ' +
                   '<a href="https://library.du.edu/contact/' +
@@ -143,15 +143,15 @@ const living_library_helper = (function () {
                   'in Library Technology Services</a>.'
                 : '';
 
-            table_section_element.className = 'error-block';
+            content_section_element.className = 'error-block';
         }
 
         let error_header_element = document.createElement('div');
         error_header_element.className = 'error-header error';
         error_header_element.innerHTML = error_header_text;
-        table_section_element.parentNode
-                             .insertBefore(error_header_element,
-                                           table_section_element);
+        content_section_element.parentNode
+                               .insertBefore(error_header_element,
+                                             content_section_element);
     }
 
     return obj;
