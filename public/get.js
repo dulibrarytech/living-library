@@ -450,6 +450,8 @@ function create_donation() {
                               : table.rows[table.rows.length - 1];
                     row.insertCell().appendChild(label);
                 }
+
+                viewUtils.setUserLabel();
             });
         })
         .catch(function(error) {
@@ -976,6 +978,8 @@ function get_donations(is_completed) {
                     donations_table.draw();
                 });
             });
+
+            viewUtils.setUserLabel();
         })
         .catch((error) => {
             console.log('In the catch block');
@@ -1020,6 +1024,8 @@ function get_completed_donation(url) {
         .then(data => {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
+
+            viewUtils.setUserLabel();
 
             if (data.length > 0) {
                 let is_completed =
@@ -1548,6 +1554,8 @@ function get_queued_donation(url) {
                 update_required_fields_in_form(living_library_config
                                                .get_book_plate_form_info());
             }
+
+            viewUtils.setUserLabel();
         })
         .catch((error) => {
             console.log('In the catch block');
@@ -1717,6 +1725,8 @@ function get_menu_choices(table) {
                               : table_element.rows[table_element.rows.length - 1];
                     row.insertCell().appendChild(anchor_element);
                 }
+
+                viewUtils.setUserLabel();
             });
         })
         .catch(function(error) {
@@ -1864,6 +1874,8 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
           '&api_key=' + living_library_config.get_api_key())
         .then(function(response) {
             console.log(response);
+
+            viewUtils.setUserLabel();
 
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching ' + table
