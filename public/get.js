@@ -472,7 +472,8 @@ function create_donation() {
  */
 function add_person_to_notify(event) {
     console.log("Inside add_person_to_notify function");
-    console.log("add_person_to_notify_counter = " + add_person_to_notify_counter);
+    console.log("add_person_to_notify_counter = " +
+                add_person_to_notify_counter);
 
     // Stop the form from submitting the default way
     event.preventDefault();
@@ -481,8 +482,8 @@ function add_person_to_notify(event) {
     add_person_to_notify_counter++;
 
     if (add_person_to_notify_counter == 2) {
-        let notify_person_1_element = document
-                                      .getElementById("notify_person_heading_num_1");
+        let notify_person_1_element =
+            document.getElementById("notify_person_heading_num_1");
         if (notify_person_1_element.innerHTML == '') {
             notify_person_1_element.innerHTML = '1 ';
         }
@@ -492,16 +493,20 @@ function add_person_to_notify(event) {
                                   .cloneNode(true);
     console.log("new_div_element = ");
     console.log(new_div_element);
-    console.log("Before updating div id: new_div_element.id = " + new_div_element.id);
+    console.log("Before updating div id: new_div_element.id = " +
+                new_div_element.id);
     new_div_element.id = 'notify_section_' + add_person_to_notify_counter;
-    console.log("After updating div id: new_div_element.id = " + new_div_element.id);
+    console.log("After updating div id: new_div_element.id = " +
+                new_div_element.id);
 
-    let notify_heading_span_element = new_div_element
-                                      .querySelector("#notify_person_heading_num_1");
-    console.log("Before updating span id: span.id = " + notify_heading_span_element.id);
+    let notify_heading_span_element =
+        new_div_element.querySelector("#notify_person_heading_num_1");
+    console.log("Before updating span id: span.id = " +
+                notify_heading_span_element.id);
     notify_heading_span_element.id = 'notify_person_heading_num_'
                                      + add_person_to_notify_counter;
-    console.log("After updating span id: span.id = " + notify_heading_span_element.id);
+    console.log("After updating span id: span.id = " +
+                notify_heading_span_element.id);
     notify_heading_span_element.innerHTML = add_person_to_notify_counter + ' ';
 
     // Update labels (i.e. the 'for' attributes)
@@ -521,9 +526,12 @@ function add_person_to_notify(event) {
     }
 
     // Update class attributes
-    let elements_with_numbered_class = new_div_element.querySelectorAll('[class$="_1"]');
-    console.log("elements_with_numbered_class = " + elements_with_numbered_class);
-    console.log("elements_with_numbered_class.length = " + elements_with_numbered_class.length);
+    let elements_with_numbered_class =
+        new_div_element.querySelectorAll('[class$="_1"]');
+    console.log("elements_with_numbered_class = " +
+                elements_with_numbered_class);
+    console.log("elements_with_numbered_class.length = " +
+                elements_with_numbered_class.length);
     for (let element_with_numbered_class of elements_with_numbered_class) {
         console.log("Before updating element, "
                     + element_with_numbered_class.tagName + "'s class = "
@@ -540,9 +548,11 @@ function add_person_to_notify(event) {
     }
 
     // Update id attributes
-    let elements_with_numbered_id = new_div_element.querySelectorAll('[id$="_1"]');
+    let elements_with_numbered_id =
+        new_div_element.querySelectorAll('[id$="_1"]');
     console.log("elements_with_numbered_id = " + elements_with_numbered_id);
-    console.log("elements_with_numbered_id.length = " + elements_with_numbered_id.length);
+    console.log("elements_with_numbered_id.length = " +
+                elements_with_numbered_id.length);
     for (let element_with_numbered_id of elements_with_numbered_id) {
         console.log("Before updating element, "
                     + element_with_numbered_id.tagName + "'s id = "
@@ -606,7 +616,8 @@ function update_required_fields_in_form(required_fields) {
          */
         if (form_element.tagName === 'INPUT' && !form_element.pattern &&
             !form_element.min) {
-            form_element.title = 'Enter at least one character (e.g. a letter or number)';
+            form_element.title = 'Enter at least one character (e.g. a ' +
+                                 'letter or number)';
 
             form_element.pattern = living_library_config
                                    .get_form_validation_rules()
@@ -620,7 +631,8 @@ function update_required_fields_in_form(required_fields) {
         if (form_element.type != 'radio') {
             let span = document.createElement('span');
             span.className = 'validity';
-            form_element.parentNode.insertBefore(span, form_element.nextSibling);
+            form_element.parentNode.insertBefore(span,
+                                                 form_element.nextSibling);
         }
     }
 }
@@ -752,8 +764,6 @@ function get_donations(is_completed) {
             return response.json();
         })
         .then(data => {
-            // console.log(data);
-
             $(".content-window").css("height", "770px");
             $(".pre-scrollable").css("max-height", "550px");
 
@@ -968,12 +978,16 @@ function get_donations(is_completed) {
                             searchable: false
                         }
                     ]
-                } );
+                });
 
                 // Add event listeners to the two date range filtering inputs
-                $('#start_date_input_box').keyup( function() { donations_table.draw(); } );
-                $('#end_date_input_box').keyup( function() { donations_table.draw(); } );
-            } );
+                $('#start_date_input_box').keyup( function() {
+                    donations_table.draw();
+                });
+                $('#end_date_input_box').keyup( function() {
+                    donations_table.draw();
+                });
+            });
         })
         .catch((error) => {
             console.log('In the catch block');
