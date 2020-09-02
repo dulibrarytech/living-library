@@ -332,8 +332,7 @@ exports.create = function (req, callback) {
             console.log('new_menu_choice = ' + new_menu_choice);
             console.log('new_menu_choice.length = ' + new_menu_choice.length);
 
-            if (new_menu_choice === '' ||
-                new_menu_choice.length >
+            if (new_menu_choice === '' || new_menu_choice.length >
                 table_field_names.display_field_char_limit) {
                 let error_msg = "Request body is invalid: " +
                                 (new_menu_choice === ''
