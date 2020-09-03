@@ -253,21 +253,6 @@ a:not([href]) {
   margin-left: 0;
 }
 
-/* Added for the Living Library integration:
- * This ensures that the Living Library tables (i.e. Donation Queue and
- * Completed Donations) have their columns aligned correctly.
- * Without this, the header row's columns do not line up with the content rows'
- * columns.
- * This is because the column heading "Full Record" (in the Completed Donations
- * table) is too wide for the span1 class above.
- */
-.table td.span1_wider,
-.table th.span1_wider {
-  float: none;
-  width: 64px;
-  margin-left: 0;
-}
-
 .table td.span2,
 .table th.span2 {
   float: none;
@@ -432,13 +417,6 @@ a:not([href]) {
   	background-color: #e5e3e1;
   	*background-color: #e5e3e1;
   	color: #515155;
-}
-
-/* Added for the Living Library integration */
-.btn-bold {
-	color: #515155;
-	font-weight: bold;
-	border: 1px solid DarkGrey;
 }
 
 .donor-list-item {

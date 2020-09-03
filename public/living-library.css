@@ -60,6 +60,13 @@
   margin-left: 70px;
 }
 
+/* Style for buttons appearing in front of darker backgrounds */
+.btn-bold {
+	color: #515155;
+	font-weight: bold;
+	border: 1px solid DarkGrey;
+}
+
 /* Style for hyperlinks within menu choices table */
 #menu_choices a:link, #menu_choices a:visited {
   color: #005580;

@@ -761,7 +761,6 @@ function get_donations(is_completed) {
                                   ? "Living Library: Completed Donations"
                                   : "Living Library: Donation Queue");
 
-            $("#table-content").html('');
             let html = '';
 
             if (data.length === 0) {
