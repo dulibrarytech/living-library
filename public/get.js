@@ -402,7 +402,8 @@ function create_donation() {
                             '&api_key=' + living_library_config.get_api_key();
     populate_dropdown_menu(living_library_config.get_relationships_table(),
                            relationships_url,
-                           document.getElementsByClassName('relationship_dropdown'),
+                           document
+                           .getElementsByClassName('relationship_dropdown'),
                            '--Select a relation to donor--');
 
     // Add Subject Area checkboxes
@@ -411,55 +412,49 @@ function create_donation() {
           '&is_active=true' +
           '&api_key=' + living_library_config.get_api_key())
         .then(function(response) {
+            console.log("Inside subject areas fetch");
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem fetching the '
-                             + 'subject areas. Status Code: '
-                             + response.status);
-                return false;
+                throw 'Status Code ' + response.status;
             }
 
-            response.json().then(function(data) {
-                console.log("Inside subject areas fetch");
+            return response.json();
+        })
+        .then(function(data) {
+            let table = document.querySelector('#subject_areas');
 
-                let table = document.querySelector('#subject_areas');
+            if (data.length === 0) {
+                let row = table.insertRow();
+                let cell = row.insertCell();
+                cell.colSpan = SUBJECT_AREA_COLS;
+                cell.innerHTML = 'No subject areas found.';
+                return;
+            }
 
-                if (data.length === 0) {
-                    let row = table.insertRow();
-                    let cell = row.insertCell();
-                    cell.colSpan = SUBJECT_AREA_COLS;
-                    cell.innerHTML = 'No subject areas found.';
-                    return;
-                }
+            for (let i = 0; i < data.length; i++) {
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'checkbox_' + i;
+                checkbox.name = 'donor_subject_areas';
+                checkbox.value = data[i].term;
 
-                for (let i = 0; i < data.length; i++) {
-                    let checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.id = 'checkbox_' + i;
-                    checkbox.name = 'donor_subject_areas';
-                    checkbox.value = data[i].term;
+                let label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.className = 'checkbox inline';
+                label.innerHTML = checkbox.value;
+                label.insertBefore(checkbox, label.childNodes[0]);
 
-                    let label = document.createElement('label');
-                    label.htmlFor = checkbox.id;
-                    label.className = 'checkbox inline';
-                    label.innerHTML = checkbox.value;
-                    label.insertBefore(checkbox, label.childNodes[0]);
-
-                    // decide where to insert cell
-                    let row = i % SUBJECT_AREA_COLS == 0
-                              ? table.insertRow()
-                              : table.rows[table.rows.length - 1];
-                    row.insertCell().appendChild(label);
-                }
-
-                viewUtils.setUserLabel();
-            });
+                // decide where to insert cell
+                let row = i % SUBJECT_AREA_COLS == 0
+                          ? table.insertRow()
+                          : table.rows[table.rows.length - 1];
+                row.insertCell().appendChild(label);
+            }
         })
         .catch(function(error) {
-            console.log('FATAL: [create_donation] Unable to fetch subject '
-                        + 'areas ' + error);
-            throw 'FATAL: [create_donation] Unable to fetch subject areas '
-                  + error;
+            console.error('ERROR: Unable to fetch subject areas: ' + error);
         });
+
+        viewUtils.setUserLabel();
 }
 
 /**
