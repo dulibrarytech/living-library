@@ -62,9 +62,9 @@
 
 /* Style for buttons appearing in front of darker backgrounds */
 .btn-bold {
-	color: #515155;
-	font-weight: bold;
-	border: 1px solid DarkGrey;
+	color: #515155 !important;
+	font-weight: bold !important;
+	border: 1px solid DarkGrey !important;
 }
 
 /* Style for hyperlinks within menu choices table */
