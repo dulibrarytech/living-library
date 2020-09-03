@@ -845,7 +845,11 @@ function get_donations(is_completed) {
                     html += '<td style="text-align: center;">';
                     if (typeof donation_id === 'number') {
                         html += '<a href="' + baseUrl + _getDonationUrl
-                                + donation_status + '/' + donation_id + '">'
+                                + donation_status + '/' + donation_id + '" '
+                                + 'title='
+                                + (data[i].is_completed
+                                   ? '"Full Record">'
+                                   : '"Book Plate Form">')
                                 + '<img src="' + baseUrl
                                 + (data[i].is_completed
                                    ? 'img/living_library_application_' +
@@ -1717,6 +1721,7 @@ function get_menu_choices(table) {
                     let anchor_element = document.createElement('a');
                     anchor_element.href = baseUrl + _editMenuChoiceUrl +
                                           link_text + '/' + data[i].id;
+                    anchor_element.title = 'Edit this ' + label;
                     anchor_element.innerHTML = data[i].term;
 
                     // decide where to insert cell
