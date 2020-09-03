@@ -661,67 +661,59 @@ function populate_dropdown_menu(table_name, url, html_elements,
     if (table_name !== living_library_config.get_titles_table() &&
         table_name !== living_library_config.get_states_table() &&
         table_name !== living_library_config.get_relationships_table()) {
-        console.log(table_name + " is not a lookup table. Cannot populate "
-                    + "dropdown menu.")
+        console.error('ERROR: ' + table_name + ' is not a lookup table. ' +
+                      'Cannot populate dropdown menu.');
         return false;
     }
-
-    let error_msg = 'FATAL: [create_donation] Unable to fetch ' + table_name +
-                    ': ';
 
     // Fetch dropdown menu options from database and add to <select> element
     fetch(url)
         .then(function(response) {
-            console.log("Inside " + table_names + " fetch");
+            console.log("Inside " + table_name + " fetch");
             if (response.status !== 200) {
-                console.warn('Looks like there was a problem fetching the '
-                             + table_name + '. Status Code: '
-                             + response.status);
+                console.error('ERROR: Unable to fetch ' + table_name +
+                              '. Status Code: ' + response.status);
                 return false;
             }
 
-            response.json().then(function(data) {
-                // console.log("Inside " + table_names + " fetch");
+            return response.json();
+        })
+        .then(function(data) {
+            // Add dropdown menu options to <select> element
+            let option;
+            for (let i = 0; i < data.length; i++) {
+                option = document.createElement('option');
+                option.value = data[i].term;
+                option.innerHTML = data[i].term;
+                select.add(option);
+            }
 
-                // Add dropdown menu options to <select> element
-                let option;
-                for (let i = 0; i < data.length; i++) {
-                    option = document.createElement('option');
-                    option.value = data[i].term;
-                    option.innerHTML = data[i].term;
-                    select.add(option);
-                }
-
-                /* Replace all relevant dropdown menus with the newly-populated
-                 * <select> element
+            /* Replace all relevant dropdown menus with the newly-populated
+             * <select> element
+             */
+            for (let node of html_elements) {
+                /* Can only use a given <select> element once in the DOM.
+                 * So we clone it. The parameter 'true' clones the subtree
+                 * as well.
                  */
-                for (let node of html_elements) {
-                    /* Can only use a given <select> element once in the DOM.
-                     * So we clone it. The parameter 'true' clones the subtree
-                     * as well.
-                     */
-                    let select_copy = select.cloneNode(true);
+                let select_copy = select.cloneNode(true);
 
-                    select_copy.setAttribute('class', node.getAttribute('class'));
-                    select_copy.setAttribute('id', node.getAttribute('id'));
-                    select_copy.setAttribute('name', node.getAttribute('name'));
+                select_copy.setAttribute('class', node.getAttribute('class'));
+                select_copy.setAttribute('id', node.getAttribute('id'));
+                select_copy.setAttribute('name', node.getAttribute('name'));
 
-                    if (node.hasAttribute('required')) {
-                        select_copy.required = node.required;
-                    }
-
-                    node.parentNode.replaceChild(select_copy, node);
-                    console.log("Just replaced dropdown menu:");
-                    console.log(select_copy);
+                if (node.hasAttribute('required')) {
+                    select_copy.required = node.required;
                 }
-            })
-            .catch(function(error) {
-                throw error_msg + error;
-            });
 
+                node.parentNode.replaceChild(select_copy, node);
+                console.log("Just replaced dropdown menu:");
+                console.log(select_copy);
+            }
         })
         .catch(function(error) {
-            throw error_msg + error;
+            console.error('ERROR: Unable to fetch ' + table_name + ': ' +
+                          error);
         });
 
     return true;
