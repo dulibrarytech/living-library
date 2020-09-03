@@ -455,10 +455,6 @@ function create_donation() {
             });
         })
         .catch(function(error) {
-            /* LOGGER is not defined
-            LOGGER.module().error('FATAL: [create_donation] Unable to fetch '
-                                  + label_name + ' ' + error);
-            */
             console.log('FATAL: [create_donation] Unable to fetch subject '
                         + 'areas ' + error);
             throw 'FATAL: [create_donation] Unable to fetch subject areas '
@@ -662,36 +658,30 @@ function populate_dropdown_menu(table_name, url, html_elements,
     select.add(default_option);
     select.selectedIndex = 0;
 
-    let label_name; // name of the values being fetched
-
-    switch(table_name) {
-        case living_library_config.get_titles_table():
-            label_name = 'titles';
-            break;
-        case living_library_config.get_states_table():
-            label_name = 'states';
-            break;
-        case living_library_config.get_relationships_table():
-            label_name = 'relationships';
-            break;
-        default:
-            console.log(table_name + " is not a lookup table. Cannot populate "
-                        + "dropdown menu.")
-            return false;
+    if (table_name !== living_library_config.get_titles_table() &&
+        table_name !== living_library_config.get_states_table() &&
+        table_name !== living_library_config.get_relationships_table()) {
+        console.log(table_name + " is not a lookup table. Cannot populate "
+                    + "dropdown menu.")
+        return false;
     }
+
+    let error_msg = 'FATAL: [create_donation] Unable to fetch ' + table_name +
+                    ': ';
 
     // Fetch dropdown menu options from database and add to <select> element
     fetch(url)
         .then(function(response) {
+            console.log("Inside " + table_names + " fetch");
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching the '
-                             + label_name + '. Status Code: '
+                             + table_name + '. Status Code: '
                              + response.status);
                 return false;
             }
 
             response.json().then(function(data) {
-                console.log("Inside " + label_name + " fetch");
+                // console.log("Inside " + table_names + " fetch");
 
                 // Add dropdown menu options to <select> element
                 let option;
@@ -724,17 +714,14 @@ function populate_dropdown_menu(table_name, url, html_elements,
                     console.log("Just replaced dropdown menu:");
                     console.log(select_copy);
                 }
+            })
+            .catch(function(error) {
+                throw error_msg + error;
             });
+
         })
         .catch(function(error) {
-            /* LOGGER is not defined
-            LOGGER.module().error('FATAL: [create_donation] Unable to fetch '
-                                  + label_name + ' ' + error);
-            */
-            console.log('FATAL: [create_donation] Unable to fetch '
-                        + label_name + ' ' + error);
-            throw 'FATAL: [create_donation] Unable to fetch ' + label_name + ' '
-                  + error;
+            throw error_msg + error;
         });
 
     return true;
