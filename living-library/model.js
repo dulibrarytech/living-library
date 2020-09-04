@@ -28,7 +28,7 @@ const LOGGER = require('../libs/log4'),
       WINDOW = new JSDOM('').window;
 
 // Configures email sending
-let transporter = NODEMAILER.createTransport({
+const transporter = NODEMAILER.createTransport({
     host: CONFIG.emailHost,
     port: CONFIG.emailPort
     /*

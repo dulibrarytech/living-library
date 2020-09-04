@@ -18,7 +18,7 @@ let add_person_to_notify_counter = 1;
 /**
  * Builds the Donation Form webpage
  */
-function create_donation() {
+const create_donation = function () {
 
     // How many columns to use when displaying subject area checkboxes
     const SUBJECT_AREA_COLS = 3;
@@ -461,7 +461,7 @@ function create_donation() {
         });
 
         viewUtils.setUserLabel();
-}
+};
 
 /**
  * Adds additional form fields to the Donation Form (so that the user can add
@@ -469,7 +469,7 @@ function create_donation() {
  * @param   event   the event triggered by clicking the "Add person to be
  *                  nofified" button
  */
-function add_person_to_notify(event) {
+const add_person_to_notify = function (event) {
     console.log("Inside add_person_to_notify function");
     console.log("add_person_to_notify_counter = " +
                 add_person_to_notify_counter);
@@ -583,14 +583,14 @@ function add_person_to_notify(event) {
 
     console.log("End of func: add_person_to_notify_counter = "
                 + add_person_to_notify_counter);
-}
+};
 
 /**
  * Builds the Donation Queue (if is_completed=false) and Completed Donations
  * (if is_completed=true) webpages
  * @param    is_completed    the type of donation records desired
  */
-function get_donations(is_completed) {
+const get_donations = function (is_completed) {
     is_completed = living_library_helper
                    .validate_is_completed_parameter(is_completed);
 
@@ -835,7 +835,7 @@ function get_donations(is_completed) {
             console.log('Error with fetch request of get_donations ' +
                         'function: ' + error);
         });
-}
+};
 
 /**
  * Builds the URL and calls the relevant function for the Book Plate Form (if
@@ -844,7 +844,7 @@ function get_donations(is_completed) {
  *                           completed or not)
  * @param    id              the donation record's id
  */
-function get_donation(is_completed, id) {
+const get_donation = function (is_completed, id) {
     is_completed = living_library_helper
                    .validate_is_completed_parameter(is_completed);
     const url = living_library_config.get_api() +
@@ -860,13 +860,13 @@ function get_donation(is_completed, id) {
         get_queued_donation(url);
         console.log("Based on URL parameter, this is a queued donation");
     }
-}
+};
 
 /**
  * Builds the Donation Record webpage (for completed donations)
  * @param {string}  url  the URL to fetch the donation record from the database
  */
-function get_completed_donation(url) {
+const get_completed_donation = function (url) {
     fetch(url)
         .then(response => {
             return response.json();
@@ -1108,13 +1108,13 @@ function get_completed_donation(url) {
             console.log('Error with fetch request of get_completed_donation ' +
                         'function: ' + error);
         });
-}
+};
 
 /**
  * Builds the Book Plate Form webpage (for queued donations)
  * @param {string}  url  the URL to fetch the donation record from the database
  */
-function get_queued_donation(url) {
+const get_queued_donation = function (url) {
     let has_required_input_boxes = true;
 
     fetch(url)
@@ -1415,7 +1415,7 @@ function get_queued_donation(url) {
             console.log('Error with fetch request of get_queued_donation ' +
                         'function: ' + error);
         });
-}
+};
 
 /**
  * Loads the specified lookup table's records, i.e. subject areas, titles, and
@@ -1424,7 +1424,7 @@ function get_queued_donation(url) {
  * the user to update or delete the given record.
  * @param   table     the lookup table to display
  */
-function get_menu_choices(table) {
+const get_menu_choices = function (table) {
     // How many columns to use when displaying records
     const MENU_CHOICE_COLS = 2;
 
@@ -1588,7 +1588,7 @@ function get_menu_choices(table) {
             console.log('FATAL: [get_menu_choices] Unable to fetch ' + table +
                         ': ' + error);
         });
-}
+};
 
 /**
  * Loads a form for the specified lookup table record. The form allows the user
@@ -1599,7 +1599,7 @@ function get_menu_choices(table) {
  * @param   table_link_text    the text to be used in hyperlinks to identify
  *                             the lookup table
  */
-function edit_menu_choice(table, menu_choice_id, table_link_text) {
+const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
     console.log('table = ' + table);
     console.log('menu choice id = ' + menu_choice_id);
     console.log('table link text = ' + table_link_text);
@@ -1770,4 +1770,4 @@ function edit_menu_choice(table, menu_choice_id, table_link_text) {
             console.log('FATAL: [edit_menu_choice] Unable to fetch ' + table
                         + ' with id = ' + menu_choice_id + ': ' + error);
         });
-}
+};
