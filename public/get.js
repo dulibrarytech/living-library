@@ -875,8 +875,6 @@ const get_completed_donation = function (url) {
             console.log(data);
             $("#page-label").html('Living Library: Donation Record');
 
-            viewUtils.setUserLabel();
-
             if (data.length > 0) {
                 let is_completed =
                     living_library_helper
@@ -1102,6 +1100,8 @@ const get_completed_donation = function (url) {
                 living_library_helper
                 .insert_error_message('Error: No donation record found.', true);
             }
+
+            viewUtils.setUserLabel();
         })
         .catch((error) => {
             console.log('In the catch block');
@@ -1731,8 +1731,6 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
         .then(function(response) {
             console.log(response);
 
-            viewUtils.setUserLabel();
-
             if (response.status !== 200) {
                 console.warn('Looks like there was a problem fetching ' + table
                              + ' with id = ' + menu_choice_id
@@ -1770,4 +1768,6 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
             console.log('FATAL: [edit_menu_choice] Unable to fetch ' + table
                         + ' with id = ' + menu_choice_id + ': ' + error);
         });
+
+    viewUtils.setUserLabel();
 };
