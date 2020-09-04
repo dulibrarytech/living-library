@@ -15,6 +15,52 @@ const living_library_helper = (function () {
     let obj = {};
 
     /**
+     * Determines whether the given HTMLCollection contains any non-empty element
+     * values.
+     * @param  {HTMLCollection}   form_elements    the elements to be checked
+     * @return {boolean}                           true if exists >= 1 non-empty
+     *                                             element; false otherwise
+     */
+    obj.containsNonEmptyElementValue = function (form_elements) {
+        for (let element of form_elements) {
+            if (element.value.trim().length > 0) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+     * Retrieves input data from a form and returns it as a JSON object.
+     * @param  {Array}            expected_form_fields  the form fields that
+     *                                                  will be matched
+     * @param  {HTMLCollection}   form_elements   the form elements (i.e
+     *                                            the data input by the
+     *                                            user); can also be an
+     *                                            HTMLFormControlsCollection
+     * @return {Object}                           form data as an object literal
+     *
+     * Adapted from:
+     * https://www.learnwithjason.dev/blog/get-form-values-as-json/
+     */
+    obj.form_to_json = function (expected_form_fields, form_elements) {
+        return [].reduce.call(form_elements, (data, element) => {
+            if (obj.is_valid_element(element.name, expected_form_fields) &&
+                obj.is_valid_value(element)) {
+                if (element.type === 'checkbox') {
+                    data[element.name] = (data[element.name] || [])
+                                         .concat(element.value.trim());
+                } else if (element.name === 'donor_amount_of_donation') {
+                    data[element.name] = parseFloat(element.value);
+                } else {
+                    data[element.name] = element.value.trim();
+                }
+            }
+            return data;
+        }, {});
+    };
+
+    /**
      * Returns the specified object property (if it's a string or number)
      * @param   {Object}            object     the object to check
      * @param   {string or number}  property   the property to check for
@@ -161,6 +207,41 @@ const living_library_helper = (function () {
      */
     obj.is_non_null_object = function (field) {
         return typeof field === 'object' && field !== null;
+    };
+
+    /**
+     * Determines whether element_name is a valid field (i.e. if it's a field we
+     * want to store in the database record)
+     * @param  {string}  element_name     the name attribute of the form element
+     * @param  {Array}   valid_form_fields   the list of valid form fields
+     * @return {boolean}                     true if element_name is valid;
+     *                                       false otherwise
+     *
+     * Adapted from:
+     * https://www.learnwithjason.dev/blog/get-form-values-as-json/
+     */
+    obj.is_valid_element = function (element_name, valid_form_fields) {
+        return valid_form_fields.includes(element_name);
+    };
+
+    /**
+     * Determines whether the element's value is valid (i.e. if we want to
+     * store it in the database record). Prevents storing checkbox or radio
+     * button values unless they are selected by the user.
+     * @param  {string}  element   the form element
+     * @return {boolean}           - true if element's value is valid (the value
+     *                             is considered valid if it's not a checkbox or
+     *                             radio button; if it's a checkbox or radio
+     *                             button, it must be selected in order to be
+     *                             valid)
+     *                             - false otherwise
+     *
+     * Adapted from:
+     * https://www.learnwithjason.dev/blog/get-form-values-as-json/
+     */
+    obj.is_valid_value = function (element) {
+        return (!['checkbox', 'radio'].includes(element.type) ||
+                element.checked);
     };
 
     /**
