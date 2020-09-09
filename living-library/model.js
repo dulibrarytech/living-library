@@ -229,7 +229,6 @@ exports.create = function (req, callback) {
                                               'module (create/add_donation_' +
                                               'to_db)] Unable to create ' +
                                               'record: ' + error);
-                        // throw 'FATAL [/living-library/model module (create/add_donation_to_db)] Unable to create record: ' + error;
                     });
             }
 
@@ -251,7 +250,6 @@ exports.create = function (req, callback) {
                                               'module (create/select_new_' +
                                               'donation)] Unable to retrieve ' +
                                               'new record: ' + error);
-                        // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record: ' + error;
                     });
             }
 
@@ -284,7 +282,6 @@ exports.create = function (req, callback) {
                     LOGGER.module().error('ERROR: [/living-library/model ' +
                                           'module (create/' +
                                           'send_email_notification)]: ' + error);
-                    // throw 'FATAL: [/living-library/model module (create/send_email_notification)] Unable to send email notification: ' + error;
                 } finally {
                     console.log('Inside "finally" block');
                     callback(null, obj);
@@ -387,7 +384,6 @@ exports.create = function (req, callback) {
                                               + '\nObject being built out of ' +
                                               'Knex query:\n' +
                                               JSON.stringify(obj));
-                        // throw 'FATAL [/living-library/model module (create/search_db_for_menu_choice)] Unable to read record: ' + error;
                     });
             }
 
@@ -401,7 +397,6 @@ exports.create = function (req, callback) {
                                           'search_db_for_menu_choice knex ' +
                                           'query did not return an array: ' +
                                           obj.data);
-                    // throw 'FATAL [/living-library/model module (create/update_db)] search_db_for_menu_choice knex query did not return an array: ' + obj.data;
                 } else if (obj.data.length === 0) {
                     console.log('No match found for ' + new_menu_choice);
 
@@ -427,7 +422,6 @@ exports.create = function (req, callback) {
                                                   'update_db)] Unable to ' +
                                                   'create record in ' +
                                                   table_name + ': ' + error);
-                            // throw 'FATAL [/living-library/model module (create/update_db)] Unable to create record in ' + table_name + ': ' + error;
                         });
                 } else if (obj.data.length > 0) {
                     console.log('Found ' + obj.data.length + ' record(s) '+
@@ -531,7 +525,6 @@ exports.create = function (req, callback) {
                                             obj.data[index_to_update].id +
                                             '\nRecord(s) found:\n' +
                                             JSON.stringify(obj.data));
-                            // throw 'FATAL: Unable to update record: ' + error;
                         });
                 } else {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
@@ -573,7 +566,6 @@ exports.create = function (req, callback) {
                                                   'select_new_menu_choice)] ' +
                                                   'Unable retrieve new menu ' +
                                                   'choice: ' + error);
-                            // throw 'FATAL: [/living-library/model module (create/select_new_donation)] Unable to create record ' + error;
                         });
                 }
             }
@@ -697,7 +689,6 @@ exports.read = function (req, callback) {
                                           'donation record(s): ' + error +
                                           '\nis_completed = ' + is_completed +
                                           '\nid = ' + id);
-                    // throw 'FATAL: Unable to read record ' + error;
                 });
             break;
         } // end of "" case
@@ -765,7 +756,6 @@ exports.read = function (req, callback) {
                                           ' record(s): ' + error +
                                           '\nis_active = ' + is_active +
                                           '\nid = ' + id);
-                    // throw 'FATAL: Unable to read record: ' + error;
                 });
             break;
         } // end of lookup table cases
@@ -961,7 +951,6 @@ exports.update = function (req, callback) {
                                               'donation_is_in_the_queue)] ' +
                                               'Unable to retrieve record ' +
                                               'with id ' + id + ': ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
                     });
             }
 
@@ -1012,7 +1001,6 @@ exports.update = function (req, callback) {
                                               'donation_in_db)] Unable to ' +
                                               'update record with id ' + id +
                                               ': ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/update_donation_in_db)] Unable to update record with id ' + id + ': ' + error;
                     });
             }
 
@@ -1041,7 +1029,6 @@ exports.update = function (req, callback) {
                                               'donation)] Unable to retrieve ' +
                                               'updated record with id ' + id +
                                               ': ' + error);
-                        // throw 'FATAL: [/living-library/model module (update/select_updated_donation)] Unable to retrieve updated record with id ' + id + ': ' + error;
                     });
             }
 
@@ -1134,7 +1121,6 @@ exports.update = function (req, callback) {
                                           'notification email for record ' +
                                           'with donation id ' + id + ': ' +
                                           error);
-                    // throw 'ERROR: [/living-library/model module (update/send_email_notification_about_completed_donation)]: Unable to send notification email for record with donation id ' + id + ': ' + error;
                 } finally {
                     console.log('Inside "finally" block');
                     callback(null, obj);
@@ -1333,9 +1319,6 @@ exports.update = function (req, callback) {
                                            : '\nis_active = ' +
                                              is_active_from_query) +
                                           '\nError: ' + error);
-                    /* throw 'FATAL: Unable to update ' + tbl +
-                             ' record with id ' + id + ': ' + error;
-                     */
                 });
             break;
         } // end of lookup table cases
@@ -1426,7 +1409,6 @@ exports.delete = function (req, callback) {
                                       '(delete/confirm_donation_is_in_the_' +
                                       'queue)] Unable to retrieve record ' +
                                       'with id ' + id + ': ' + error);
-                // throw 'FATAL: [/living-library/model module (delete/confirm_donation_is_in_the_queue)] Unable to retrieve record with id ' + id + ': ' + error;
             });
     }
 
@@ -1479,7 +1461,6 @@ exports.delete = function (req, callback) {
                                       '(delete/delete_donation_in_db)] ' +
                                       'Unable to delete record with id ' +
                                       obj.id + ': ' + error);
-                // throw 'FATAL: Unable to delete record with id ' + obj.id + ': ' + error;
             });
     }
 
