@@ -1488,9 +1488,9 @@ exports.delete = function (req, callback) {
 
 /**
  * Returns true if array1 and array2 contain the same elements
- * @param   {Array}         array1  the first array
- * @param   {Array}         array2  the second array
- * @return  {boolean value}         true if the arrays match; false otherwise
+ * @param    {Array}    array1  the first array
+ * @param    {Array}    array2  the second array
+ * @returns  {boolean}          true if the arrays match; false otherwise
  */
 const arrays_match = function (array1, array2) {
     if (array1.length !== array2.length)
@@ -1507,9 +1507,9 @@ const arrays_match = function (array1, array2) {
 /**
  * Converts the given value to the corresponding boolean value.
  * Returns null if value does not specifically refer to a boolean value.
- * @param   {string or number}     value    the value to convert
- * @return  {boolean}                       the corresponding boolean value;
- *                                          otherwise, null
+ * @param    {string or number}       value  the value to convert
+ * @returns  {boolean|Object (null)}         the corresponding boolean value;
+ *                                           otherwise, null
  */
 const convert_to_boolean = function (value) {
     if (typeof value === 'boolean') {
@@ -1525,8 +1525,8 @@ const convert_to_boolean = function (value) {
 /**
  * Loops through object's own properties and, if the value is a string, decodes
  * any HTML-encoded entities into real HTML
- * @param   {Object}  obj  the object whose properties need to be decoded
- * @return  {Object}       the modified object with decoded HTML
+ * @param    {Object}  obj  the object whose properties need to be decoded
+ * @returns  {Object}       the modified object with decoded HTML
  *
  * Adapted from Rob W's approach to decoding HTML characters:
  * https://stackoverflow.com/a/7394787/1293256
@@ -1549,17 +1549,20 @@ const decode_HTML = function (obj) {
 
 /**
  * Returns empty string if str is undefined; otherwise, returns lowercase string
- * @param   {string}    str    the string to check
- * @return  {string}           empty or lowercase string
+ * @param    {string}    str    the string to check
+ * @returns  {string}           empty or lowercase string
  */
 const get_empty_or_lowercase_string = function (str) {
     return typeof str === "undefined" ? "" : str.toLowerCase();
 };
 
 /**
- * Returns the database table corresponding to the given string
- * @param   {string}    tbl    the string to check
- * @return  {string}           the name of the corresponding database table
+ * Returns the database table name corresponding to the given string; if no
+ * match, returns null. An empty string corresponds to the donations table (the
+ * default table).
+ * @param   {string}     tbl       the string to check
+ * @returns {string|Object (null)} the name of the corresponding database table;
+ *                                 null if there is no match
  */
 const get_table_name = function (tbl) {
     switch(tbl) {
@@ -1579,11 +1582,14 @@ const get_table_name = function (tbl) {
 };
 
 /**
- * Returns an object containing the relevant field names for the specified table
- * @param   {string}    table_name    the name of the specified table
- * @return  {Object}                  an object whose properties (id, display,
- *                                    and sort) contain the corresponding field
- *                                    names for the specified table
+ * Returns an object containing the relevant field names for the specified
+ * table as well as the display field's character limit. If no match, returns
+ * null.
+ * @param    {string}    table_name    the name of the specified table
+ * @returns  {Object}                  an object whose properties contain the
+ *                                     relevant field names for the specified
+ *                                     table and the display field's character
+ *                                     limit; null if there is no match
  */
 const get_table_field_names = function (table_name) {
     let table_field_names = {};
