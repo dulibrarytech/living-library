@@ -466,8 +466,8 @@ const create_donation = function () {
 /**
  * Adds additional form fields to the Donation Form (so that the user can add
  * more persons to be notified of donation)
- * @param   event   the event triggered by clicking the "Add person to be
- *                  nofified" button
+ * @param  {Object}  event   the event triggered by clicking the "Add person to
+ *                           be nofified" button
  */
 const add_person_to_notify = function (event) {
     console.log("Inside add_person_to_notify function");
@@ -586,9 +586,10 @@ const add_person_to_notify = function (event) {
 };
 
 /**
- * Builds the Donation Queue (if is_completed=false) and Completed Donations
- * (if is_completed=true) webpages
- * @param    is_completed    the type of donation records desired
+ * Builds the Donation Queue (if is_completed=false) or Completed Donations (if
+ * is_completed=true) webpages
+ * @param  {(boolean|number|string)}  is_completed   the type of donation
+ *                                                   records desired
  */
 const get_donations = function (is_completed) {
     is_completed = living_library_helper
@@ -780,7 +781,6 @@ const get_donations = function (is_completed) {
                 html += '</tbody>';
                 html += '</table>';
             }
-            // console.log(html);
 
             let table_content_element = document
                                         .querySelector('#table-content');
@@ -838,11 +838,12 @@ const get_donations = function (is_completed) {
 };
 
 /**
- * Builds the URL and calls the relevant function for the Book Plate Form (if
- * is_completed=false) or the Donation Record webpage (if is_completed=true).
- * @param    is_completed    the donation record's status (i.e. if it's
- *                           completed or not)
- * @param    id              the donation record's id
+ * Constructs the API URL and calls the relevant function that builds either the
+ * Book Plate Form (if is_completed=false) or the Donation Record webpage (if
+ * is_completed=true).
+ * @param {(boolean|number|string)} is_completed  the donation record's status,
+ *                                                i.e. if it's completed or not
+ * @param {(number|string)}         id            the donation record's id
  */
 const get_donation = function (is_completed, id) {
     is_completed = living_library_helper
@@ -863,7 +864,7 @@ const get_donation = function (is_completed, id) {
 };
 
 /**
- * Builds the Donation Record webpage (for completed donations)
+ * Builds the Donation Record webpage (for a completed donation)
  * @param {string}  url  the URL to fetch the donation record from the database
  */
 const get_completed_donation = function (url) {
@@ -1111,8 +1112,9 @@ const get_completed_donation = function (url) {
 };
 
 /**
- * Builds the Book Plate Form webpage (for queued donations)
- * @param {string}  url  the URL to fetch the donation record from the database
+ * Builds the Book Plate Form webpage (for a queued donation)
+ * @param   {string}   url   the API URL to fetch the donation record from the
+ *                           database
  */
 const get_queued_donation = function (url) {
     let has_required_input_boxes = true;
@@ -1418,11 +1420,11 @@ const get_queued_donation = function (url) {
 };
 
 /**
- * Loads the specified lookup table's records, i.e. subject areas, titles, and
+ * Loads the specified lookup table's records, i.e. subject areas, titles, or
  * relationships. This includes (1) a form to add a new record to the lookup
- * table and (2) a list of all active records, each with a hyperlink allowing
- * the user to update or delete the given record.
- * @param   table     the lookup table to display
+ * table and (2) a list of all active menu choices, each with a hyperlink to a
+ * page where the user can update or delete the given menu choice.
+ * @param   {string}    table    the lookup table to display
  */
 const get_menu_choices = function (table) {
     // How many columns to use when displaying records
@@ -1591,13 +1593,15 @@ const get_menu_choices = function (table) {
 };
 
 /**
- * Loads a form for the specified lookup table record. The form allows the user
- * to (1) update the text of the menu choice and (2) remove the menu choice from
- * the lookup table (to 'delete' the menu choice, we set is_active = false).
- * @param   table              the lookup table containing the menu choice
- * @param   menu_choice_id     the id of the menu choice
- * @param   table_link_text    the text to be used in hyperlinks to identify
- *                             the lookup table
+ * Loads two forms for the specified lookup table record: The first form allows
+ * the user to update the text of the menu choice. The second form allows the
+ * user to remove the menu choice from the lookup table (to 'delete' the menu
+ * choice, we set is_active=false).
+ * @param  {string}           table            the lookup table containing the
+ *                                             menu choice
+ * @param  {(number|string)}  menu_choice_id   the id of the menu choice
+ * @param  {string}           table_link_text  the text to be used in hyperlinks
+ *                                             to identify the lookup table
  */
 const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
     console.log('table = ' + table);

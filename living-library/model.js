@@ -1507,9 +1507,9 @@ const arrays_match = function (array1, array2) {
 /**
  * Converts the given value to the corresponding boolean value.
  * Returns null if value does not specifically refer to a boolean value.
- * @param    {string or number}       value  the value to convert
- * @returns  {boolean|Object (null)}         the corresponding boolean value;
- *                                           otherwise, null
+ * @param    {(boolean|number|string)}  value  the value to convert
+ * @returns  {(boolean|null)}                  the corresponding boolean value;
+ *                                             otherwise, null
  */
 const convert_to_boolean = function (value) {
     if (typeof value === 'boolean') {
@@ -1560,8 +1560,8 @@ const get_empty_or_lowercase_string = function (str) {
  * Returns the database table name corresponding to the given string; if no
  * match, returns null. An empty string corresponds to the donations table (the
  * default table).
- * @param   {string}     tbl       the string to check
- * @returns {string|Object (null)} the name of the corresponding database table;
+ * @param   {string}         tbl   the string to check
+ * @returns {(string|null)}        the name of the corresponding database table;
  *                                 null if there is no match
  */
 const get_table_name = function (tbl) {
@@ -1586,7 +1586,7 @@ const get_table_name = function (tbl) {
  * table as well as the display field's character limit. If no match, returns
  * null.
  * @param    {string}    table_name    the name of the specified table
- * @returns  {Object}                  an object whose properties contain the
+ * @returns  {(Object|null)}           an object whose properties contain the
  *                                     relevant field names for the specified
  *                                     table and the display field's character
  *                                     limit; null if there is no match
