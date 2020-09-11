@@ -71,8 +71,8 @@ const send_email = function (message, id) {
 
 /**
  * Creates record
- * @param req
- * @param callback
+ * @param  {Object}    req       the request object
+ * @param  {Function}  callback  the callback function
  */
 exports.create = function (req, callback) {
     console.log("Before req.body is decoded:");
@@ -619,8 +619,8 @@ exports.create = function (req, callback) {
 
 /**
  * Reads records
- * @param req
- * @param callback
+ * @param  {Object}    req       the request object
+ * @param  {Function}  callback  the callback function
  */
 exports.read = function (req, callback) {
 
@@ -776,8 +776,8 @@ exports.read = function (req, callback) {
 
 /**
  * Updates record
- * @param req
- * @param callback
+ * @param  {Object}    req       the request object
+ * @param  {Function}  callback  the callback function
  */
 exports.update = function (req, callback) {
     let id = req.query.id;
@@ -1338,9 +1338,9 @@ exports.update = function (req, callback) {
 };
 
 /**
- * Deletes records
- * @param req
- * @param callback
+ * Deletes record
+ * @param  {Object}    req       the request object
+ * @param  {Function}  callback  the callback function
  */
 exports.delete = function (req, callback) {
     let id = req.query.id;
@@ -1488,9 +1488,9 @@ exports.delete = function (req, callback) {
 
 /**
  * Returns true if array1 and array2 contain the same elements
- * @param    {Array}    array1  the first array
- * @param    {Array}    array2  the second array
- * @returns  {boolean}          true if the arrays match; false otherwise
+ * @param    {Array}    array1   the first array
+ * @param    {Array}    array2   the second array
+ * @returns  {boolean}           true if the arrays match; false otherwise
  */
 const arrays_match = function (array1, array2) {
     if (array1.length !== array2.length)

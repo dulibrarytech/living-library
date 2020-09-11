@@ -13,7 +13,7 @@
 /**
  * Processes the Donation Form data, creating a new donation record in the
  * database.
- * @param   event   the event triggered by submitting the Donation Form
+ * @param  {Object}  event  the event triggered by submitting the Donation Form
  */
 const save_donation = function (event) {
     event.preventDefault();
@@ -128,7 +128,7 @@ const save_donation = function (event) {
 /**
  * Processes the Book Plate Form data, updating the donation record in the
  * database.
- * @param   event   the event triggered by submitting the Book Plate Form
+ * @param {Object}  event  the event triggered by submitting the Book Plate Form
  */
 const save_book_plate = function (event) {
     event.preventDefault();
@@ -210,10 +210,10 @@ const save_book_plate = function (event) {
 
 /**
  * Deletes the specified donation record.
- * @param   event             the event triggered by clicking the donation
- *                            record's Delete hyperlink (in the table of the
- *                            Donation Queue webpage)
- * @param   id                the id of the donation record to be deleted
+ * @param  {Object}          event  the event triggered by clicking a donation
+ *                                  record's Delete hyperlink (from the Donation
+ *                                  Queue webpage)
+ * @param  {(number|string)} id     the id of the donation record to be deleted
  */
 const delete_donation = function (event, id) {
     event.preventDefault();
@@ -266,8 +266,9 @@ const delete_donation = function (event, id) {
 /**
  * Processes the Add Menu Choice Form data, creating a new menu choice record
  * (or updating an existing menu choice record) in the database.
- * @param   event   the event triggered by submitting the Add Menu Choice Form
- * @param   table   the lookup table to add to (or update)
+ * @param  {Object}  event   the event triggered by submitting the Add Menu
+ *                           Choice Form
+ * @param  {string}  table   the lookup table to add to (or update)
  */
 const add_menu_choice = function (event, table) {
     event.preventDefault();
@@ -353,11 +354,12 @@ const add_menu_choice = function (event, table) {
 };
 
 /**
- * Updates the text of the specified lookup table record.
- * @param   event  the event triggered by submitting the Update Menu Choice Form
- * @param   table  the lookup table to update
- * @param   id     the id of the menu choice to be updated (i.e. the lookup
- *                 table record id)
+ * Updates the text of the specified menu choice.
+ * @param  {Object}          event  the event triggered by submitting the Update
+ *                                  Menu Choice Form
+ * @param  {string}          table  the lookup table to update
+ * @param  {(number|string)} id     the id of the menu choice to be updated
+ *                                  (i.e. the lookup table record id)
  */
 const update_menu_choice = function (event, table, id) {
     event.preventDefault();
@@ -421,15 +423,16 @@ const update_menu_choice = function (event, table, id) {
 };
 
 /**
- * Removes the specified lookup table record from view on the website. To
- * remove the record from view, we set is_active = false.
- * @param   event             the event triggered by submitting the Delete
- *                            Menu Choice Form
- * @param   table             the lookup table to update
- * @param   id                the id of the menu choice to be removed (i.e. the
- *                            lookup table record id)
- * @param   table_link_text   the text to be used in hyperlinks to identify
- *                            the lookup table
+ * Removes the specified menu choice from view on the website. To remove the
+ * menu choice from view, we set is_active=false.
+ * @param  {Object}           event            the event triggered by submitting
+ *                                             the Delete Menu Choice Form
+ * @param  {string}           table            the lookup table to update
+ * @param  {(number|string)}  id               the id of the menu choice to be
+ *                                             removed (i.e. the lookup table
+ *                                             record id)
+ * @param  {string}           table_link_text  the text to be used in hyperlinks
+ *                                             to identify the lookup table
  */
 const delete_menu_choice = function (event, table, id, table_link_text) {
     event.preventDefault();

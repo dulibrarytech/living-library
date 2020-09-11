@@ -15,8 +15,8 @@ const living_library_config = (function () {
     let obj = {};
 
     /**
-     * Resolves living library api base url
-     * @returns {string}
+     * Resolves living library API's base URL
+     * @returns  {string}  the API's base URL
      */
     obj.get_api = function () {
 
@@ -35,31 +35,52 @@ const living_library_config = (function () {
     };
 
     /**
-     * Resolves living library api key
-     * @returns {string}
+     * Returns living library API's key
+     * @returns  {string}  the API key
      */
     obj.get_api_key = function () {
         return ENTER_API_KEY_HERE;
     };
 
     /* Lookup tables */
+
+    /**
+     * Returns the string used by the living library API to identify the
+     * relationships lookup table
+     * @returns  {string}  the string that identifies the relationships table
+     */
     obj.get_relationships_table = function () {
         return 'relationships';
     };
 
+    /**
+     * Returns the string used by the living library API to identify the
+     * states lookup table
+     * @returns  {string}  the string that identifies the states table
+     */
     obj.get_states_table = function () {
         return 'states';
     };
 
+    /**
+     * Returns the string used by the living library API to identify the
+     * subject areas lookup table
+     * @returns  {string}  the string that identifies the subject areas table
+     */
     obj.get_subject_areas_table = function () {
         return 'subject_areas';
     };
 
+    /**
+     * Returns the string used by the living library API to identify the
+     * titles lookup table
+     * @returns  {string}  the string that identifies the titles table
+     */
     obj.get_titles_table = function () {
         return 'titles';
     };
 
-    /* Donation Form: form field groups, required fields, etc. */
+    /* Donation Form object */
     let donation_form = {
         // The name attributes of the form fields
         donor_fields: ['donor_title', 'donor_first_name',
@@ -105,14 +126,14 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the above 'donation form' object
-     * @returns {Object}
+     * Returns the above Donation Form object
+     * @returns  {Object}  the Donation Form object
      */
     obj.get_donation_form_info = function () {
         return donation_form;
     };
 
-    /* Book Plate Form fields */
+    /* Book Plate Form object */
     let book_plate_form = {
         // The name attributes of the form fields
         book_fields: ["book_author_name", "book_title",
@@ -128,14 +149,14 @@ const living_library_config = (function () {
     book_plate_form.required_label_for_attributes = book_plate_form.required_ids;
 
     /**
-     * Returns the above 'book plate form' object
-     * @returns {Object}
+     * Returns the above Book Plate Form object
+     * @returns  {Object}  the Book Plate Form object
      */
     obj.get_book_plate_form_info = function () {
         return book_plate_form;
     };
 
-    /* Add Menu Choice Form fields */
+    /* Add Menu Choice Form object */
     let add_menu_choice_form = {
         // The name attributes of the form fields
         menu_choice_fields: ['new_menu_choice'],
@@ -149,14 +170,14 @@ const living_library_config = (function () {
                                                          .required_ids;
 
     /**
-     * Returns the above 'add menu choice form' object
-     * @returns {Object}
+     * Returns the above Add Menu Choice Form object
+     * @returns  {Object}  the Add Menu Choice Form object
      */
     obj.get_add_menu_choice_form_info = function () {
         return add_menu_choice_form;
     };
 
-    /* Update Menu Choice Form fields */
+    /* Update Menu Choice Form object */
     let update_menu_choice_form = {
         // The name attributes of the form fields
         menu_choice_fields: ['updated_menu_choice'],
@@ -170,14 +191,14 @@ const living_library_config = (function () {
     .required_label_for_attributes = update_menu_choice_form.required_ids;
 
     /**
-     * Returns the above 'edit menu choice form' object
-     * @returns {Object}
+     * Returns the above Update Menu Choice Form object
+     * @returns  {Object}  the Update Menu Choice Form object
      */
     obj.get_update_menu_choice_form_info = function () {
         return update_menu_choice_form;
     };
 
-    /* Form field validation rules */
+    /* Form Validation Rules object */
     let form_validation_rules = {
         general_validation: '^(?!\\s*$).+', // at least one non-whitespace character
         zip_code_validation: 'pattern="^\\d{5}|\\d{5}-\\d{4}"',
@@ -187,8 +208,8 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the above form validation rules object
-     * @returns {Object}
+     * Returns the above Form Validation Rules object
+     * @returns  {Object}  the Form Validation Rules object
      */
     obj.get_form_validation_rules = function () {
         return form_validation_rules;
@@ -196,7 +217,7 @@ const living_library_config = (function () {
 
     /**
      * Returns a textual explanation of each form symbol
-     * @returns {string}
+     * @returns  {string}  the text explaining each form symbol
      */
     obj.get_form_symbol_explanation_text = function () {
         return '<p>( <abbr class="required" title="required">*'
@@ -208,7 +229,7 @@ const living_library_config = (function () {
 
     /**
      * Returns error text to display on webpage if field contains invalid JSON
-     * @returns {string}    error text (in this case, an empty string)
+     * @returns  {string}  the error text (in this case, an empty string)
      */
     obj.get_error_text_for_invalid_json = function () {
         /* If you want error text for this situation, uncomment the line below */

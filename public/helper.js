@@ -15,10 +15,10 @@ const living_library_helper = (function () {
     let obj = {};
 
     /**
-     * Determines whether the given HTMLCollection contains any non-empty element
-     * values.
-     * @param  {HTMLCollection}   form_elements    the elements to be checked
-     * @return {boolean}                           true if exists >= 1 non-empty
+     * Determines whether the given HTMLCollection contains any non-empty
+     * element values.
+     * @param   {HTMLCollection}   form_elements   the elements to be checked
+     * @returns {boolean}                          true if exists >= 1 non-empty
      *                                             element; false otherwise
      */
     obj.containsNonEmptyElementValue = function (form_elements) {
@@ -32,14 +32,13 @@ const living_library_helper = (function () {
 
     /**
      * Retrieves input data from a form and returns it as a JSON object.
-     * @param  {Array}            expected_form_fields  the form fields that
+     * @param   {Array}           expected_form_fields  the form fields that
      *                                                  will be matched
-     * @param  {HTMLCollection}   form_elements   the form elements (i.e
-     *                                            the data input by the
-     *                                            user); can also be an
-     *                                            HTMLFormControlsCollection
-     * @return {Object}                           form data as an object literal
-     *
+     * @param   {(HTMLCollection|HTMLFormControlsCollection)}
+                                  form_elements   the form elements (i.e the
+     *                                            data input by the user)
+     * @returns {Object}                          the form data as JSON (i.e as
+     *                                            an object literal)
      * Adapted from:
      * https://www.learnwithjason.dev/blog/get-form-values-as-json/
      */
@@ -63,8 +62,8 @@ const living_library_helper = (function () {
     /**
      * Returns the specified object property (if it's a string or number)
      * @param   {Object}            object     the object to check
-     * @param   {string or number}  property   the property to check for
-     * @returns                                the object property (if it's a
+     * @param   {(number|string)}   property   the property to check for
+     * @returns {(number|string)}              the object property (if it's a
      *                                         string or number); otherwise, an
      *                                         empty string
      */
@@ -95,10 +94,10 @@ const living_library_helper = (function () {
 
     /**
      * Parses the JSON stored in the specified object property
-     * @param   {Object}  object     object whose property needs to be parsed
-     * @param   {string}  property   name of property to be parsed
-     * @returns {Object}             the resulting parsed object;
-     *                               otherwise, 'undefined'
+     * @param   {Object}  object      object whose property needs to be parsed
+     * @param   {string}  property    name of property to be parsed
+     * @returns {(Object|undefined)}  the resulting parsed object; otherwise,
+     *                                'undefined'
      */
     obj.get_valid_json = function (object, property) {
         console.log('Inside get_valid_json function');
@@ -133,7 +132,7 @@ const living_library_helper = (function () {
     };
 
     /**
-     * Removes table content element from view.
+     * Renames the table content element and removes its HTML.
      */
     obj.hide_table_content = function () {
         $("#table-content").html('');
@@ -177,12 +176,13 @@ const living_library_helper = (function () {
 
     /**
      * Inserts the given message into the specified DOM element.
-     * @param   {Object}   element      the DOM element to insert into
-     * @param   {boolean}  is_success   whether form submission succeeded (true)
-     *                                  or failed (false)
-     * @param   {string}   message      the message to be inserted
-     * @param   {function} callback     function to be called after message
-     *                                  has been displayed
+     * @param  {Object}   element      the DOM element to insert into
+     * @param  {boolean}  is_success   whether form submission succeeded (true)
+     *                                 or failed (false)
+     * @param  {string}   message      the message to be inserted
+     * @param  {(Function|undefined)} callback  if provided, the function to be
+     *                                          called after message has been
+     *                                          inserted
      */
     obj.insert_form_confirmation = function (element, is_success, message,
                                              callback) {
@@ -202,21 +202,20 @@ const living_library_helper = (function () {
 
     /**
      * Checks whether the variable is a non-null object
-     * @param               field   the variable to check
-     * @returns {boolean}           true if non-null object; false, otherwise
+     * @param   {(Object|null)} field  the variable to check
+     * @returns {boolean}              true if non-null object; false otherwise
      */
     obj.is_non_null_object = function (field) {
         return typeof field === 'object' && field !== null;
     };
 
     /**
-     * Determines whether element_name is a valid field (i.e. if it's a field we
-     * want to store in the database record)
-     * @param  {string}  element_name     the name attribute of the form element
-     * @param  {Array}   valid_form_fields   the list of valid form fields
-     * @return {boolean}                     true if element_name is valid;
-     *                                       false otherwise
-     *
+     * Determines whether element_name is a valid field (i.e. if it's included
+     * in the valid_form_fields array).
+     * @param   {string}  element_name   the name attribute of the form element
+     * @param   {Array}   valid_form_fields   the list of valid form fields
+     * @returns {boolean}                     true if element_name is valid;
+     *                                        false otherwise
      * Adapted from:
      * https://www.learnwithjason.dev/blog/get-form-values-as-json/
      */
@@ -225,17 +224,15 @@ const living_library_helper = (function () {
     };
 
     /**
-     * Determines whether the element's value is valid (i.e. if we want to
-     * store it in the database record). Prevents storing checkbox or radio
-     * button values unless they are selected by the user.
-     * @param  {string}  element   the form element
-     * @return {boolean}           - true if element's value is valid (the value
-     *                             is considered valid if it's not a checkbox or
-     *                             radio button; if it's a checkbox or radio
-     *                             button, it must be selected in order to be
-     *                             valid)
-     *                             - false otherwise
-     *
+     * Determines whether the element's value is valid: Prevents storing
+     * checkbox or radio button values unless they are selected by the user.
+     * @param   {HTML element}  element  the form element
+     * @returns {boolean}                - true if element's value is valid (the
+     *                                     value is considered valid if it's not
+     *                                     a checkbox or radio button; if it's a
+     *                                     checkbox or radio button, it must be
+     *                                     selected in order to be valid)
+     *                                   - false otherwise
      * Adapted from:
      * https://www.learnwithjason.dev/blog/get-form-values-as-json/
      */
@@ -245,14 +242,15 @@ const living_library_helper = (function () {
     };
 
     /**
-     * Populates dropdown menu(s) by fetching values from a lookup table
-     * @param table_name     the lookup table whose values will populate each
-     *                       element's dropdown menu
-     * @param url            the url of the API being queried
-     * @param html_elements  the dropdown menu(s) to be populated (i.e. the
-     *                       <select> tags); an HTMLCollection object
-     * @param text_for_default_option   the option each dropdown menu should
-     *                                  display by default
+     * Populates dropdown menu(s) by fetching values from the specified lookup
+     * table
+     * @param {string}  table_name   the lookup table whose values will populate
+     *                               each element's dropdown menu
+     * @param {string}  url          the url of the API being queried
+     * @param {HTMLCollection} html_elements  the dropdown menu(s) to be
+     *                                        populated (i.e. the <select> tags)
+     * @param {string}  text_for_default_option   the option each dropdown menu
+     *                                            should display by default
      */
     obj.populate_dropdown_menu = function (table_name, url, html_elements,
                                            text_for_default_option) {
@@ -327,15 +325,15 @@ const living_library_helper = (function () {
     }
 
     /**
-     * Updates HTML for all required form fields
+     * Updates the HTML for all required form fields
      * @param {Object} required_fields   an object containing the following
      *                                   properties:
      *                                   - required_label_for_attributes =
      *                                     the 'for' attributes of the label
      *                                     tags that need to be updated
      *                                   - required_ids =
-     *                                     the id attributes of the input tags
-     *                                     that need to be updated
+     *                                     the id attributes of the form
+     *                                     elements that need to be updated
      */
     obj.update_required_fields_in_form = function (required_fields) {
         console.log("Inside update_required_fields_in_form");
@@ -381,8 +379,7 @@ const living_library_helper = (function () {
     /**
      * Returns a valid boolean value based on is_completed parameter.
      * Defaults to false for any invalid value or type.
-     * Any value that is not 1 or true is considered false.
-     * @param   {boolean, number or string}  is_completed  the value to validate
+     * @param   {(boolean|number|string)}  is_completed   the value to validate
      * @returns {boolean}   true if value is true, 1, '1' or 'true';
      *                      false otherwise
      */
