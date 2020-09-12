@@ -35,6 +35,7 @@ module.exports = {
     dbStatesTable: process.env.DB_STATES_TABLE,
     dbSubjectAreasTable: process.env.DB_SUBJECT_AREAS_TABLE,
     dbTitlesTable: process.env.DB_TITLES_TABLE,
+    dbOrigDonorTable: process.env.DB_ORIG_DONOR_TABLE,
     emailHost: process.env.EMAIL_HOST,
     emailPort: process.env.EMAIL_PORT,
     emailFromAddress: process.env.EMAIL_FROM_ADDRESS,

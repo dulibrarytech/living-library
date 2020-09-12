@@ -4,7 +4,8 @@
   "description": "DU APP",
   "main": "repo.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate-data": "node migrate-data.js"
   },
   "author": "dev-email@du.edu",
   "license": "Apache",
