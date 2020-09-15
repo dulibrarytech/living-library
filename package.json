@@ -5,7 +5,7 @@
   "main": "repo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate-data": "node migrate-data.js"
+    "migrate-data": "cd utils && node migrate-data.js"
   },
   "author": "dev-email@du.edu",
   "license": "Apache",
