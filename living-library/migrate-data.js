@@ -24,25 +24,10 @@ const ASYNC = require('async'),
       DB = require('../config/db')(),
       CONFIG = require('../config/config');
 
-/*
-module.exports.migrateTest = function () {
-    console.log("Inside migrateTest function");
-    DB(CONFIG.dbOrigDonorTable)
-        .select('*')
-        .where({
-            donorID: 1
-        })
-        .then(function (data) {
-            console.log(data);
-        })
-        .catch(function (error) {
-            console.log('Error: ' + error);
-        });
-};
-*/
-
-console.log("donations table name = " + CONFIG.dbDonationsTable);
-console.log("donor table name = " + CONFIG.dbOrigDonorTable);
+if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
+    console.log('ERROR: CONFIG.dbOrigDonorTable is undefined. Make sure you ' +
+                'are running this script from within its own directory.');
+}
 
 DB(CONFIG.dbOrigDonorTable)
     .select('*')
