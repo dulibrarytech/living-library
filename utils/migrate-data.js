@@ -29,27 +29,60 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
                 'are running this script from within its own directory.');
 }
 
-/*
-  SELECT person_id, GROUP_CONCAT(hobbies SEPARATOR ', ')
-  FROM peoples_hobbies
-  GROUP BY person_id;
-*/
+let id = 10;
 
 DB(CONFIG.dbOrigDonorTable)
     .join(CONFIG.dbOrigDonationAmountTable,
           CONFIG.dbOrigDonorTable + '.donorID', '=',
           CONFIG.dbOrigDonationAmountTable + '.donorID')
-    .join(CONFIG.dbOrigDonationSubjectAreaTable,
-          CONFIG.dbOrigDonorTable + '.donorID', '=',
-          CONFIG.dbOrigDonationSubjectAreaTable + '.donorID')
-    .select(CONFIG.dbOrigDonorTable + '.donorID as id',
-            CONFIG.dbOrigDonorTable + '.donorTitle as donor_title',
-            CONFIG.dbOrigDonorTable + '.donorFirstName as donor_first_name',
-            CONFIG.dbOrigDonorTable + '.donorLastName as donor_last_name',
-            DB.raw('GROUP_CONCAT(`subject`) as `donor_subject_areas`'))
-    .where(CONFIG.dbOrigDonorTable + '.donorID', 1)
-    .groupBy(CONFIG.dbOrigDonorTable + '.donorID')
+    .select('*')
+    .where(CONFIG.dbOrigDonorTable + '.donorID', id)
     .then(function (data) {
+        console.log('----Donor----');
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log('Error: ' + error);
+    });
+
+DB(CONFIG.dbOrigDonationSubjectAreaTable)
+    .select('donorID', 'subject')
+    .where('donorID', id)
+    .then(function (data) {
+        console.log('\n----Subject Areas----');
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log('Error: ' + error);
+    });
+
+DB(CONFIG.dbOrigNotifyTable)
+    .select('*')
+    .where('donorID', id)
+    .then(function (data) {
+        console.log('\n----Person to Notify----');
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log('Error: ' + error);
+    });
+
+DB(CONFIG.dbOrigRecipientTable)
+    .select('*')
+    .where('donorID', id)
+    .then(function (data) {
+        console.log('\n----Recipient----');
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log('Error: ' + error);
+    });
+
+DB(CONFIG.dbOrigBookTable)
+    .select('*')
+    .where('donorID', id)
+    .then(function (data) {
+        console.log('\n----Book----');
         console.log(data);
     })
     .catch(function (error) {
