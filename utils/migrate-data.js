@@ -24,8 +24,9 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 18;
-let error_msg_color = '\x1b[31m%s\x1b[0m',
+let id = 10;
+let error_msg_color = '\x1b[31m%s\x1b[0m', // red
+    warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
 
 if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
@@ -42,23 +43,31 @@ function query_donor_and_donation_amount(callback) {
         .join(CONFIG.dbOrigDonationAmountTable,
               CONFIG.dbOrigDonorTable + '.donorID', '=',
               CONFIG.dbOrigDonationAmountTable + '.donorID')
-        .select('*')
+        .select(CONFIG.dbOrigDonorTable + '.donorID as id')
         .where(CONFIG.dbOrigDonorTable + '.donorID', id)
         .then(function (data) {
             console.log('----Donor----');
             console.log(data);
-            console.log('Data for donor ' + data[0].donorID + ':');
-            obj.donor = {};
-            for (let property in data[0]) {
-                console.log(property + ' = ' + data[0][property]);
-                obj.donor[property] = data[0][property];
+            if (data.length === 0) {
+                console.warn(warning_msg_color, 'WARNING [query_donor_and_' +
+                             'donation_amount function]: Knex query returned ' +
+                             '0 results.');
+                return false;
+            } else {
+                obj.id = data[0].id;
+                obj.donor = {};
+                console.log('Data for donor ' + data[0].id + ':');
+                for (let property in data[0]) {
+                    console.log(property + ' = ' + data[0][property]);
+                    obj.donor[property] = data[0][property];
+                }
             }
             callback(null, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_donor_and_donation_' +
-                          'amount function] ' + error_msg_text + ': ' + error);
+                          'amount function]: ' + error_msg_text + ': ' + error);
         });
 }
 
@@ -70,6 +79,10 @@ function query_subject_area(obj, callback) {
         .then(function (data) {
             console.log('\n----Subject Areas----');
             console.log(data);
+            if (data.length === 0) {
+                console.warn(warning_msg_color, 'WARNING [query_subject_area ' +
+                             'function]: Knex query returned 0 results.');
+            }
             let subject_areas = [];
             for (let subject of data) {
                 subject_areas.push(subject.subject);
@@ -82,7 +95,7 @@ function query_subject_area(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_subject_area ' +
-                          'function] ' + error_msg_text + ': ' + error);
+                          'function]: ' + error_msg_text + ': ' + error);
         });
 }
 
@@ -155,7 +168,7 @@ ASYNC.waterfall([
     console.log(results);
 
     if (error) {
-        console.error(error_msg_color, 'ERROR [async.waterfall] ' +
+        console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
                       error_msg_text + ': ' + error);
     }
 
