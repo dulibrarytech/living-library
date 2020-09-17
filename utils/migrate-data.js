@@ -24,14 +24,15 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
-    console.log('ERROR: CONFIG.dbOrigDonorTable is undefined. Make sure you ' +
-                'are running this script from within its own directory.');
-}
-
 let id = 18;
 let error_msg_color = '\x1b[31m%s\x1b[0m',
     error_msg_text = 'Error when migrating data for id ' + id;
+
+if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
+    console.error(error_msg_color, 'ERROR: CONFIG.dbOrigDonorTable is ' +
+                  'undefined. Make sure you are running this script from ' +
+                  'within its own directory.');
+}
 
 // 1.)
 function query_donor_and_donation_amount(callback) {
