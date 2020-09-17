@@ -22,8 +22,7 @@ require('dotenv').config({ path: '../.env' });
 
 const ASYNC = require('async'),
       CONFIG = require('../config/config'),
-      DB = require('../config/db')(),
-      LOGGER = require('../libs/log4');
+      DB = require('../config/db')();
 
 if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
     console.log('ERROR: CONFIG.dbOrigDonorTable is undefined. Make sure you ' +
@@ -31,6 +30,8 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
 }
 
 let id = 18;
+let error_msg_color = '\x1b[31m%s\x1b[0m',
+    error_msg_text = 'Error when migrating data for id ' + id;
 
 // 1.)
 function query_donor_and_donation_amount(callback) {
@@ -55,10 +56,8 @@ function query_donor_and_donation_amount(callback) {
             return false;
         })
         .catch(function (error) {
-            LOGGER.module().error('ERROR [/utils/migrate-data module ' +
-                                  '(query_donor_and_donation_amount)] Error ' +
-                                  'when migrating data for id ' + id + ': ' +
-                                  error);
+            console.error(error_msg_color, 'ERROR [query_donor_and_donation_' +
+                          'amount function] ' + error_msg_text + ': ' + error);
         });
 }
 
@@ -81,9 +80,8 @@ function query_subject_area(obj, callback) {
             return false;
         })
         .catch(function (error) {
-            LOGGER.module().error('ERROR [/utils/migrate-data module ' +
-                                  '(query_subject_area)] Error when migrating ' +
-                                  'data for id ' + id + ': ' + error);
+            console.error(error_msg_color, 'ERROR [query_subject_area ' +
+                          'function] ' + error_msg_text + ': ' + error);
         });
 }
 
@@ -156,9 +154,8 @@ ASYNC.waterfall([
     console.log(results);
 
     if (error) {
-        LOGGER.module().error('ERROR: [/utils/migrate-data module ' +
-                              '(async.waterfall)] Error when migrating data ' +
-                              'for id ' + id + ': ' + error);
+        console.error(error_msg_color, 'ERROR [async.waterfall] ' +
+                      error_msg_text + ': ' + error);
     }
 
     console.log('\nEnd of migration attempt for record ' + id + '\n' +
