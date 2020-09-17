@@ -30,7 +30,7 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
                 'are running this script from within its own directory.');
 }
 
-let id = 10;
+let id = 18;
 
 // 1.)
 function query_donor_and_donation_amount(callback) {
@@ -45,7 +45,12 @@ function query_donor_and_donation_amount(callback) {
         .then(function (data) {
             console.log('----Donor----');
             console.log(data);
-            obj.donor = data;
+            console.log('Data for donor ' + data[0].donorID + ':');
+            obj.donor = {};
+            for (let property in data[0]) {
+                console.log(property + ' = ' + data[0][property]);
+                obj.donor[property] = data[0][property];
+            }
             callback(null, obj);
             return false;
         })
@@ -65,7 +70,13 @@ function query_subject_area(obj, callback) {
         .then(function (data) {
             console.log('\n----Subject Areas----');
             console.log(data);
-            obj.subject_areas = data;
+            let subject_areas = [];
+            for (let subject of data) {
+                subject_areas.push(subject.subject);
+            }
+            console.log('subject_areas = ');
+            console.log(subject_areas);
+            obj.donor.subject_areas = subject_areas;
             callback(null, obj);
             return false;
         })
