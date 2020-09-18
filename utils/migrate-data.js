@@ -24,7 +24,7 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 13;
+let id = 1;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -166,29 +166,39 @@ function query_who_to_notify(obj, callback) {
         });
 }
 
+// 4.)
+function query_recipient(obj, callback) {
+    DB(CONFIG.dbOrigRecipientTable)
+        .select('recipientTitle as recipient_title',
+                'recipientFirstName as recipient_first_name',
+                'recipientLastName as recipient_last_name',
+                'recipientDonationType as recipient_donation_type')
+        .where('donorID', id)
+        .then(function (data) {
+            console.log('\n----Recipient----');
+            console.log(data);
+            if (data.length === 0) {
+                console.warn(warning_msg_color, 'WARNING [query_recipient ' +
+                             'function]: Knex query returned 0 results.');
+                obj.recipient = null;
+            } else {
+                obj.recipient = {};
+                for (let property in data[0]) {
+                    console.log(property + ' = ' + data[0][property]);
+                    obj.recipient[property] =
+                        trim_value_if_string(data[0][property]);
+                }
+            }
+            callback(null, obj);
+            return false;
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR [query_recipient function]: '
+                          + error_msg_text + ': ' + error);
+        });
+}
+
 /*
-DB(CONFIG.dbOrigNotifyTable)
-    .select('*')
-    .where('donorID', id)
-    .then(function (data) {
-        console.log('\n----Person to Notify----');
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log('Error: ' + error);
-    });
-
-DB(CONFIG.dbOrigRecipientTable)
-    .select('*')
-    .where('donorID', id)
-    .then(function (data) {
-        console.log('\n----Recipient----');
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log('Error: ' + error);
-    });
-
 DB(CONFIG.dbOrigBookTable)
     .select('*')
     .where('donorID', id)
@@ -204,7 +214,8 @@ DB(CONFIG.dbOrigBookTable)
 ASYNC.waterfall([
    query_donor_and_donation_amount,
    query_subject_area,
-   query_who_to_notify
+   query_who_to_notify,
+   query_recipient
 ], function (error, results) {
     console.log('\nInside waterfall function');
     console.log('results (as object) = ');
