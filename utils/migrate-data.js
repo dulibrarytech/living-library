@@ -43,7 +43,17 @@ function query_donor_and_donation_amount(callback) {
         .join(CONFIG.dbOrigDonationAmountTable,
               CONFIG.dbOrigDonorTable + '.donorID', '=',
               CONFIG.dbOrigDonationAmountTable + '.donorID')
-        .select(CONFIG.dbOrigDonorTable + '.donorID as id')
+        .select(CONFIG.dbOrigDonorTable + '.donorID as id',
+                'donorTitle as donor_title',
+                'donorFirstName as donor_first_name',
+                'donorLastName as donor_last_name',
+                'donorAddress as donor_address',
+                'donorCity as donor_city',
+                'donorState as donor_state',
+                'donorZip as donor_zip',
+                'amountOfDonation as donor_amount_of_donation',
+                'dateOfDonation as donor_date_of_donation',
+                'donorNotes as donor_notes')
         .where(CONFIG.dbOrigDonorTable + '.donorID', id)
         .then(function (data) {
             console.log('----Donor----');
@@ -59,7 +69,9 @@ function query_donor_and_donation_amount(callback) {
                 console.log('Data for donor ' + data[0].id + ':');
                 for (let property in data[0]) {
                     console.log(property + ' = ' + data[0][property]);
-                    obj.donor[property] = data[0][property];
+                    if (property !== 'id') {
+                        obj.donor[property] = data[0][property];
+                    }
                 }
             }
             callback(null, obj);
@@ -89,7 +101,7 @@ function query_subject_area(obj, callback) {
             }
             console.log('subject_areas = ');
             console.log(subject_areas);
-            obj.donor.subject_areas = subject_areas;
+            obj.donor.donor_subject_areas = subject_areas;
             callback(null, obj);
             return false;
         })
