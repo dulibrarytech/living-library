@@ -24,7 +24,7 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 100;
+let id = 183;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -177,9 +177,12 @@ function query_recipient(obj, callback) {
         .then(function (data) {
             console.log('\n----Recipient----');
             console.log(data);
-            if (data.length === 0) {
+            if (data.length === 0 || data.length > 1) {
                 console.warn(warning_msg_color, 'WARNING [query_recipient ' +
-                             'function]: Knex query returned 0 results.');
+                             'function]: Knex query returned ' + data.length +
+                             ' results.');
+            }
+            if (data.length === 0) {
                 obj.recipient = null;
             } else {
                 obj.recipient = {};
@@ -212,9 +215,12 @@ function query_book(obj, callback) {
         .then(function (data) {
             console.log('\n----Book----');
             console.log(data);
-            if (data.length === 0) {
+            if (data.length === 0 || data.length > 1) {
                 console.warn(warning_msg_color, 'WARNING [query_book ' +
-                             'function]: Knex query returned 0 results.');
+                             'function]: Knex query returned ' + data.length +
+                             ' results.');
+            }
+            if (data.length === 0) {
                 obj.book = null;
                 obj.is_completed = 0;
             } else {
