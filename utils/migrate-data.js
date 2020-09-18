@@ -24,7 +24,7 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 183;
+let id = 157;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -73,7 +73,7 @@ function query_donor_and_donation_amount(callback) {
                     console.log(property + ' = ' + data[0][property]);
                     if (property !== 'id' && property !== 'created') {
                         obj.donor[property] =
-                            trim_value_if_string(data[0][property]);
+                            get_valid_value(data[0][property]);
                     }
                 }
             }
@@ -100,7 +100,7 @@ function query_subject_area(obj, callback) {
             }
             let subject_areas = [];
             for (let subject of data) {
-                subject_areas.push(trim_value_if_string(subject.subject));
+                subject_areas.push(get_valid_value(subject.subject));
             }
             console.log('subject_areas = ');
             console.log(subject_areas);
@@ -140,7 +140,7 @@ function query_who_to_notify(obj, callback) {
                 for (let property in person_to_notify) {
                     console.log(property + ' = ' + person_to_notify[property]);
                     person_obj[property] =
-                        trim_value_if_string(person_to_notify[property]);
+                        get_valid_value(person_to_notify[property]);
                     if (person_obj[property] !== '') {
                         containsNonEmptyElementValue = true;
                     }
@@ -189,7 +189,7 @@ function query_recipient(obj, callback) {
                 for (let property in data[0]) {
                     console.log(property + ' = ' + data[0][property]);
                     obj.recipient[property] =
-                        trim_value_if_string(data[0][property]);
+                        get_valid_value(data[0][property]);
                 }
             }
             callback(null, obj);
@@ -227,8 +227,7 @@ function query_book(obj, callback) {
                 obj.book = {};
                 for (let property in data[0]) {
                     console.log(property + ' = ' + data[0][property]);
-                    obj.book[property] =
-                        trim_value_if_string(data[0][property]);
+                    obj.book[property] = get_valid_value(data[0][property]);
                 }
                 obj.is_completed = 1;
             }
@@ -263,11 +262,17 @@ ASYNC.waterfall([
 });
 
 /**
- * If string, returns trimmed value; if not a string, returns value as is
+ * If string, returns trimmed value (and removes the '.' character if that's the
+ * only character in the string after trimming); if not a string, returns value
+ * as is.
  * @param    {(number|string)}    value    the value to check
- * @returns  {(number|string)}             the trimmed string (if value is
+ * @returns  {(number|string)}             the trimmed string (if value is a
  *                                         string); otherwise, the value as is
  */
-const trim_value_if_string = function (value) {
-    return typeof value === 'string' ? value.trim() : value;
+const get_valid_value = function (value) {
+    if (typeof value === 'string') {
+        value = value.trim();
+        return value === '.' ? '' : value;
+    }
+    return value;
 };
