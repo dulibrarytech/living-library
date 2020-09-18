@@ -24,7 +24,7 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 1;
+let id = 100;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -198,24 +198,49 @@ function query_recipient(obj, callback) {
         });
 }
 
-/*
-DB(CONFIG.dbOrigBookTable)
-    .select('*')
-    .where('donorID', id)
-    .then(function (data) {
-        console.log('\n----Book----');
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log('Error: ' + error);
-    });
-*/
+// 5.)
+function query_book(obj, callback) {
+    DB(CONFIG.dbOrigBookTable)
+        .select('authorName as book_author_name',
+                'bookTitle as book_title',
+                'bibliographicNumber as book_bibliographic_number',
+                'callNumber as book_call_number',
+                'publisher as book_publisher',
+                'datePublished as book_date_published',
+                'timestamp as book_timestamp')
+        .where('donorID', id)
+        .then(function (data) {
+            console.log('\n----Book----');
+            console.log(data);
+            if (data.length === 0) {
+                console.warn(warning_msg_color, 'WARNING [query_book ' +
+                             'function]: Knex query returned 0 results.');
+                obj.book = null;
+                obj.is_completed = 0;
+            } else {
+                obj.book = {};
+                for (let property in data[0]) {
+                    console.log(property + ' = ' + data[0][property]);
+                    obj.book[property] =
+                        trim_value_if_string(data[0][property]);
+                }
+                obj.is_completed = 1;
+            }
+            callback(null, obj);
+            return false;
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR [query_book function]: ' +
+                          error_msg_text + ': ' + error);
+        });
+}
 
 ASYNC.waterfall([
    query_donor_and_donation_amount,
    query_subject_area,
    query_who_to_notify,
-   query_recipient
+   query_recipient,
+   query_book
 ], function (error, results) {
     console.log('\nInside waterfall function');
     console.log('results (as object) = ');
