@@ -82,7 +82,8 @@ function query_donor_and_donation_amount(callback) {
                                              'of_donation = ' +
                                              data[0][property] + ', which is ' +
                                              'not a valid number.');
-                                obj.donor[property] = data[0][property];
+                                obj.donor[property] =
+                                    get_valid_value(data[0][property]);
                             } else {
                                 obj.donor[property] = amount;
                             }
