@@ -24,7 +24,7 @@ const ASYNC = require('async'),
       CONFIG = require('../config/config'),
       DB = require('../config/db')();
 
-let id = 157;
+let id = 102;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -72,8 +72,24 @@ function query_donor_and_donation_amount(callback) {
                 for (let property in data[0]) {
                     console.log(property + ' = ' + data[0][property]);
                     if (property !== 'id' && property !== 'created') {
-                        obj.donor[property] =
-                            get_valid_value(data[0][property]);
+                        if (property === 'donor_amount_of_donation') {
+                            // try to convert string to number
+                            let amount = Number(data[0][property]);
+                            if (isNaN(amount)) {
+                                console.warn(warning_msg_color, 'WARNING ' +
+                                             '[query_donor_and_donation_' +
+                                             'amount function]: donor_amount_' +
+                                             'of_donation = ' +
+                                             data[0][property] + ', which is ' +
+                                             'not a valid number.');
+                                obj.donor[property] = data[0][property];
+                            } else {
+                                obj.donor[property] = amount;
+                            }
+                        } else {
+                            obj.donor[property] =
+                                get_valid_value(data[0][property]);
+                        }
                     }
                 }
             }
