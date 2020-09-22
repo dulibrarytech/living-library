@@ -896,30 +896,14 @@ exports.update = function (req, callback) {
             book.book_publisher = "";
             book.book_date_published = "";
 
-            // book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
-            book.book_timestamp = MOMENT().toISOString();
+            /**
+             * This creates a non-ISO-8601-compliant timestamp in local time:
+             * book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
+             */
 
+            // Create ISO 8601-compliant timestamp in UTC time
+            book.book_timestamp = MOMENT().toISOString();
             console.log("\nbook_timestamp = " + book.book_timestamp);
-            console.log("typeof book_timestamp = " + typeof book.book_timestamp);
-            console.log("MOMENT().toISOString() = " + MOMENT().toISOString());
-            console.log('MOMENT().format("YYYY-MM-DD HH:mm:ss") = ' + MOMENT().format("YYYY-MM-DD HH:mm:ss"));
-            console.log("MOMENT().format() = " + MOMENT().format());
-            console.log("MOMENT().utc() = " + MOMENT().utc());
-            console.log("MOMENT().utc().format() = " + MOMENT().utc().format());
-            let time = MOMENT.utc('2015-09-15T17:06:39.000Z');
-            console.log("time = MOMENT.utc('2015-09-15T17:06:39.000Z') = " + time);
-            console.log("time.format() = " + time.format());
-            console.log("time.toISOString() = " + time.toISOString());
-            time.local();
-            console.log("After time.local(), time = " + time);
-            console.log("time.format() = " + time.format());
-            console.log("time.toISOString() = " + time.toISOString());
-            console.log('time.format("YYYY-MM-DD") = ' + time.format("YYYY-MM-DD"));
-            time.utc();
-            console.log("After time.utc(), time = " + time);
-            console.log("time.format() = " + time.format());
-            console.log("time.toISOString() = " + time.toISOString());
-            console.log('time.format("YYYY-MM-DD") = ' + time.format("YYYY-MM-DD"));
 
             book = JSON.stringify(book);
             console.log("\nbook after adding fields: ");
