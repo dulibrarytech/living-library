@@ -919,6 +919,8 @@ const get_completed_donation = function (url) {
                 console.log('After parsing JSON, book = ');
                 console.log(book);
                 console.log('typeof book = ' + typeof book);
+                console.log('book.book_timestamp = ' + book.book_timestamp);
+                console.log('typeof book.book_timestamp = ' + typeof book.book_timestamp);
 
                 let html = '<h4>Person making donation</h4>';
                 html += '<dl>';
