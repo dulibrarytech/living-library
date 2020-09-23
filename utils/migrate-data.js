@@ -22,9 +22,10 @@ require('dotenv').config({ path: '../.env' });
 
 const ASYNC = require('async'),
       CONFIG = require('../config/config'),
-      DB = require('../config/db')();
+      DB = require('../config/db')(),
+      MOMENT = require('moment');
 
-let id = 102;
+let id = 10;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -87,6 +88,11 @@ function query_donor_and_donation_amount(callback) {
                             } else {
                                 obj.donor[property] = amount;
                             }
+                        } else if (property === 'donor_date_of_donation') {
+                            let date = MOMENT(data[0][property]);
+                            obj.donor[property] = date.format('YYYY-MM-DD');
+                            console.log('obj.donor[' + property + '] = ' +
+                                        obj.donor[property]);
                         } else {
                             obj.donor[property] =
                                 get_valid_value(data[0][property]);
@@ -257,23 +263,50 @@ function query_book(obj, callback) {
         });
 }
 
+// 6.)
+function add_donation_to_db(obj, callback) {
+    console.log('Before stringifying JSON fields, obj = ');
+    console.log(obj);
+
+    // Stringify JSON fields
+    obj.donor = JSON.stringify(obj.donor);
+    obj.who_to_notify = JSON.stringify(obj.who_to_notify);
+    obj.recipient = JSON.stringify(obj.recipient);
+    if (obj.book !== null) {
+        obj.book = JSON.stringify(obj.book);
+    }
+
+    console.log('After stringifying JSON fields, obj = ');
+    console.log(obj);
+
+    DB(CONFIG.dbDonationsTable)
+        .insert(obj)
+        .then(function (data) {
+            console.log('Successfully added donation record to database. ' +
+                        'New id = ' + data);
+            callback(null, obj);
+            return false;
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR [add_donation_to_db ' +
+                          'function]: ' + error_msg_text + ': ' + error);
+        });
+}
+
 ASYNC.waterfall([
    query_donor_and_donation_amount,
    query_subject_area,
    query_who_to_notify,
    query_recipient,
-   query_book
+   query_book,
+   add_donation_to_db
 ], function (error, results) {
     console.log('\nInside waterfall function');
-    console.log('results (as object) = ');
-    console.log(results);
-    console.log('results (as stringified JSON) = ' + JSON.stringify(results));
 
     if (error) {
         console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
                       error_msg_text + ': ' + error);
     }
-
     console.log('\nEnd of migration attempt for record ' + id + '\n' +
                 '=====================\n');
 });
