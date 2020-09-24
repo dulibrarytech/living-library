@@ -88,10 +88,19 @@ dt {
   font-weight: bold;
 }
 
+dd {
+  /* Preserves whitespace; newline chars result in line breaks */
+  white-space: pre-wrap;
+  /* Clearfix hack to prevent overflow */
+  overflow: auto;
+}
+
 dd::after {
-  display: table;
-  content: "";
-  clear: both;
+  /*
+   * Ensures that empty dd elements still occupy their own position (no other
+   * element is stacked on top of them)
+   */
+  content: " ";
 }
 
 /* Style for required form fields */
