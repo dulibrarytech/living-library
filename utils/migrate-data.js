@@ -36,6 +36,86 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
                   'within its own directory.');
 }
 
+// 0.) <--- Fix numbering to start with 1
+function get_count_of_records_to_migrate(callback) {
+    DB(CONFIG.dbOrigDonorTable)
+        .count('donorID as num_records')
+        .then(function (data) {
+            console.log('Count of donation records = ');
+            console.log(data);
+            if (data.length === 1) {
+                console.log('\nThere are ' + data[0].num_records + ' records ' +
+                            'to migrate.');
+                callback(null, data[0].num_records);
+            } else {
+                console.error(error_msg_color, 'ERROR [get_count_of_records_' +
+                              'to_migrate function]: Knex query returned ' +
+                              data.length + ' results, whereas one result ' +
+                              '(the record count) was expected.');
+            }
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR: [get_count_of_records_to_' +
+                          'migrate function]: ' + error_msg_text + ': ' +
+                          error);
+        });
+}
+
+// 0.) <--- Fix numbering to start with 1
+function reset_flags(num_records, callback) {
+    console.log('Inside reset_flags function');
+
+    /*
+    let num_reset = (async function() {
+        await set_is_migrated_flag1(0);
+    })();
+
+    if (num_reset === num_records) {
+        console.log('Successfully reset isMigrated flag for all ' +
+                    num_records + ' records.\n');
+        callback(null);
+    } else {
+        console.error(error_msg_color, 'ERROR [reset_flags function]: '
+                      + 'Reset isMigrated flag for ' + num_reset
+                      + ' out of ' + num_records + ' records.');
+    }
+
+    num_reset
+        .then(function (num_reset) {
+            if (num_reset === num_records) {
+                console.log('Successfully reset isMigrated flag for all ' +
+                            num_records + ' records.\n');
+                callback(null);
+            } else {
+                console.error(error_msg_color, 'ERROR [reset_flags function]: '
+                              + 'Reset isMigrated flag for ' + num_reset
+                              + ' out of ' + num_records + ' records.');
+            }
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR: [reset_flags function]: ' +
+                          error_msg_text + ': ' + error);
+        });
+    */
+
+    set_is_migrated_flag(0)
+        .then(function (num_reset) {
+            if (num_reset === num_records) {
+                console.log('Successfully reset isMigrated flag for all ' +
+                            num_records + ' records.\n');
+                callback(null);
+            } else {
+                console.error(error_msg_color, 'ERROR [reset_flags function]: '
+                              + 'Reset isMigrated flag for ' + num_reset
+                              + ' out of ' + num_records + ' records.');
+            }
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR: [reset_flags function]: ' +
+                          error_msg_text + ': ' + error);
+        });
+}
+
 // 1.)
 function query_donor_and_donation_amount(callback) {
     let obj = {};
@@ -293,13 +373,31 @@ function add_donation_to_db(obj, callback) {
         });
 }
 
+// 7.)
+function set_flag(obj, callback) {
+    DB(CONFIG.dbDonationsTable)
+        .insert(obj)
+        .then(function (data) {
+            console.log('Successfully added donation record to database. ' +
+                        'New id = ' + data);
+            callback(null, obj);
+            return false;
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR [add_donation_to_db ' +
+                          'function]: ' + error_msg_text + ': ' + error);
+        });
+}
+
 ASYNC.waterfall([
-   query_donor_and_donation_amount,
-   query_subject_area,
-   query_who_to_notify,
-   query_recipient,
-   query_book,
-   add_donation_to_db
+    get_count_of_records_to_migrate,
+    reset_flags,
+    query_donor_and_donation_amount,
+    query_subject_area,
+    query_who_to_notify,
+    query_recipient,
+    query_book,
+    add_donation_to_db
 ], function (error, results) {
     console.log('\nInside waterfall function');
 
@@ -325,4 +423,34 @@ const get_valid_value = function (value) {
         return value === '.' ? '' : value;
     }
     return value;
+};
+
+/**
+ * Sets isMigrated flag in original database's donor table.
+ * @param    {number}    is_migrated_value    the isMigrated field's new value
+ * @param    {number}    id                   the id of the record to be updated
+ *                                            (defaults to -1, meaning update
+ *                                            all records)
+ * @returns  {Promise}                        a resolved Promise with the number
+ *                                            of records that were updated by
+ *                                            the Knex query
+ */
+const set_is_migrated_flag = function (is_migrated_value, id = -1) {
+    DB(CONFIG.dbOrigDonorTable)
+        .modify(function(query_builder) {
+            if (id !== -1) {
+                query_builder.where({
+                    donorID: id
+                });
+            }
+        })
+        .update('isMigrated', is_migrated_value)
+        .then(function (num_reset) {
+            console.log('Reset ' + num_reset + ' records.');
+            return Promise.resolve(num_reset);
+        })
+        .catch(function (error) {
+            console.error(error_msg_color, 'ERROR: [set_is_migrated_flag ' +
+                          'function]: ' + error_msg_text + ': ' + error);
+        });
 };
