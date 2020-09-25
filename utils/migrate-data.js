@@ -25,10 +25,8 @@ const ASYNC = require('async'),
       DB = require('../config/db')(),
       MOMENT = require('moment');
 
-let id = 13;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
-    warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
-    error_msg_text = 'Error when migrating data for id ' + id;
+    warning_msg_color = '\x1b[35m%s\x1b[0m'; // magenta
 
 if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
     console.error(error_msg_color, 'ERROR: CONFIG.dbOrigDonorTable is ' +
@@ -73,7 +71,8 @@ function query_donor_and_donation_amount(callback) {
                 'dateOfDonation as donor_date_of_donation',
                 'donorNotes as donor_notes',
                 CONFIG.dbOrigDonorTable + '.timestamp as created')
-        .where(CONFIG.dbOrigDonorTable + '.donorID', id)
+        .where(CONFIG.dbOrigDonorTable + '.isMigrated', 0)
+        .limit(1)
         .then(function (data) {
             console.log('\n----Donor----');
             console.log(data);
@@ -122,7 +121,8 @@ function query_donor_and_donation_amount(callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_donor_and_donation_' +
-                          'amount function]: ' + error_msg_text + ': ' + error);
+                          'amount function]: ' + get_error_msg_text(obj.id) +
+                          ': ' + error);
         });
 }
 
@@ -130,7 +130,7 @@ function query_donor_and_donation_amount(callback) {
 function query_subject_area(obj, callback) {
     DB(CONFIG.dbOrigDonationSubjectAreaTable)
         .select('donorID', 'subject')
-        .where('donorID', id)
+        .where('donorID', obj.id)
         .then(function (data) {
             console.log('\n----Subject Areas----');
             console.log(data);
@@ -150,7 +150,8 @@ function query_subject_area(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_subject_area ' +
-                          'function]: ' + error_msg_text + ': ' + error);
+                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          error);
         });
 }
 
@@ -165,7 +166,7 @@ function query_who_to_notify(obj, callback) {
                 'notifyState as notify_state',
                 'notifyZip as notify_zip',
                 'notifyRelationToDonor as notify_relation_to_donor')
-        .where('donorID', id)
+        .where('donorID', obj.id)
         .then(function (data) {
             console.log('\n----Person to Notify----');
             console.log(data);
@@ -189,9 +190,9 @@ function query_who_to_notify(obj, callback) {
                     who_to_notify.push(person_obj);
                 } else {
                     console.warn(warning_msg_color, 'WARNING [query_who_to_' +
-                                 'notify function]: id ' + id + ' contains ' +
-                                 'empty record in ' + CONFIG.dbOrigNotifyTable +
-                                 ' table.');
+                                 'notify function]: id ' + obj.id +
+                                 ' contains empty record in ' +
+                                 CONFIG.dbOrigNotifyTable + ' table.');
                 }
             }
             console.log('who_to_notify = ');
@@ -202,7 +203,8 @@ function query_who_to_notify(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_who_to_notify ' +
-                          'function]: ' + error_msg_text + ': ' + error);
+                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          error);
         });
 }
 
@@ -213,7 +215,7 @@ function query_recipient(obj, callback) {
                 'recipientFirstName as recipient_first_name',
                 'recipientLastName as recipient_last_name',
                 'recipientDonationType as recipient_donation_type')
-        .where('donorID', id)
+        .where('donorID', obj.id)
         .then(function (data) {
             console.log('\n----Recipient----');
             console.log(data);
@@ -237,7 +239,7 @@ function query_recipient(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_recipient function]: '
-                          + error_msg_text + ': ' + error);
+                          + get_error_msg_text(obj.id) + ': ' + error);
         });
 }
 
@@ -251,7 +253,7 @@ function query_book(obj, callback) {
                 'publisher as book_publisher',
                 'datePublished as book_date_published',
                 'timestamp as book_timestamp')
-        .where('donorID', id)
+        .where('donorID', obj.id)
         .then(function (data) {
             console.log('\n----Book----');
             console.log(data);
@@ -276,7 +278,7 @@ function query_book(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_book function]: ' +
-                          error_msg_text + ': ' + error);
+                          get_error_msg_text(obj.id) + ': ' + error);
         });
 }
 
@@ -306,7 +308,8 @@ function add_donation_to_db(obj, callback) {
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [add_donation_to_db ' +
-                          'function]: ' + error_msg_text + ': ' + error);
+                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          error);
         });
 }
 
@@ -314,24 +317,25 @@ function add_donation_to_db(obj, callback) {
 function set_isMigrated_flag(obj, callback) {
     DB(CONFIG.dbOrigDonorTable)
         .where({
-            donorID: id
+            donorID: obj.id
         })
         .update('isMigrated', 1)
         .then(function (num_reset) {
             if (num_reset === 1) {
-                console.log('Successfully set isMigrated flag for id ' + id +
-                            '.');
-                callback(null);
+                console.log('Successfully set isMigrated flag for id ' +
+                            obj.id);
+                callback(null, obj);
             } else {
                 console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
                               'function]: isMigrated flag for record with id ' +
-                              id + ' may not have been updated because ' +
+                              obj.id + ' may not have been updated because ' +
                               'num_reset = ' + num_reset);
             }
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
-                          'function]: ' + error_msg_text + ': ' + error);
+                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          error);
         });
 }
 
@@ -348,11 +352,20 @@ ASYNC.waterfall([
 
     if (error) {
         console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
-                      error_msg_text + ': ' + error);
+                      get_error_msg_text(results.id) + ': ' + error);
     }
-    console.log('\nEnd of migration attempt for record ' + id + '\n' +
+    console.log('\nEnd of migration attempt for record ' + results.id + '\n' +
                 '=====================\n');
 });
+
+/**
+ * Returns error message text for the given id.
+ * @param    {(number|string)}    id    the id of the relevant record
+ * @returns  {string}                   the error message text
+ */
+const get_error_msg_text = function (id) {
+    return 'Error when migrating data for id ' + id;
+};
 
 /**
  * If string, returns trimmed value (and removes the '.' character if that's the
