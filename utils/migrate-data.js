@@ -25,7 +25,7 @@ const ASYNC = require('async'),
       DB = require('../config/db')(),
       MOMENT = require('moment');
 
-let id = 10;
+let id = 13;
 let error_msg_color = '\x1b[31m%s\x1b[0m', // red
     warning_msg_color = '\x1b[35m%s\x1b[0m', // magenta
     error_msg_text = 'Error when migrating data for id ' + id;
@@ -36,26 +36,22 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
                   'within its own directory.');
 }
 
-// 0.) <--- Fix numbering to start with 1
-function reset_isMigrated_flags(callback) {
-    DB(CONFIG.dbOrigDonorTable)
-        .update('isMigrated', 0)
-        .then(function (num_reset) {
-            if (num_reset > 0) {
-                console.log('Successfully reset isMigrated flag for ' +
-                            num_reset + ' records.\n');
-                callback(null);
-            } else {
-                console.error(error_msg_color, 'ERROR: [reset_isMigrated_' +
-                              'flags function]: Unable to reset isMigrated ' +
-                              'flags. Records updated = ' + num_reset);
-            }
-        })
-        .catch(function (error) {
-            console.error(error_msg_color, 'ERROR: [reset_isMigrated_flags ' +
-                          'function]: ' + error_msg_text + ': ' + error);
-        });
-}
+// Reset isMigrated flags in source database table
+DB(CONFIG.dbOrigDonorTable)
+    .update('isMigrated', 0)
+    .then(function (num_reset) {
+        if (num_reset > 0) {
+            console.log('Successfully reset isMigrated flag for ' +
+                        num_reset + ' records.');
+        } else {
+            console.error(error_msg_color, 'ERROR: Unable to reset isMigrated '
+                          + 'flags. Records updated = ' + num_reset);
+        }
+    })
+    .catch(function (error) {
+        console.error(error_msg_color, 'ERROR during or after Knex query to ' +
+                      'reset isMigrated flags: ' + error);
+    });
 
 // 1.)
 function query_donor_and_donation_amount(callback) {
@@ -79,7 +75,7 @@ function query_donor_and_donation_amount(callback) {
                 CONFIG.dbOrigDonorTable + '.timestamp as created')
         .where(CONFIG.dbOrigDonorTable + '.donorID', id)
         .then(function (data) {
-            console.log('----Donor----');
+            console.log('\n----Donor----');
             console.log(data);
             if (data.length === 0) {
                 console.warn(warning_msg_color, 'WARNING [query_donor_and_' +
@@ -340,7 +336,6 @@ function set_isMigrated_flag(obj, callback) {
 }
 
 ASYNC.waterfall([
-    reset_isMigrated_flags,
     query_donor_and_donation_amount,
     query_subject_area,
     query_who_to_notify,
