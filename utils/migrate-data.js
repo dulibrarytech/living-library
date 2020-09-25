@@ -74,6 +74,11 @@ function query_donor_and_donation_amount(callback) {
         .where(CONFIG.dbOrigDonorTable + '.isMigrated', 0)
         .limit(1)
         .then(function (data) {
+            if (data.length === 0) {
+                clearInterval(timer);
+                return false;
+            }
+
             console.log('\n----Donor----');
             console.log(data);
             if (data.length === 0) {
@@ -339,24 +344,26 @@ function set_isMigrated_flag(obj, callback) {
         });
 }
 
-ASYNC.waterfall([
-    query_donor_and_donation_amount,
-    query_subject_area,
-    query_who_to_notify,
-    query_recipient,
-    query_book,
-    add_donation_to_db,
-    set_isMigrated_flag
-], function (error, results) {
-    console.log('\nInside waterfall function');
+let timer = setInterval(function () {
+    ASYNC.waterfall([
+        query_donor_and_donation_amount,
+        query_subject_area,
+        query_who_to_notify,
+        query_recipient,
+        query_book,
+        add_donation_to_db,
+        set_isMigrated_flag
+    ], function (error, results) {
+        console.log('\nInside waterfall function');
 
-    if (error) {
-        console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
-                      get_error_msg_text(results.id) + ': ' + error);
-    }
-    console.log('\nEnd of migration attempt for record ' + results.id + '\n' +
-                '=====================\n');
-});
+        if (error) {
+            console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
+                          get_error_msg_text(results.id) + ': ' + error);
+        }
+        console.log('\nEnd of migration attempt for record ' + results.id + '\n' +
+                    '=====================\n');
+    });
+}, 500);
 
 /**
  * Returns error message text for the given id.
