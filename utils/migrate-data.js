@@ -35,6 +35,7 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
 }
 
 // Reset isMigrated flags in source database table
+/*
 DB(CONFIG.dbOrigDonorTable)
     .update('isMigrated', 0)
     .then(function (num_reset) {
@@ -50,10 +51,11 @@ DB(CONFIG.dbOrigDonorTable)
         console.error(error_msg_color, 'ERROR during or after Knex query to ' +
                       'reset isMigrated flags: ' + error);
     });
-
+*/
 // 1.)
 function query_donor_and_donation_amount(callback) {
-    let obj = {};
+    let obj = {},
+        id;
 
     DB(CONFIG.dbOrigDonorTable)
         .join(CONFIG.dbOrigDonationAmountTable,
@@ -76,7 +78,8 @@ function query_donor_and_donation_amount(callback) {
         .then(function (data) {
             if (data.length === 0) {
                 clearInterval(timer);
-                return false;
+                console.log('Migration completed. Press CTRL-C to exit.');
+                return;
             }
 
             console.log('\n----Donor----');
@@ -87,7 +90,7 @@ function query_donor_and_donation_amount(callback) {
                              '0 results.');
                 return false;
             } else {
-                obj.id = data[0].id;
+                id = data[0].id;
                 obj.created = data[0].created;
                 obj.donor = {};
                 console.log('Data for donor ' + data[0].id + ':');
@@ -121,21 +124,21 @@ function query_donor_and_donation_amount(callback) {
                     }
                 }
             }
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_donor_and_donation_' +
-                          'amount function]: ' + get_error_msg_text(obj.id) +
+                          'amount function]: ' + get_error_msg_text(id) +
                           ': ' + error);
         });
 }
 
 // 2.)
-function query_subject_area(obj, callback) {
+function query_subject_area(id, obj, callback) {
     DB(CONFIG.dbOrigDonationSubjectAreaTable)
         .select('donorID', 'subject')
-        .where('donorID', obj.id)
+        .where('donorID', id)
         .then(function (data) {
             console.log('\n----Subject Areas----');
             console.log(data);
@@ -150,18 +153,18 @@ function query_subject_area(obj, callback) {
             console.log('subject_areas = ');
             console.log(subject_areas);
             obj.donor.donor_subject_areas = subject_areas;
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_subject_area ' +
-                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
         });
 }
 
 // 3.)
-function query_who_to_notify(obj, callback) {
+function query_who_to_notify(id, obj, callback) {
     DB(CONFIG.dbOrigNotifyTable)
         .select('notifyTitle as notify_title',
                 'notifyFirstName as notify_first_name',
@@ -171,7 +174,7 @@ function query_who_to_notify(obj, callback) {
                 'notifyState as notify_state',
                 'notifyZip as notify_zip',
                 'notifyRelationToDonor as notify_relation_to_donor')
-        .where('donorID', obj.id)
+        .where('donorID', id)
         .then(function (data) {
             console.log('\n----Person to Notify----');
             console.log(data);
@@ -195,7 +198,7 @@ function query_who_to_notify(obj, callback) {
                     who_to_notify.push(person_obj);
                 } else {
                     console.warn(warning_msg_color, 'WARNING [query_who_to_' +
-                                 'notify function]: id ' + obj.id +
+                                 'notify function]: id ' + id +
                                  ' contains empty record in ' +
                                  CONFIG.dbOrigNotifyTable + ' table.');
                 }
@@ -203,24 +206,24 @@ function query_who_to_notify(obj, callback) {
             console.log('who_to_notify = ');
             console.log(who_to_notify);
             obj.who_to_notify = who_to_notify;
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_who_to_notify ' +
-                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
         });
 }
 
 // 4.)
-function query_recipient(obj, callback) {
+function query_recipient(id, obj, callback) {
     DB(CONFIG.dbOrigRecipientTable)
         .select('recipientTitle as recipient_title',
                 'recipientFirstName as recipient_first_name',
                 'recipientLastName as recipient_last_name',
                 'recipientDonationType as recipient_donation_type')
-        .where('donorID', obj.id)
+        .where('donorID', id)
         .then(function (data) {
             console.log('\n----Recipient----');
             console.log(data);
@@ -239,17 +242,17 @@ function query_recipient(obj, callback) {
                         get_valid_value(data[0][property]);
                 }
             }
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_recipient function]: '
-                          + get_error_msg_text(obj.id) + ': ' + error);
+                          + get_error_msg_text(id) + ': ' + error);
         });
 }
 
 // 5.)
-function query_book(obj, callback) {
+function query_book(id, obj, callback) {
     DB(CONFIG.dbOrigBookTable)
         .select('authorName as book_author_name',
                 'bookTitle as book_title',
@@ -258,7 +261,7 @@ function query_book(obj, callback) {
                 'publisher as book_publisher',
                 'datePublished as book_date_published',
                 'timestamp as book_timestamp')
-        .where('donorID', obj.id)
+        .where('donorID', id)
         .then(function (data) {
             console.log('\n----Book----');
             console.log(data);
@@ -278,17 +281,17 @@ function query_book(obj, callback) {
                 }
                 obj.is_completed = 1;
             }
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_book function]: ' +
-                          get_error_msg_text(obj.id) + ': ' + error);
+                          get_error_msg_text(id) + ': ' + error);
         });
 }
 
 // 6.)
-function add_donation_to_db(obj, callback) {
+function add_donation_to_db(id, obj, callback) {
     console.log('Before stringifying JSON fields, obj = ');
     console.log(obj);
 
@@ -308,38 +311,37 @@ function add_donation_to_db(obj, callback) {
         .then(function (data) {
             console.log('Successfully added donation record to database. ' +
                         'New id = ' + data);
-            callback(null, obj);
+            callback(null, id, obj);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [add_donation_to_db ' +
-                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
         });
 }
 
 // 7.)
-function set_isMigrated_flag(obj, callback) {
+function set_isMigrated_flag(id, obj, callback) {
     DB(CONFIG.dbOrigDonorTable)
         .where({
-            donorID: obj.id
+            donorID: id
         })
         .update('isMigrated', 1)
         .then(function (num_reset) {
             if (num_reset === 1) {
-                console.log('Successfully set isMigrated flag for id ' +
-                            obj.id);
-                callback(null, obj);
+                console.log('Successfully set isMigrated flag for id ' + id);
+                callback(null, id, obj);
             } else {
                 console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
                               'function]: isMigrated flag for record with id ' +
-                              obj.id + ' may not have been updated because ' +
+                              id + ' may not have been updated because ' +
                               'num_reset = ' + num_reset);
             }
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
-                          'function]: ' + get_error_msg_text(obj.id) + ': ' +
+                          'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
         });
 }
@@ -353,14 +355,14 @@ let timer = setInterval(function () {
         query_book,
         add_donation_to_db,
         set_isMigrated_flag
-    ], function (error, results) {
+    ], function (error, id, results) {
         console.log('\nInside waterfall function');
 
         if (error) {
             console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
-                          get_error_msg_text(results.id) + ': ' + error);
+                          get_error_msg_text(id) + ': ' + error);
         }
-        console.log('\nEnd of migration attempt for record ' + results.id + '\n' +
+        console.log('\nEnd of migration attempt for record ' + id + '\n' +
                     '=====================\n');
     });
 }, 500);
