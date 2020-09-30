@@ -35,7 +35,6 @@ if (typeof CONFIG.dbOrigDonorTable === 'undefined') {
 }
 
 // Reset isMigrated flags in source database table
-/*
 DB(CONFIG.dbOrigDonorTable)
     .update('isMigrated', 0)
     .then(function (num_reset) {
@@ -51,7 +50,7 @@ DB(CONFIG.dbOrigDonorTable)
         console.error(error_msg_color, 'ERROR during or after Knex query to ' +
                       'reset isMigrated flags: ' + error);
     });
-*/
+
 // 1.)
 function query_donor_and_donation_amount(callback) {
     let obj = {},
@@ -331,7 +330,7 @@ function set_isMigrated_flag(id, obj, callback) {
         .then(function (num_reset) {
             if (num_reset === 1) {
                 console.log('Successfully set isMigrated flag for id ' + id);
-                callback(null, id, obj);
+                callback(null, id);
             } else {
                 console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
                               'function]: isMigrated flag for record with id ' +
@@ -355,7 +354,7 @@ let timer = setInterval(function () {
         query_book,
         add_donation_to_db,
         set_isMigrated_flag
-    ], function (error, id, results) {
+    ], function (error, id) {
         console.log('\nInside waterfall function');
 
         if (error) {
