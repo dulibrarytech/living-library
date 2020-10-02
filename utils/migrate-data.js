@@ -79,20 +79,17 @@ function query_donor_and_donation_amount(callback) {
         .then(function (data) {
             if (data.length === 0) {
                 clearInterval(timer);
-                console.log('Migration completed. Press CTRL-C to exit.');
+                console.log('=====================\nMigration completed. ' +
+                            'Press CTRL-C to exit.');
                 return;
             }
 
             console.log('=====================\n' + 'Start of migration ' +
-                        'attempt for record ' + data[0].id);
-            console.log('\n----Donor----');
-            console.log(data);
+                        'attempt for record ' + data[0].id + '\n');
             id = data[0].id;
             obj.created = data[0].created;
             obj.donor = {};
-            console.log('Data for donor ' + data[0].id + ':');
             for (let property in data[0]) {
-                console.log(property + ' = ' + data[0][property]);
                 if (property !== 'id' && property !== 'created') {
                     if (property === 'donor_amount_of_donation') {
                         // try to convert string to number
@@ -112,8 +109,6 @@ function query_donor_and_donation_amount(callback) {
                     } else if (property === 'donor_date_of_donation') {
                         let date = MOMENT(data[0][property]);
                         obj.donor[property] = date.format('YYYY-MM-DD');
-                        console.log('obj.donor[' + property + '] = ' +
-                                    obj.donor[property]);
                     } else {
                         obj.donor[property] =
                             get_valid_value(data[0][property]);
@@ -144,8 +139,6 @@ function query_subject_area(id, obj, callback) {
         .select('donorID', 'subject')
         .where('donorID', id)
         .then(function (data) {
-            console.log('\n----Subject Areas----');
-            console.log(data);
             if (data.length === 0) {
                 console.warn(warning_msg_color, 'WARNING [query_subject_area ' +
                              'function]: Knex query returned 0 results.');
@@ -154,8 +147,6 @@ function query_subject_area(id, obj, callback) {
             for (let subject of data) {
                 subject_areas.push(get_valid_value(subject.subject));
             }
-            console.log('subject_areas = ');
-            console.log(subject_areas);
             obj.donor.donor_subject_areas = subject_areas;
             callback(null, id, obj);
             return false;
@@ -181,8 +172,6 @@ function query_who_to_notify(id, obj, callback) {
                 'notifyRelationToDonor as notify_relation_to_donor')
         .where('donorID', id)
         .then(function (data) {
-            console.log('\n----Person to Notify----');
-            console.log(data);
             if (data.length === 0) {
                 console.warn(warning_msg_color, 'WARNING [query_who_to_notify '
                              + 'function]: Knex query returned 0 results.');
@@ -192,7 +181,6 @@ function query_who_to_notify(id, obj, callback) {
                 let containsNonEmptyElementValue = false,
                     person_obj = {};
                 for (let property in person_to_notify) {
-                    console.log(property + ' = ' + person_to_notify[property]);
                     person_obj[property] =
                         get_valid_value(person_to_notify[property]);
                     if (person_obj[property] !== '') {
@@ -203,13 +191,11 @@ function query_who_to_notify(id, obj, callback) {
                     who_to_notify.push(person_obj);
                 } else {
                     console.warn(warning_msg_color, 'WARNING [query_who_to_' +
-                                 'notify function]: id ' + id +
+                                 'notify function]: donor id ' + id +
                                  ' contains empty record in ' +
                                  CONFIG.dbOrigNotifyTable + ' table.');
                 }
             }
-            console.log('who_to_notify = ');
-            console.log(who_to_notify);
             obj.who_to_notify = who_to_notify;
             callback(null, id, obj);
             return false;
@@ -231,8 +217,6 @@ function query_recipient(id, obj, callback) {
                 'recipientDonationType as recipient_donation_type')
         .where('donorID', id)
         .then(function (data) {
-            console.log('\n----Recipient----');
-            console.log(data);
             if (data.length === 0 || data.length > 1) {
                 console.warn(warning_msg_color, 'WARNING [query_recipient ' +
                              'function]: Knex query returned ' + data.length +
@@ -243,7 +227,6 @@ function query_recipient(id, obj, callback) {
             } else {
                 obj.recipient = {};
                 for (let property in data[0]) {
-                    console.log(property + ' = ' + data[0][property]);
                     obj.recipient[property] =
                         get_valid_value(data[0][property]);
                 }
@@ -270,8 +253,6 @@ function query_book(id, obj, callback) {
                 'timestamp as book_timestamp')
         .where('donorID', id)
         .then(function (data) {
-            console.log('\n----Book----');
-            console.log(data);
             if (data.length === 0 || data.length > 1) {
                 console.warn(warning_msg_color, 'WARNING [query_book ' +
                              'function]: Knex query returned ' + data.length +
@@ -283,7 +264,6 @@ function query_book(id, obj, callback) {
             } else {
                 obj.book = {};
                 for (let property in data[0]) {
-                    console.log(property + ' = ' + data[0][property]);
                     obj.book[property] = get_valid_value(data[0][property]);
                 }
                 obj.is_completed = 1;
@@ -300,7 +280,7 @@ function query_book(id, obj, callback) {
 
 // 6.)
 function add_donation_to_db(id, obj, callback) {
-    console.log('Before stringifying JSON fields, obj = ');
+    console.log('Resulting donation object =');
     console.log(obj);
 
     // Stringify JSON fields
@@ -310,9 +290,6 @@ function add_donation_to_db(id, obj, callback) {
     if (obj.book !== null) {
         obj.book = JSON.stringify(obj.book);
     }
-
-    console.log('After stringifying JSON fields, obj = ');
-    console.log(obj);
 
     DB(CONFIG.dbDonationsTable)
         .insert(obj)
@@ -339,8 +316,6 @@ function set_isMigrated_flag(id, hasError, callback) {
         .update('isMigrated', hasError ? -1 : 1)
         .then(function (num_reset) {
             if (num_reset === 1) {
-                console.log('Successfully set isMigrated flag for record ' +
-                            id);
                 if (!hasError) {
                     callback(null, id);
                 }
@@ -354,7 +329,7 @@ function set_isMigrated_flag(id, hasError, callback) {
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
                           'function]: Potential error when updating ' +
-                          'isMigrated flag for id ' + id + ': ' + error);
+                          'isMigrated flag for record ' + id + ': ' + error);
         });
 }
 
@@ -368,14 +343,11 @@ let timer = setInterval(function () {
         add_donation_to_db,
         set_isMigrated_flag
     ], function (error, id) {
-        console.log('\nInside waterfall function');
-
         if (error) {
             console.error(error_msg_color, 'ERROR [async.waterfall]: ' +
                           get_error_msg_text(id) + ': ' + error);
         }
-        console.log('\nEnd of migration attempt for record ' + id + '\n' +
-                    '=====================\n');
+        console.log('\nEnd of migration attempt for record ' + id);
     });
 }, 500);
 
@@ -385,7 +357,7 @@ let timer = setInterval(function () {
  * @returns  {string}                   the error message text
  */
 const get_error_msg_text = function (id) {
-    return 'Error when migrating data for id ' + id;
+    return 'Error when migrating data for record ' + id;
 };
 
 /**
