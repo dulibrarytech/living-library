@@ -44,11 +44,13 @@ DB(CONFIG.dbOrigDonorTable)
         } else {
             console.error(error_msg_color, 'ERROR: Unable to reset isMigrated '
                           + 'flags. Records updated = ' + num_reset);
+            process.exit(1);
         }
     })
     .catch(function (error) {
         console.error(error_msg_color, 'ERROR during or after Knex query to ' +
                       'reset isMigrated flags: ' + error);
+        process.exit(1);
     });
 
 // 1.)
@@ -81,45 +83,40 @@ function query_donor_and_donation_amount(callback) {
                 return;
             }
 
+            console.log('=====================\n' + 'Start of migration ' +
+                        'attempt for record ' + data[0].id);
             console.log('\n----Donor----');
             console.log(data);
-            if (data.length === 0) {
-                console.warn(warning_msg_color, 'WARNING [query_donor_and_' +
-                             'donation_amount function]: Knex query returned ' +
-                             '0 results.');
-                return false;
-            } else {
-                id = data[0].id;
-                obj.created = data[0].created;
-                obj.donor = {};
-                console.log('Data for donor ' + data[0].id + ':');
-                for (let property in data[0]) {
-                    console.log(property + ' = ' + data[0][property]);
-                    if (property !== 'id' && property !== 'created') {
-                        if (property === 'donor_amount_of_donation') {
-                            // try to convert string to number
-                            let amount = Number(data[0][property]);
-                            if (isNaN(amount)) {
-                                console.warn(warning_msg_color, 'WARNING ' +
-                                             '[query_donor_and_donation_' +
-                                             'amount function]: donor_amount_' +
-                                             'of_donation = ' +
-                                             data[0][property] + ', which is ' +
-                                             'not a valid number.');
-                                obj.donor[property] =
-                                    get_valid_value(data[0][property]);
-                            } else {
-                                obj.donor[property] = amount;
-                            }
-                        } else if (property === 'donor_date_of_donation') {
-                            let date = MOMENT(data[0][property]);
-                            obj.donor[property] = date.format('YYYY-MM-DD');
-                            console.log('obj.donor[' + property + '] = ' +
-                                        obj.donor[property]);
-                        } else {
+            id = data[0].id;
+            obj.created = data[0].created;
+            obj.donor = {};
+            console.log('Data for donor ' + data[0].id + ':');
+            for (let property in data[0]) {
+                console.log(property + ' = ' + data[0][property]);
+                if (property !== 'id' && property !== 'created') {
+                    if (property === 'donor_amount_of_donation') {
+                        // try to convert string to number
+                        let amount = Number(data[0][property]);
+                        if (isNaN(amount)) {
+                            console.warn(warning_msg_color, 'WARNING ' +
+                                         '[query_donor_and_donation_' +
+                                         'amount function]: donor_amount_' +
+                                         'of_donation = ' +
+                                         data[0][property] + ', which is ' +
+                                         'not a valid number.');
                             obj.donor[property] =
                                 get_valid_value(data[0][property]);
+                        } else {
+                            obj.donor[property] = amount;
                         }
+                    } else if (property === 'donor_date_of_donation') {
+                        let date = MOMENT(data[0][property]);
+                        obj.donor[property] = date.format('YYYY-MM-DD');
+                        console.log('obj.donor[' + property + '] = ' +
+                                    obj.donor[property]);
+                    } else {
+                        obj.donor[property] =
+                            get_valid_value(data[0][property]);
                     }
                 }
             }
@@ -130,6 +127,14 @@ function query_donor_and_donation_amount(callback) {
             console.error(error_msg_color, 'ERROR [query_donor_and_donation_' +
                           'amount function]: ' + get_error_msg_text(id) +
                           ': ' + error);
+            if (typeof id === 'undefined') {
+                clearInterval(timer);
+                console.error(error_msg_color, '\nUnable to set isMigrated ' +
+                              'flag because id is undefined.\nMigration ' +
+                              'halted.\nPress CTRL-C to exit.');
+                return false;
+            }
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
@@ -159,6 +164,7 @@ function query_subject_area(id, obj, callback) {
             console.error(error_msg_color, 'ERROR [query_subject_area ' +
                           'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
@@ -212,6 +218,7 @@ function query_who_to_notify(id, obj, callback) {
             console.error(error_msg_color, 'ERROR [query_who_to_notify ' +
                           'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
@@ -247,6 +254,7 @@ function query_recipient(id, obj, callback) {
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_recipient function]: '
                           + get_error_msg_text(id) + ': ' + error);
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
@@ -286,6 +294,7 @@ function query_book(id, obj, callback) {
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [query_book function]: ' +
                           get_error_msg_text(id) + ': ' + error);
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
@@ -308,40 +317,44 @@ function add_donation_to_db(id, obj, callback) {
     DB(CONFIG.dbDonationsTable)
         .insert(obj)
         .then(function (data) {
-            console.log('Successfully added donation record to database. ' +
-                        'New id = ' + data);
-            callback(null, id, obj);
+            console.log('Successfully added donation record ' + id +
+                        ' to database (id in target database = ' + data + ').');
+            callback(null, id, false);
             return false;
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR [add_donation_to_db ' +
                           'function]: ' + get_error_msg_text(id) + ': ' +
                           error);
+            set_isMigrated_flag(id, true, callback);
         });
 }
 
 // 7.)
-function set_isMigrated_flag(id, obj, callback) {
+function set_isMigrated_flag(id, hasError, callback) {
     DB(CONFIG.dbOrigDonorTable)
         .where({
             donorID: id
         })
-        .update('isMigrated', 1)
+        .update('isMigrated', hasError ? -1 : 1)
         .then(function (num_reset) {
             if (num_reset === 1) {
-                console.log('Successfully set isMigrated flag for id ' + id);
-                callback(null, id);
+                console.log('Successfully set isMigrated flag for record ' +
+                            id);
+                if (!hasError) {
+                    callback(null, id);
+                }
             } else {
                 console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
-                              'function]: isMigrated flag for record with id ' +
-                              id + ' may not have been updated because ' +
-                              'num_reset = ' + num_reset);
+                              'function]: isMigrated flag for record ' + id +
+                              ' may not have been updated because num_reset ' +
+                              '= ' + num_reset);
             }
         })
         .catch(function (error) {
             console.error(error_msg_color, 'ERROR: [set_isMigrated_flag ' +
-                          'function]: ' + get_error_msg_text(id) + ': ' +
-                          error);
+                          'function]: Potential error when updating ' +
+                          'isMigrated flag for id ' + id + ': ' + error);
         });
 }
 
