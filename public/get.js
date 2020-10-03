@@ -1090,6 +1090,13 @@ const get_completed_donation = function (url) {
                         + '</dd>';
                 html += '</dl>';
 
+                html += '<h4>Notes</h4>';
+                let notes = living_library_helper
+                            .get_field_value(donor, 'donor_notes');
+                html += '<p style="white-space: pre-wrap;">'
+                        + (notes === '' ? 'None' : notes)
+                        + '</p>';
+
                 console.log(html);
                 let record_content_element = document
                                              .querySelector('#record-content');
