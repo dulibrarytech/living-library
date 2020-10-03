@@ -1159,7 +1159,7 @@ const get_queued_donation = function (url) {
                 let html = '<dl>';
 
                 html += '<dt>Person making donation: </dt>'
-                        + '<dd>';
+                        + '<dd><span class="collapse-whitespace">';
                 if (living_library_helper.is_non_null_object(donor)) {
                     html += living_library_helper
                             .get_field_value(donor, 'donor_title')
@@ -1173,7 +1173,7 @@ const get_queued_donation = function (url) {
                     html += living_library_config
                             .get_error_text_for_invalid_json();
                 }
-                html += '</dd>';
+                html += '</span></dd>';
 
                 html += '<dt>Notes: </dt>'
                         + '<dd>';
@@ -1231,7 +1231,7 @@ const get_queued_donation = function (url) {
                 html += '</dd>';
 
                 html += '<dt>Person receiving donation: </dt>'
-                        + '<dd>';
+                        + '<dd><span class="collapse-whitespace">';
                 if (living_library_helper.is_non_null_object(recipient)) {
                     html += living_library_helper
                             .get_field_value(recipient, 'recipient_title')
@@ -1250,7 +1250,7 @@ const get_queued_donation = function (url) {
                     html += living_library_config
                             .get_error_text_for_invalid_json();
                 }
-                html += '</dd>';
+                html += '</span></dd>';
 
                 html += '<dt>Date of donation: </dt>'
                         + '<dd>';

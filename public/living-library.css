@@ -98,9 +98,15 @@ dd {
 dd::after {
   /*
    * Ensures that empty dd elements still occupy their own position (no other
-   * element is stacked on top of them)
+   * element is stacked on top of them). For this to work, whitespace must be
+   * preserved via "white-space: pre-wrap;" or similar.
    */
   content: " ";
+}
+
+.collapse-whitespace {
+  /* Collapses whitespace but renders newline chars as line breaks */
+  white-space: pre-line;
 }
 
 /* Style for required form fields */
