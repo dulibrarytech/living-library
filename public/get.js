@@ -1066,6 +1066,32 @@ const get_completed_donation = function (url) {
                         + '</dd>';
                 html += '</dl>';
 
+                html += '<h4>Subject Areas</h4>';
+                let subject_areas = [];
+                if (living_library_helper.is_non_null_object(donor) &&
+                    Array.isArray(donor.donor_subject_areas) &&
+                    donor.donor_subject_areas.length > 0) {
+                    console.log('donor.donor_subject_areas is a non-empty ' +
+                                'array');
+
+                    for (let i = 0; i < donor.donor_subject_areas.length; i++) {
+                        let subject =
+                            living_library_helper
+                            .get_field_value(donor.donor_subject_areas, i);
+                        if (subject !== '') {
+                            subject_areas.push(subject);
+                        }
+                    }
+                } else {
+                    console.log('donor.donor_subject_areas is empty or not ' +
+                                'valid');
+                }
+                html += '<p>'
+                        + (subject_areas.length === 0
+                           ? 'None'
+                           : subject_areas.join('; '))
+                        + '</p>';
+
                 html += '<h4>Book Information</h4>';
                 html += '<dl>';
                 html += '<dt>Author Name: </dt>'
@@ -1270,7 +1296,7 @@ const get_queued_donation = function (url) {
                 }
                 html += '</dd>';
 
-                html += '<dt>Selected subject areas: </dt>'
+                html += '<dt>Subject areas: </dt>'
                         + '<dd>';
                 if (living_library_helper.is_non_null_object(donor) &&
                     Array.isArray(donor.donor_subject_areas) &&
