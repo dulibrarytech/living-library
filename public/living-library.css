@@ -9,12 +9,27 @@
 
 /* Dropdown content (hidden by default) */
 .dropdown-content {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
   display: none;
+  visibility: hidden;
+  opacity: 0;
   position: absolute;
   background-color: #f1f1f1;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+}
+
+/* Show the dropdown menu on hover and focus */
+ul li.dropdown:hover > ul,
+ul li.dropdown:focus-within > ul,
+ul li.dropdown ul:hover,
+ul li.dropdown ul:focus {
+   visibility: visible;
+   opacity: 1;
+   display: block;
 }
 
 /* Links inside the dropdown */
@@ -30,15 +45,12 @@
   text-decoration: none !important;
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: #ddd;
+/* Change style of dropdown links on hover and focus */
+.dropdown-content a:hover,
+.dropdown-content a:focus {
+  color: black !important;
+  background-color: #ddd !important;
   text-decoration: none;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
 }
 
 /* Style for table with Date Range Filter input boxes (above donations table) */
