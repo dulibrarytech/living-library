@@ -36,7 +36,7 @@
 								</ul>
 						</li>
 
-            <li class="navbar-item" id="logout-link" style="border: none;"><a title="Logout" onclick="authentication.logout();">Logout</a></li> <!-- call controller -->
+            <li class="navbar-item" id="logout-link" style="border: none;"><a title="Logout" href="#" onclick="authentication.logout();">Logout</a></li> <!-- call controller -->
 
         </ul>
         <!--/section-->
