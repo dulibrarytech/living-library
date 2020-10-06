@@ -712,6 +712,12 @@ exports.read = function (req, callback) {
                         table_field_names.display + ' as term')
                 .orderBy(table_field_names.sort)
                 .modify(function(query_builder) {
+                    if (typeof table_field_names.display2 !== 'undefined') {
+                        query_builder.select(table_field_names.display2 +
+                                             ' as term_to_append');
+                    }
+                })
+                .modify(function(query_builder) {
                     console.log('Before converting to boolean, is_active' +
                                 ' = ' + is_active + ", with type = " +
                                 typeof is_active);
@@ -1609,7 +1615,8 @@ const get_table_field_names = function (table_name) {
             break;
         case CONFIG.dbStatesTable:
             table_field_names.id = 'state_id',
-            table_field_names.display = 'state_full',
+            table_field_names.display = 'state',
+            table_field_names.display2 = 'state_full',
             table_field_names.sort = table_field_names.id,
             table_field_names.display_field_char_limit = 255;
             break;

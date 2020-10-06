@@ -291,7 +291,10 @@ const living_library_helper = (function () {
                 for (let i = 0; i < data.length; i++) {
                     option = document.createElement('option');
                     option.value = data[i].term;
-                    option.innerHTML = data[i].term;
+                    option.innerHTML =
+                        typeof data[i].term_to_append === 'undefined'
+                        ? data[i].term
+                        : data[i].term + ' - ' + data[i].term_to_append;
                     select.add(option);
                 }
 
