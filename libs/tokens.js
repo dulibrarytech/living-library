@@ -34,6 +34,8 @@ exports.create = function (username) {
         iss: CONFIG.tokenIssuer
     };
 
+    console.log('Session token created.');
+
     return JWT.sign(tokenData, CONFIG.tokenSecret, {
         algorithm: CONFIG.tokenAlgo,
         expiresIn: CONFIG.tokenExpires
@@ -66,11 +68,16 @@ exports.verify = function (req, res, next) {
                 return false;
             }
 
+            console.log('Session token verified.');
+
             req.decoded = decoded;
             next();
         });
 
-    } else if (key !== undefined)  {
+    }
+    next();
+    /*
+    else if (key !== undefined)  {
 
         if (key === CONFIG.apiKey) {
             next();
@@ -84,4 +91,5 @@ exports.verify = function (req, res, next) {
             });
         }
     }
+    */
 };

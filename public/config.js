@@ -39,12 +39,15 @@ const living_library_config = (function () {
      * @returns  {string}  the API key
      */
     obj.get_api_key = function () {
+        /*
         // return ENTER_API_KEY_HERE;
         if (!sessionStorage.getItem('api_key')) {
-            sessionStorage.setItem('api_key', ENTER_API_KEY_HERE);
+            sessionStorage.setItem('api_key', 'ENTER_API_KEY_HERE');
             console.log('API key added to session storage.');
         }
         return sessionStorage.getItem('api_key');
+        */
+        return '';
     };
 
     /* Lookup tables */
