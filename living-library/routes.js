@@ -18,14 +18,13 @@
 
 'use strict';
 
-const DUAPP = require('../living-library/controller'),
-    TOKEN = require('../libs/tokens');
+const DUAPP = require('../living-library/controller');
 
 module.exports = function (app) {
 
     app.route('/api/v1/living-library/donations')
-        .post(TOKEN.verify, DUAPP.create)
-        .get(TOKEN.verify, DUAPP.read)
-        .put(TOKEN.verify, DUAPP.update)
-        .delete(TOKEN.verify, DUAPP.delete);
+        .post(DUAPP.create)
+        .get(DUAPP.read)
+        .put(DUAPP.update)
+        .delete(DUAPP.delete);
 };
