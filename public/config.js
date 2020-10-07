@@ -20,7 +20,7 @@ const living_library_config = (function () {
      */
     obj.get_api = function () {
 
-        let api = 'http://localhost:8000';
+        // let api = 'http://localhost:8000';
 
         /* TODO: Update this because the donordb's domain will be different from
          * the living library backend api's domain, right?
@@ -31,7 +31,8 @@ const living_library_config = (function () {
 
         */
 
-        return api + '/api/v1/living-library/donations';
+        // return api + '/api/v1/living-library/donations';
+        return living_library_api_url;
     };
 
     /**
@@ -39,14 +40,6 @@ const living_library_config = (function () {
      * @returns  {string}  the API key
      */
     obj.get_api_key = function () {
-        /*
-        // return ENTER_API_KEY_HERE;
-        if (!sessionStorage.getItem('api_key')) {
-            sessionStorage.setItem('api_key', 'ENTER_API_KEY_HERE');
-            console.log('API key added to session storage.');
-        }
-        return sessionStorage.getItem('api_key');
-        */
         return '';
     };
 

@@ -12,6 +12,11 @@
 	<!-- [if IE 8]> <html class="ie8"> <![endif] -->
 	<!-- [if gt IE 8]><! -->
 
+	<script type="text/javascript">
+    var living_library_api_url =
+			"<?php echo $this->config->item('living_library_api_url'); ?>";
+  </script>
+
 	<?php $this->load->view("partials/head-partial.php"); ?>
 
 	<meta name="page" content="table-view">
