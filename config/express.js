@@ -50,7 +50,9 @@ module.exports = function() {
     APP.use(EXPRESS.static('./public'));
     APP.use(XSS.sanitize_req_query);
     APP.use(XSS.sanitize_req_body);
-    APP.use(CORS());
+    APP.use(CORS({
+        origin: 'http://localhost'
+    }));
     APP.set('views', './views');
     APP.set('view engine', 'ejs');
 
