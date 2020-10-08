@@ -14,39 +14,10 @@ const living_library_config = (function () {
 
     let obj = {};
 
-    /**
-     * Resolves living library API's base URL
-     * @returns  {string}  the API's base URL
-     */
-    obj.get_api = function () {
-
-        // let api = 'http://localhost:8000';
-
-        /* TODO: Update this because the donordb's domain will be different from
-         * the living library backend api's domain, right?
-
-        if (document.domain !== 'localhost') {
-            api = location.protocol + '//' + document.domain + ':' + location.port;
-        }
-
-        */
-
-        // return api + '/api/v1/living-library/donations';
-        return living_library_api_url;
-    };
-
-    /**
-     * Returns living library API's key
-     * @returns  {string}  the API key
-     */
-    obj.get_api_key = function () {
-        return '';
-    };
-
     /* Lookup tables */
 
     /**
-     * Returns the string used by the living library API to identify the
+     * Returns the string used by the Living Library API to identify the
      * relationships lookup table
      * @returns  {string}  the string that identifies the relationships table
      */
@@ -55,7 +26,7 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the string used by the living library API to identify the
+     * Returns the string used by the Living Library API to identify the
      * states lookup table
      * @returns  {string}  the string that identifies the states table
      */
@@ -64,7 +35,7 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the string used by the living library API to identify the
+     * Returns the string used by the Living Library API to identify the
      * subject areas lookup table
      * @returns  {string}  the string that identifies the subject areas table
      */
@@ -73,7 +44,7 @@ const living_library_config = (function () {
     };
 
     /**
-     * Returns the string used by the living library API to identify the
+     * Returns the string used by the Living Library API to identify the
      * titles lookup table
      * @returns  {string}  the string that identifies the titles table
      */
@@ -147,7 +118,8 @@ const living_library_config = (function () {
     };
 
     // The 'for' attributes of all required form field label tags
-    book_plate_form.required_label_for_attributes = book_plate_form.required_ids;
+    book_plate_form.required_label_for_attributes =
+        book_plate_form.required_ids;
 
     /**
      * Returns the above Book Plate Form object
@@ -167,8 +139,8 @@ const living_library_config = (function () {
     };
 
     // The 'for' attributes of all required form field label tags
-    add_menu_choice_form.required_label_for_attributes = add_menu_choice_form
-                                                         .required_ids;
+    add_menu_choice_form.required_label_for_attributes =
+        add_menu_choice_form.required_ids;
 
     /**
      * Returns the above Add Menu Choice Form object
@@ -233,9 +205,12 @@ const living_library_config = (function () {
      * @returns  {string}  the error text (in this case, an empty string)
      */
     obj.get_error_text_for_invalid_json = function () {
-        /* If you want error text for this situation, uncomment the line below */
         // return '<span class="error">error loading field</span>';
 
+        /*
+         * If you want error text for this situation, uncomment the line above
+         * and delete the line below.
+         */
         return '';
     };
 

@@ -65,11 +65,9 @@ const save_donation = function (event) {
 
     console.log("donation_data = ");
     console.log(donation_data);
-    console.log("fetch url = " + living_library_config.get_api() +
-          '?api_key=' + living_library_config.get_api_key());
+    console.log("fetch url = " + living_library_api_url);
 
-    fetch(living_library_config.get_api() +
-          '?api_key=' + living_library_config.get_api_key(), {
+    fetch(living_library_api_url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -149,9 +147,7 @@ const save_book_plate = function (event) {
     console.log("book_plate_data.book = " + book_plate_data.book);
     console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
 
-    fetch(living_library_config.get_api() +
-          '?id=' + form_data.donation_id.value +
-          '&api_key=' + living_library_config.get_api_key(), {
+    fetch(living_library_api_url + '?id=' + form_data.donation_id.value, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -222,9 +218,7 @@ const delete_donation = function (event, id) {
     console.log("id = " + id);
 
     if (confirm("Delete Donation " + id + "?")) {
-        fetch(living_library_config.get_api() +
-              '?id=' + id +
-              '&api_key=' + living_library_config.get_api_key(), {
+        fetch(living_library_api_url + '?id=' + id, {
             method: 'DELETE',
             mode: 'cors'
         })
@@ -288,9 +282,7 @@ const add_menu_choice = function (event, table) {
     console.log('form_as_JSON = ');
     console.log(form_as_JSON);
 
-    fetch(living_library_config.get_api() +
-          '?tbl=' + table +
-          '&api_key=' + living_library_config.get_api_key(), {
+    fetch(living_library_api_url + '?tbl=' + table, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -380,11 +372,8 @@ const update_menu_choice = function (event, table, id) {
     console.log('form_as_JSON = ');
     console.log(form_as_JSON);
 
-    fetch(living_library_config.get_api() +
-          '?tbl=' + table +
-          '&id=' + id +
-          '&is_active=true' +
-          '&api_key=' + living_library_config.get_api_key(), {
+    fetch(living_library_api_url + '?tbl=' + table + '&id=' + id +
+          '&is_active=true', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -442,11 +431,8 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
     console.log("table = " + table);
     console.log("id = " + id);
 
-    fetch(living_library_config.get_api() +
-          '?tbl=' + table +
-          '&id=' + id +
-          '&is_active=true' +
-          '&api_key=' + living_library_config.get_api_key(), {
+    fetch(living_library_api_url + '?tbl=' + table + '&id=' + id +
+          '&is_active=true', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
