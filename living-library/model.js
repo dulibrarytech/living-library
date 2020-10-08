@@ -85,18 +85,10 @@ exports.create = function (req, callback) {
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
 
-    /**
-     * Donations table query URL (if there's no tbl parameter, default to querying tbl_donations):
-     * POST new record to donations table: SITE_URL/api/v1/living-library/donations?api_key=API_KEY
-     *
-     * Lookup table query URLs:
-     * POST new record to subject areas table: SITE_URL/api/v1/living-library/donations?tbl=subject_areas&api_key=API_KEY
-     * POST new record to titles table: SITE_URL/api/v1/living-library/donations?tbl=titles&api_key=API_KEY
-     * POST new record to relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&api_key=API_KEY
-     */
-
     let tbl = get_empty_or_lowercase_string(req.query.tbl),
         table_name = get_table_name(tbl);
+
+    // If there's no tbl parameter, default to querying donations table
 
     switch(table_name) {
         case "": {
@@ -630,15 +622,7 @@ exports.read = function (req, callback) {
 
     switch(table_name) {
         case "": {
-            /**
-             * No tbl parameter, so default to querying tbl_donations.
-             *
-             * tbl_donations query URLs:
-             * GET all donation records: SITE_URL/api/v1/living-library/donations?api_key=API_KEY
-             * GET donations in queue: SITE_URL/api/v1/living-library/donations?is_completed=false&api_key=API_KEY
-             * GET completed donations: SITE_URL/api/v1/living-library/donations?is_completed=true&api_key=API_KEY
-             * GET a single donation record: SITE_URL/api/v1/living-library/donations?id=[id]&api_key=API_KEY
-             */
+            // No tbl parameter, so default to querying donations table
             let is_completed =
                 get_empty_or_lowercase_string(req.query.is_completed);
 
@@ -697,13 +681,6 @@ exports.read = function (req, callback) {
         case CONFIG.dbStatesTable:
         case CONFIG.dbRelationshipsTable:
         case CONFIG.dbSubjectAreasTable: {
-            /**
-             * Lookup table query URLs:
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=titles&is_active=true&api_key=API_KEY
-             * GET all active state records: SITE_URL/api/v1/living-library/donations?tbl=states&is_active=true&api_key=API_KEY
-             * GET all active relationship records: SITE_URL/api/v1/living-library/donations?tbl=relationships&is_active=true&api_key=API_KEY
-             * GET all active title records: SITE_URL/api/v1/living-library/donations?tbl=subject_areas&is_active=true&api_key=API_KEY
-             */
             let is_active = get_empty_or_lowercase_string(req.query.is_active),
                 table_field_names = get_table_field_names(table_name);
 
@@ -810,16 +787,6 @@ exports.update = function (req, callback) {
     console.log("request_body = ");
     console.log(request_body);
     console.log("typeof request_body = " + typeof request_body);
-
-    /**
-     * Donations table query URL (if there's no tbl parameter, default to querying tbl_donations):
-     * PUT (i.e. update) record in donations table: SITE_URL/api/v1/living-library/donations?id=ID&api_key=API_KEY
-     *
-     * Lookup table query URLs:
-     * PUT (i.e. update) record in subject areas table: SITE_URL/api/v1/living-library/donations?tbl=subject_area&id=ID&api_key=API_KEY
-     * PUT (i.e. update) record in titles table: SITE_URL/api/v1/living-library/donations?tbl=titles&id=ID&api_key=API_KEY
-     * PUT (i.e. update) record in relationships table: SITE_URL/api/v1/living-library/donations?tbl=relationships&id=ID&api_key=API_KEY
-     */
 
     let tbl = get_empty_or_lowercase_string(req.query.tbl),
         table_name = get_table_name(tbl);
