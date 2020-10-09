@@ -20,6 +20,7 @@
 
 module.exports = {
     host: process.env.HOST,
+    apiKey: process.env.API_KEY,
     ldap: process.env.LDAP_URL,
     dbHost: process.env.DB_HOST,
     dbUser: process.env.DB_USER,

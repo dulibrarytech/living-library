@@ -18,14 +18,27 @@
 
 'use strict';
 
-const DUAPP = require('../living-library/controller'),
-      KEY_AUTH = require('../libs/key-auth');
+const CONFIG = require('../config/config'),
+      LOGGER = require('../libs/log4');
 
-module.exports = function (app) {
+/**
+ * Verifies API key
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.verify = function (req, res, next) {
+    let key = req.query.api_key;
 
-    app.route('/api/v1/living-library/donations')
-        .post(KEY_AUTH.verify, DUAPP.create)
-        .get(KEY_AUTH.verify, DUAPP.read)
-        .put(KEY_AUTH.verify, DUAPP.update)
-        .delete(KEY_AUTH.verify, DUAPP.delete);
+    if (key !== undefined && key === CONFIG.apiKey)  {
+        next();
+        return false;
+    } else {
+        LOGGER.module().error('ERROR: [/libs/key-auth (verify)] Unable to ' +
+                              'verify API key.');
+
+        res.status(401).send({
+            message: 'Unauthorized request'
+        });
+    }
 };

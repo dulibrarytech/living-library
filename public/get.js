@@ -382,7 +382,7 @@ const create_donation = function () {
 
     // Populate Title dropdown menus
     let titles_url = living_library_api_url +
-                     '?tbl=' + living_library_config.get_titles_table() +
+                     '&tbl=' + living_library_config.get_titles_table() +
                      '&is_active=true';
     living_library_helper.
     populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
@@ -391,7 +391,7 @@ const create_donation = function () {
 
     // Populate State dropdown menus
     let states_url = living_library_api_url +
-                     '?tbl=' + living_library_config.get_states_table() +
+                     '&tbl=' + living_library_config.get_states_table() +
                      '&is_active=true';
     living_library_helper.
     populate_dropdown_menu(living_library_config.get_states_table(), states_url,
@@ -399,7 +399,7 @@ const create_donation = function () {
                            '--Select a state--');
 
     // Populate Relation to Donor dropdown menu
-    let relationships_url = living_library_api_url + '?tbl=' +
+    let relationships_url = living_library_api_url + '&tbl=' +
                             living_library_config.get_relationships_table() +
                             '&is_active=true';
     living_library_helper.
@@ -411,7 +411,7 @@ const create_donation = function () {
 
     // Add Subject Area checkboxes
     fetch(living_library_api_url +
-          '?tbl=' + living_library_config.get_subject_areas_table() +
+          '&tbl=' + living_library_config.get_subject_areas_table() +
           '&is_active=true')
         .then(function(response) {
             console.log("Inside subject areas fetch");
@@ -593,7 +593,7 @@ const get_donations = function (is_completed) {
 
     $("#table-content").html('');
 
-    fetch(living_library_api_url + '?is_completed=' + is_completed)
+    fetch(living_library_api_url + '&is_completed=' + is_completed)
         .then(response => {
             console.log(response);
             return response.json();
@@ -843,7 +843,7 @@ const get_donations = function (is_completed) {
 const get_donation = function (is_completed, id) {
     is_completed = living_library_helper
                    .validate_is_completed_parameter(is_completed);
-    const url = living_library_api_url + '?id=' + id;
+    const url = living_library_api_url + '&id=' + id;
 
     living_library_helper.hide_table_content();
 
@@ -1567,7 +1567,7 @@ const get_menu_choices = function (table) {
                                     .get_add_menu_choice_form_info());
 
     // Populate menu choices
-    fetch(living_library_api_url + '?tbl=' + table + '&is_active=true')
+    fetch(living_library_api_url + '&tbl=' + table + '&is_active=true')
         .then(function(response) {
             console.log(response);
 
@@ -1750,7 +1750,7 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
                                     .get_update_menu_choice_form_info());
 
     // Populate menu choice term
-    fetch(living_library_api_url + '?tbl=' + table + '&is_active=true' +
+    fetch(living_library_api_url + '&tbl=' + table + '&is_active=true' +
           '&id=' + menu_choice_id)
         .then(function(response) {
             console.log(response);
