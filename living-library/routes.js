@@ -18,12 +18,13 @@
 
 'use strict';
 
-const DUAPP = require('../living-library/controller'),
+const CONFIG = require('../config/config'),
+      DUAPP = require('../living-library/controller'),
       KEY_AUTH = require('../libs/key-auth');
 
 module.exports = function (app) {
 
-    app.route('/api/v1/living-library/donations')
+    app.route(CONFIG.apiRoute)
         .post(KEY_AUTH.verify, DUAPP.create)
         .get(KEY_AUTH.verify, DUAPP.read)
         .put(KEY_AUTH.verify, DUAPP.update)
