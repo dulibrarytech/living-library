@@ -1,13 +1,13 @@
 {
-  "name": "du-app",
-  "version": "0.1.0",
-  "description": "DU APP",
-  "main": "repo.js",
+  "name": "living-library",
+  "version": "1.0.0",
+  "description": "Library Donations API",
+  "main": "living-library.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate-data": "cd utils && node migrate-data.js"
   },
-  "author": "dev-email@du.edu",
+  "author": "scott.salvaggio@du.edu",
   "license": "Apache",
   "dependencies": {
     "async": "^2.6.3",
