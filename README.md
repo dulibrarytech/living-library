@@ -43,10 +43,11 @@ npm install
 if it doesn't work the first time delete the node_modules folder and npm install
 have mysql 5.4 - 5.7
 add .env file in root folder (see .env-example)
-add mysql schema and db "app" to db, import .sql export
+define the API route in your .env file (see API_ROUTE variable)
+add mysql schema and db "livinglibrary" to db, import livinglibrary.sql export
 run "node living-library.js"
-http://localhost:8000
-http://localhost:8000/api/app?id=1&api_key=your_key
+http://localhost:8000/[API_ROUTE]?api_key=[API_KEY]
+(where API_ROUTE and API_KEY are defined in your .env file)
 ```
 
 ### Maintainers

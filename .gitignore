@@ -21,7 +21,6 @@ lib-cov
 # *.sh
 .DS_store
 
-*.sql
 # Coverage directory used by tools like istanbul
 coverage
 
@@ -91,5 +90,3 @@ logs/*.log
 logs/*.gz
 tmp
 tests
-*.sql
-
