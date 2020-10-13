@@ -20,6 +20,7 @@
 
 const HTTP = require('http'),
     EXPRESS = require('express'),
+    CONFIG = require('../config/config'),
     COMPRESS = require('compression'),
     BODYPARSER = require('body-parser'),
     METHODOVERRIDE = require('method-override'),
@@ -51,7 +52,7 @@ module.exports = function() {
     APP.use(XSS.sanitize_req_query);
     APP.use(XSS.sanitize_req_body);
     APP.use(CORS({
-        origin: 'http://localhost'
+        origin: CONFIG.corsAllowedOrigin
     }));
     APP.set('views', './views');
     APP.set('view engine', 'ejs');

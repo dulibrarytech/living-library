@@ -22,6 +22,7 @@ module.exports = {
     host: process.env.HOST,
     apiRoute: process.env.API_ROUTE,
     apiKey: process.env.API_KEY,
+    corsAllowedOrigin: process.env.CORS_ALLOWED_ORIGIN,
     ldap: process.env.LDAP_URL,
     dbHost: process.env.DB_HOST,
     dbUser: process.env.DB_USER,
