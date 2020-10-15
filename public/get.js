@@ -467,7 +467,7 @@ const create_donation = function () {
             .insert_error_message('Error loading page', true);
         });
 
-        viewUtils.setUserLabel();
+    viewUtils.setUserLabel();
 };
 
 /**
@@ -838,8 +838,6 @@ const get_donations = function (is_completed) {
                             donations_table.draw();
                         });
                     });
-
-                    viewUtils.setUserLabel();
                 })
                 .catch((error) => {
                     console.log('In the catch block');
@@ -852,6 +850,8 @@ const get_donations = function (is_completed) {
             living_library_helper
             .insert_error_message('Error loading page', true);
         });
+
+    viewUtils.setUserLabel();
 };
 
 /**
