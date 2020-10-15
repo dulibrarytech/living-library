@@ -35,8 +35,13 @@ class LivingLibrary extends CI_Controller {
   public function createDonation()
 	{
 		$data['pageLoader'] = "<script>create_donation();</script>";
-
-		$this->load->view('living-library-view', $data);
+    $response = $this->livingLibraryApiResponds();
+    var_dump($response);
+    if ($response) {
+      $this->load->view('living-library-view', $data);
+    } else {
+      $this->load->view('living-library-error');
+    }
 	}
 
   /**
@@ -131,6 +136,23 @@ class LivingLibrary extends CI_Controller {
   function isIntegerOrIntegerString($value)
   {
     return ctype_digit($value) || is_int($value);
+  }
+
+  /**
+   * Checks whether Living Library API responds to a HEAD request.
+   * @returns   {array}   an array with the headers;
+   *                      otherwise, false if HEAD request fails
+   */
+  function livingLibraryApiResponds()
+  {
+    /*
+    $url = $this->config->item('living_library_api_url');
+    var_dump($url);
+
+    $file_headers = get_headers($url);
+    var_dump($file_headers);
+    */
+    return get_headers($this->config->item('living_library_api_url'));
   }
 
   /**
