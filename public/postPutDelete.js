@@ -67,6 +67,9 @@ const save_donation = function (event) {
     console.log(donation_data);
     console.log("fetch url = " + living_library_api_url);
 
+    let confirmation_div_element =
+        document.getElementById('donation-form-confirmation');
+
     fetch(living_library_api_url, {
         method: 'POST',
         headers: {
@@ -98,9 +101,6 @@ const save_donation = function (event) {
             console.log('response = ');
             console.log(response);
 
-            let confirmation_div_element =
-                document.getElementById('donation-form-confirmation');
-
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
@@ -120,6 +120,10 @@ const save_donation = function (event) {
         .catch(function (error) {
             console.log('ERROR: [save_donation] An error occurred during or '
                         + 'after POST request: ' + error);
+
+            living_library_helper
+            .insert_form_confirmation(confirmation_div_element, false,
+                                      'Error submitting the donation form');
         });
 };
 
@@ -147,6 +151,9 @@ const save_book_plate = function (event) {
     console.log("book_plate_data.book = " + book_plate_data.book);
     console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
 
+    let confirmation_div_element =
+        document.getElementById('book-plate-form-confirmation');
+
     fetch(living_library_api_url + '&id=' + form_data.donation_id.value, {
         method: 'PUT',
         headers: {
@@ -161,9 +168,7 @@ const save_book_plate = function (event) {
             console.log(response);
 
             let completed_donation_url = baseUrl + _getCompletedDonationUrl +
-                                         form_data.donation_id.value,
-                confirmation_div_element =
-                    document.getElementById('book-plate-form-confirmation');
+                                         form_data.donation_id.value;
 
             if (response.ok) {
                 living_library_helper
@@ -190,7 +195,7 @@ const save_book_plate = function (event) {
                                     'Cannot save book plate.';
                         break;
                     default:
-                        error_msg = 'Error -- Unable to save book plate';
+                        error_msg = 'Error when saving the book plate';
                 }
 
                 living_library_helper
@@ -201,6 +206,10 @@ const save_book_plate = function (event) {
         .catch(function (error) {
             console.log('ERROR: [save_book_plate] An error occurred during or '
                         + 'after PUT request: ' + error);
+
+            living_library_helper
+            .insert_form_confirmation(confirmation_div_element, false,
+                                      'Error when saving the book plate');
         });
 };
 
@@ -253,6 +262,8 @@ const delete_donation = function (event, id) {
             .catch(function (error) {
                 console.log('ERROR: [delete_donation] An error occurred during '
                             + 'or after DELETE request: ' + error);
+
+                alert('Error -- Unable to delete Donation ' + id);
             });
     }
 };
@@ -281,6 +292,9 @@ const add_menu_choice = function (event, table) {
                        .form_to_json(['new_menu_choice'], form_data);
     console.log('form_as_JSON = ');
     console.log(form_as_JSON);
+
+    let confirmation_div_element =
+        document.getElementById('add-menu-choice-form-confirmation');
 
     fetch(living_library_api_url + '&tbl=' + table, {
         method: 'POST',
@@ -316,9 +330,6 @@ const add_menu_choice = function (event, table) {
             console.log('new response obj = ');
             console.log(response);
 
-            let confirmation_div_element =
-                document.getElementById('add-menu-choice-form-confirmation');
-
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
@@ -342,6 +353,12 @@ const add_menu_choice = function (event, table) {
         .catch(function (error) {
             console.log('ERROR: [add_menu_choice] An error occurred during or '
                         + 'after PUT request: ' + error);
+
+            living_library_helper
+            .insert_form_confirmation(confirmation_div_element, false,
+                                      'Error -- unable to add ' +
+                                      form_as_JSON.new_menu_choice +
+                                      ' to list');
         });
 };
 
@@ -372,6 +389,9 @@ const update_menu_choice = function (event, table, id) {
     console.log('form_as_JSON = ');
     console.log(form_as_JSON);
 
+    let confirmation_div_element =
+        document.getElementById('update-menu-choice-form-confirmation');
+
     fetch(living_library_api_url + '&tbl=' + table + '&id=' + id +
           '&is_active=true', {
         method: 'PUT',
@@ -385,9 +405,6 @@ const update_menu_choice = function (event, table, id) {
             console.log('Inside update_menu_choice fetch "then" function');
             console.log('response = ');
             console.log(response);
-
-            let confirmation_div_element =
-                document.getElementById('update-menu-choice-form-confirmation');
 
             if (response.ok) {
                 living_library_helper
@@ -408,6 +425,10 @@ const update_menu_choice = function (event, table, id) {
         .catch(function (error) {
             console.log('ERROR: [update_menu_choice] An error occurred during '
                         + 'or after PUT request: ' + error);
+
+            living_library_helper
+            .insert_form_confirmation(confirmation_div_element, false,
+                                      'Error -- unable to update');
         });
 };
 
@@ -431,6 +452,9 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
     console.log("table = " + table);
     console.log("id = " + id);
 
+    let confirmation_div_element =
+        document.getElementById('delete-menu-choice-form-confirmation');
+
     fetch(living_library_api_url + '&tbl=' + table + '&id=' + id +
           '&is_active=true', {
         method: 'PUT',
@@ -446,9 +470,6 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
             console.log('Inside delete_menu_choice fetch "then" function');
             console.log('response = ');
             console.log(response);
-
-            let confirmation_div_element =
-                document.getElementById('delete-menu-choice-form-confirmation');
 
             if (response.ok) {
                 living_library_helper
@@ -471,5 +492,9 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
         .catch(function (error) {
             console.log('ERROR: [delete_menu_choice] An error occurred during '
                         + 'or after PUT request: ' + error);
+
+            living_library_helper
+            .insert_form_confirmation(confirmation_div_element, false,
+                                      'Error -- unable to delete');
         });
 };
