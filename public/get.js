@@ -36,435 +36,437 @@ const create_donation = function () {
          mode: 'cors'
     })
         .then(function () {
-            let form_html = '<form id="donation-form" method="post" '
-                            + 'onsubmit="save_donation(event);">';
-
-            // Donor table
-            form_html += '<table class="table">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3"><h4>Person making donation</h4></td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3">'
-                         + living_library_config.get_form_symbol_explanation_text()
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="donor_title_dropdown" '
-                         + 'class="form-label-text">Title:'
-                         + '</label>'
-                         + '<select class="input-medium title_dropdown" '
-                         + 'id="donor_title_dropdown" name="donor_title">'
-                         + '</select>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="donor_first_name_input_box" '
-                         + 'class="form-label-text">First Name:'
-                         + '</label>'
-                         + '<input type="text" id="donor_first_name_input_box" '
-                         + 'class="input_form-default" name="donor_first_name"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                      + '<label for="donor_last_name_input_box" '
-                      + 'class="form-label-text">Last Name:'
-                      + '</label>'
-                      + '<input type="text" id="donor_last_name_input_box" '
-                      + 'class="input_form-default" name="donor_last_name"/>'
-                      + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="donor_address_input_box" '
-                         + 'class="form-label-text">Address:'
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="donor_address_input_box" '
-                         + 'class="input_form-default" '
-                         + 'name="donor_address"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="donor_city_input_box" '
-                         + 'class="form-label-text">City:'
-                         + '</label>'
-                         + '<input type="text" id="donor_city_input_box" '
-                         + 'class="input_form-default" name="donor_city"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="donor_state_dropdown" '
-                         + 'class="form-label-text">State:'
-                         + '</label>'
-                         + '<select class="input_form-default state_dropdown" '
-                         + 'id="donor_state_dropdown" name="donor_state">'
-                         + '</select>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3">'
-                         + '<label for="donor_zip_input_box" '
-                         + 'class="form-label-text">'
-                         + living_library_config.get_donation_form_info()
-                                                .zip_code_label_text
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="donor_zip_input_box" '
-                         + 'class="input-medium" '
-                         + 'name="donor_zip" '
-                         + living_library_config.get_form_validation_rules()
-                                                .zip_code_validation + '/>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close Donor table
-
-            // Who To Notify table
-            form_html += '<div class="table">';
-
-            form_html += '<table id="notify_section_1">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3">'
-                         + '<h4>Person <span id="notify_person_heading_num_1"></span>'
-                         + 'to be notified of donation</h4>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="notify_title_dropdown_1" '
-                         + 'class="form-label-text">Title:'
-                         + '</label>'
-                         + '<select class="input-medium title_dropdown '
-                         + 'notify_person_1" '
-                         + 'id="notify_title_dropdown_1" '
-                         + 'name="notify_title">'
-                         + '</select>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="notify_first_name_input_box_1" '
-                         + 'class="form-label-text">First Name:'
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="notify_first_name_input_box_1" '
-                         + 'class="input_form-default notify_person_1" '
-                         + 'name="notify_first_name"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="notify_last_name_input_box_1" '
-                         + 'class="form-label-text">Last Name:'
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="notify_last_name_input_box_1" '
-                         + 'class="input_form-default notify_person_1" '
-                         + 'name="notify_last_name"/>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="notify_address_input_box_1" '
-                         + 'class="form-label-text">Address:'
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="notify_address_input_box_1" '
-                         + 'class="input_form-default notify_person_1" '
-                         + 'name="notify_address"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="notify_city_input_box_1" '
-                         + 'class="form-label-text">City:'
-                         + '</label>'
-                         + '<input type="text" id="notify_city_input_box_1" '
-                         + 'class="input_form-default notify_person_1" '
-                         + 'name="notify_city"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="notify_state_input_box_1" '
-                         + 'class="form-label-text">State:'
-                         + '</label>'
-                         + '<select class="input_form-default state_dropdown '
-                         + 'notify_person_1" '
-                         + 'id="notify_state_input_box_1" '
-                         + 'name="notify_state">'
-                         + '</select>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="notify_zip_input_box_1" '
-                         + 'class="form-label-text">'
-                         + living_library_config.get_donation_form_info()
-                                                .zip_code_label_text
-                         + '</label>'
-                         + '<input type="text" '
-                         + 'id="notify_zip_input_box_1" '
-                         + 'class="input-medium notify_person_1" '
-                         + 'name="notify_zip" '
-                         + living_library_config.get_form_validation_rules()
-                                                .zip_code_validation + '/>'
-                         + '</td>';
-
-            form_html += '<td colspan="2">'
-                         + '<label for="notify_relation_to_donor_input_box_1" '
-                         + 'class="form-label-text">Relation to Donor:'
-                         + '</label>'
-                         + '<select class="input_form-default relationship_dropdown '
-                         + 'notify_person_1" '
-                         + 'id="notify_relation_to_donor_input_box_1" '
-                         + 'name="notify_relation_to_donor">'
-                         + '</select>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close notify_section_1 table
-
-            form_html += '<table>'; // open add_person_to_notify table
-
-            form_html += '<tr id="add_person_to_notify_row">';
-            form_html += '<td>'
-                         + '<button class="btn btn-light btn-bold" '
-                         + 'onclick="add_person_to_notify(event);">'
-                         + 'Add person to be notified'
-                         + '</button>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close add_person_to_notify table
-
-            form_html += '</div>'; // close Who To Notify div
-
-            // Recipient table
-            form_html += '<table class="table">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3"><h4>Person receiving donation</h4></td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="recipient_title_dropdown" '
-                         + 'class="form-label-text">Title:'
-                         + '</label>'
-                         + '<select class="input-medium title_dropdown" '
-                         + 'id="recipient_title_dropdown" name="recipient_title">'
-                         + '</select>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="recipient_first_name_input_box" '
-                         + 'class="form-label-text">First Name:'
-                         + '</label>'
-                         + '<input type="text" id="recipient_first_name_input_box" '
-                         + 'class="input_form-default" name="recipient_first_name"/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                      + '<label for="recipient_last_name_input_box" '
-                      + 'class="form-label-text">Last Name:'
-                      + '</label>'
-                      + '<input type="text" id="recipient_last_name_input_box" '
-                      + 'class="input_form-default" name="recipient_last_name"/>'
-                      + '</td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3">'
-                         + '<div>'
-                         + '<label for="recipient_donation_type">'
-                         + '</label>'
-                         + '<label for="recipient_donation_type_radio_choice1" '
-                         + 'class="radio inline">'
-                         + '<input type="radio" '
-                         + 'id="recipient_donation_type_radio_choice1" '
-                         + 'name="recipient_donation_type" '
-                         + 'value="In Honor of" checked/>In Honor of'
-                         + '</label>'
-                         + '</div>'
-                         + '<div>'
-                         + '<label for="recipient_donation_type_radio_choice2" '
-                         + 'class="radio inline">'
-                         + '<input type="radio" '
-                         + 'id="recipient_donation_type_radio_choice2" '
-                         + 'name="recipient_donation_type" '
-                         + 'value="In Memory of"/>In Memory of'
-                         + '</label>'
-                         + '</div>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close Recipient table
-
-            // Donation Info table
-            form_html += '<table class="table">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="3"><h4>Donation information</h4></td>';
-            form_html += '</tr>';
-
-            form_html += '<tr>';
-            form_html += '<td>'
-                         + '<label for="donor_amount_of_donation_input_box" '
-                         + 'class="form-label-text">Amount of Donation (e.g. 1500.00):'
-                         + '</label>'
-                         + '<input type="number" id="donor_amount_of_donation_input_box" '
-                         + 'class="input_form-default" name="donor_amount_of_donation" '
-                         + living_library_config.get_form_validation_rules()
-                                                .dollar_amount_validation + ' />'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="gift-date-box" '
-                         + 'class="form-label-text">Donation Date (YYYY-MM-DD):'
-                         + '</label>'
-                         + '<input type="text" id="gift-date-box" '
-                         + 'class="input_form-default" name="donor_date_of_donation" '
-                         + living_library_config.get_form_validation_rules()
-                                                .date_validation + '/>'
-                         + '</td>';
-
-            form_html += '<td>'
-                         + '<label for="donor_notes_textarea" '
-                         + 'class="form-label-text">Notes:'
-                         + '</label>'
-                         + '<textarea id="donor_notes_textarea" '
-                         + 'class="input_form-default" name="donor_notes"></textarea>'
-                         + '</td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close Donation Info table
-
-            // Subject Areas table
-            form_html += '<table class="table" id="subject_areas">';
-
-            form_html += '<tr>';
-            form_html += '<td colspan="' + SUBJECT_AREA_COLS
-                         + '"><h4>Subject areas</h4></td>';
-            form_html += '</tr>';
-
-            form_html += '</table>'; // close Subject Areas table
-
-            form_html += '<table class="table lower_controls">'
-                         + '<tr>'
-                         + '<td>'
-                         + '<button type="submit" '
-                         + 'class="btn-grey" id="save_donation_button" '
-                         + 'style="margin-right: 20px;">'
-                         + 'Send to Queue'
-                         + '</button>'
-                         + '<div id="donation-form-confirmation" '
-                         + 'style="display: inline-block; padding: 0px;">'
-                         + '</div>'
-                         + '</td>'
-                         + '</tr>'
-                         + '</table>';
-
-            form_html += '</form>';
-
-            let form_content_element = document.querySelector('#form-content');
-
-            if (form_content_element) {
-                form_content_element.innerHTML = form_html;
-            }
-
-            // Set required fields
-            living_library_helper
-            .update_required_fields_in_form(living_library_config
-                                            .get_donation_form_info());
-
-            // Populate Title dropdown menus
-            let titles_url = living_library_api_url +
-                             '&tbl=' + living_library_config.get_titles_table() +
-                             '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
-                                   document.getElementsByClassName('title_dropdown'),
-                                   '--Select a title--');
-
-            // Populate State dropdown menus
-            let states_url = living_library_api_url +
-                             '&tbl=' + living_library_config.get_states_table() +
-                             '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_states_table(), states_url,
-                                   document.getElementsByClassName('state_dropdown'),
-                                   '--Select a state--');
-
-            // Populate Relation to Donor dropdown menu
-            let relationships_url = living_library_api_url + '&tbl=' +
-                                    living_library_config.get_relationships_table() +
-                                    '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_relationships_table(),
-                                   relationships_url,
-                                   document
-                                   .getElementsByClassName('relationship_dropdown'),
-                                   '--Select a relation to donor--');
-
-            // Add Subject Area checkboxes
-            fetch(living_library_api_url +
-                  '&tbl=' + living_library_config.get_subject_areas_table() +
-                  '&is_active=true')
-                .then(function(response) {
-                    console.log("Inside subject areas fetch");
-                    if (response.status !== 200) {
-                        throw 'Status Code ' + response.status;
-                    }
-
-                    return response.json();
-                })
-                .then(function(data) {
-                    let table = document.querySelector('#subject_areas');
-
-                    if (data.length === 0) {
-                        let row = table.insertRow();
-                        let cell = row.insertCell();
-                        cell.colSpan = SUBJECT_AREA_COLS;
-                        cell.innerHTML = 'No subject areas found.';
-                        return;
-                    }
-
-                    for (let i = 0; i < data.length; i++) {
-                        let checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = 'checkbox_' + i;
-                        checkbox.name = 'donor_subject_areas';
-                        checkbox.value = data[i].term;
-
-                        let label = document.createElement('label');
-                        label.htmlFor = checkbox.id;
-                        label.className = 'checkbox inline';
-                        label.innerHTML = checkbox.value;
-                        label.insertBefore(checkbox, label.childNodes[0]);
-
-                        // decide where to insert cell
-                        let row = i % SUBJECT_AREA_COLS == 0
-                                  ? table.insertRow()
-                                  : table.rows[table.rows.length - 1];
-                        row.insertCell().appendChild(label);
-                    }
-                })
-                .catch(function(error) {
-                    console.error('ERROR: Unable to fetch subject areas: ' + error);
-                });
+            console.log('HEAD request succeeded');
         })
         .catch(function (error) {
             console.error('ERROR: HEAD request failed: ' + error);
             living_library_helper
             .insert_error_message('Error loading page', true);
+        });
+
+    let form_html = '<form id="donation-form" method="post" '
+                    + 'onsubmit="save_donation(event);">';
+
+    // Donor table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Person making donation</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + living_library_config.get_form_symbol_explanation_text()
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="donor_title_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="donor_title_dropdown" name="donor_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" id="donor_first_name_input_box" '
+                 + 'class="input_form-default" name="donor_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+              + '<label for="donor_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="donor_last_name_input_box" '
+              + 'class="input_form-default" name="donor_last_name"/>'
+              + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="donor_address_input_box" '
+                 + 'class="form-label-text">Address:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="donor_address_input_box" '
+                 + 'class="input_form-default" '
+                 + 'name="donor_address"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_city_input_box" '
+                 + 'class="form-label-text">City:'
+                 + '</label>'
+                 + '<input type="text" id="donor_city_input_box" '
+                 + 'class="input_form-default" name="donor_city"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_state_dropdown" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default state_dropdown" '
+                 + 'id="donor_state_dropdown" name="donor_state">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<label for="donor_zip_input_box" '
+                 + 'class="form-label-text">'
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_label_text
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="donor_zip_input_box" '
+                 + 'class="input-medium" '
+                 + 'name="donor_zip" '
+                 + living_library_config.get_form_validation_rules()
+                                        .zip_code_validation + '/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Donor table
+
+    // Who To Notify table
+    form_html += '<div class="table">';
+
+    form_html += '<table id="notify_section_1">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<h4>Person <span id="notify_person_heading_num_1"></span>'
+                 + 'to be notified of donation</h4>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_title_dropdown_1" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium title_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_title_dropdown_1" '
+                 + 'name="notify_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_first_name_input_box_1" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_first_name_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_last_name_input_box_1" '
+                 + 'class="form-label-text">Last Name:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_last_name_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_last_name"/>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_address_input_box_1" '
+                 + 'class="form-label-text">Address:'
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_address_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_address"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_city_input_box_1" '
+                 + 'class="form-label-text">City:'
+                 + '</label>'
+                 + '<input type="text" id="notify_city_input_box_1" '
+                 + 'class="input_form-default notify_person_1" '
+                 + 'name="notify_city"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="notify_state_input_box_1" '
+                 + 'class="form-label-text">State:'
+                 + '</label>'
+                 + '<select class="input_form-default state_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_state_input_box_1" '
+                 + 'name="notify_state">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="notify_zip_input_box_1" '
+                 + 'class="form-label-text">'
+                 + living_library_config.get_donation_form_info()
+                                        .zip_code_label_text
+                 + '</label>'
+                 + '<input type="text" '
+                 + 'id="notify_zip_input_box_1" '
+                 + 'class="input-medium notify_person_1" '
+                 + 'name="notify_zip" '
+                 + living_library_config.get_form_validation_rules()
+                                        .zip_code_validation + '/>'
+                 + '</td>';
+
+    form_html += '<td colspan="2">'
+                 + '<label for="notify_relation_to_donor_input_box_1" '
+                 + 'class="form-label-text">Relation to Donor:'
+                 + '</label>'
+                 + '<select class="input_form-default relationship_dropdown '
+                 + 'notify_person_1" '
+                 + 'id="notify_relation_to_donor_input_box_1" '
+                 + 'name="notify_relation_to_donor">'
+                 + '</select>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close notify_section_1 table
+
+    form_html += '<table>'; // open add_person_to_notify table
+
+    form_html += '<tr id="add_person_to_notify_row">';
+    form_html += '<td>'
+                 + '<button class="btn btn-light btn-bold" '
+                 + 'onclick="add_person_to_notify(event);">'
+                 + 'Add person to be notified'
+                 + '</button>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close add_person_to_notify table
+
+    form_html += '</div>'; // close Who To Notify div
+
+    // Recipient table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Person receiving donation</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="recipient_title_dropdown" '
+                 + 'class="form-label-text">Title:'
+                 + '</label>'
+                 + '<select class="input-medium title_dropdown" '
+                 + 'id="recipient_title_dropdown" name="recipient_title">'
+                 + '</select>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="recipient_first_name_input_box" '
+                 + 'class="form-label-text">First Name:'
+                 + '</label>'
+                 + '<input type="text" id="recipient_first_name_input_box" '
+                 + 'class="input_form-default" name="recipient_first_name"/>'
+                 + '</td>';
+
+    form_html += '<td>'
+              + '<label for="recipient_last_name_input_box" '
+              + 'class="form-label-text">Last Name:'
+              + '</label>'
+              + '<input type="text" id="recipient_last_name_input_box" '
+              + 'class="input_form-default" name="recipient_last_name"/>'
+              + '</td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3">'
+                 + '<div>'
+                 + '<label for="recipient_donation_type">'
+                 + '</label>'
+                 + '<label for="recipient_donation_type_radio_choice1" '
+                 + 'class="radio inline">'
+                 + '<input type="radio" '
+                 + 'id="recipient_donation_type_radio_choice1" '
+                 + 'name="recipient_donation_type" '
+                 + 'value="In Honor of" checked/>In Honor of'
+                 + '</label>'
+                 + '</div>'
+                 + '<div>'
+                 + '<label for="recipient_donation_type_radio_choice2" '
+                 + 'class="radio inline">'
+                 + '<input type="radio" '
+                 + 'id="recipient_donation_type_radio_choice2" '
+                 + 'name="recipient_donation_type" '
+                 + 'value="In Memory of"/>In Memory of'
+                 + '</label>'
+                 + '</div>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Recipient table
+
+    // Donation Info table
+    form_html += '<table class="table">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="3"><h4>Donation information</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '<tr>';
+    form_html += '<td>'
+                 + '<label for="donor_amount_of_donation_input_box" '
+                 + 'class="form-label-text">Amount of Donation (e.g. 1500.00):'
+                 + '</label>'
+                 + '<input type="number" id="donor_amount_of_donation_input_box" '
+                 + 'class="input_form-default" name="donor_amount_of_donation" '
+                 + living_library_config.get_form_validation_rules()
+                                        .dollar_amount_validation + ' />'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="gift-date-box" '
+                 + 'class="form-label-text">Donation Date (YYYY-MM-DD):'
+                 + '</label>'
+                 + '<input type="text" id="gift-date-box" '
+                 + 'class="input_form-default" name="donor_date_of_donation" '
+                 + living_library_config.get_form_validation_rules()
+                                        .date_validation + '/>'
+                 + '</td>';
+
+    form_html += '<td>'
+                 + '<label for="donor_notes_textarea" '
+                 + 'class="form-label-text">Notes:'
+                 + '</label>'
+                 + '<textarea id="donor_notes_textarea" '
+                 + 'class="input_form-default" name="donor_notes"></textarea>'
+                 + '</td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Donation Info table
+
+    // Subject Areas table
+    form_html += '<table class="table" id="subject_areas">';
+
+    form_html += '<tr>';
+    form_html += '<td colspan="' + SUBJECT_AREA_COLS
+                 + '"><h4>Subject areas</h4></td>';
+    form_html += '</tr>';
+
+    form_html += '</table>'; // close Subject Areas table
+
+    form_html += '<table class="table lower_controls">'
+                 + '<tr>'
+                 + '<td>'
+                 + '<button type="submit" '
+                 + 'class="btn-grey" id="save_donation_button" '
+                 + 'style="margin-right: 20px;">'
+                 + 'Send to Queue'
+                 + '</button>'
+                 + '<div id="donation-form-confirmation" '
+                 + 'style="display: inline-block; padding: 0px;">'
+                 + '</div>'
+                 + '</td>'
+                 + '</tr>'
+                 + '</table>';
+
+    form_html += '</form>';
+
+    let form_content_element = document.querySelector('#form-content');
+
+    if (form_content_element) {
+        form_content_element.innerHTML = form_html;
+    }
+
+    // Set required fields
+    living_library_helper
+    .update_required_fields_in_form(living_library_config
+                                    .get_donation_form_info());
+
+    // Populate Title dropdown menus
+    let titles_url = living_library_api_url +
+                     '&tbl=' + living_library_config.get_titles_table() +
+                     '&is_active=true';
+    living_library_helper.
+    populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
+                           document.getElementsByClassName('title_dropdown'),
+                           '--Select a title--');
+
+    // Populate State dropdown menus
+    let states_url = living_library_api_url +
+                     '&tbl=' + living_library_config.get_states_table() +
+                     '&is_active=true';
+    living_library_helper.
+    populate_dropdown_menu(living_library_config.get_states_table(), states_url,
+                           document.getElementsByClassName('state_dropdown'),
+                           '--Select a state--');
+
+    // Populate Relation to Donor dropdown menu
+    let relationships_url = living_library_api_url + '&tbl=' +
+                            living_library_config.get_relationships_table() +
+                            '&is_active=true';
+    living_library_helper.
+    populate_dropdown_menu(living_library_config.get_relationships_table(),
+                           relationships_url,
+                           document
+                           .getElementsByClassName('relationship_dropdown'),
+                           '--Select a relation to donor--');
+
+    // Add Subject Area checkboxes
+    fetch(living_library_api_url +
+          '&tbl=' + living_library_config.get_subject_areas_table() +
+          '&is_active=true')
+        .then(function(response) {
+            console.log("Inside subject areas fetch");
+            if (response.status !== 200) {
+                throw 'Status Code ' + response.status;
+            }
+
+            return response.json();
+        })
+        .then(function(data) {
+            let table = document.querySelector('#subject_areas');
+
+            if (data.length === 0) {
+                let row = table.insertRow();
+                let cell = row.insertCell();
+                cell.colSpan = SUBJECT_AREA_COLS;
+                cell.innerHTML = 'No subject areas found.';
+                return;
+            }
+
+            for (let i = 0; i < data.length; i++) {
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'checkbox_' + i;
+                checkbox.name = 'donor_subject_areas';
+                checkbox.value = data[i].term;
+
+                let label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.className = 'checkbox inline';
+                label.innerHTML = checkbox.value;
+                label.insertBefore(checkbox, label.childNodes[0]);
+
+                // decide where to insert cell
+                let row = i % SUBJECT_AREA_COLS == 0
+                          ? table.insertRow()
+                          : table.rows[table.rows.length - 1];
+                row.insertCell().appendChild(label);
+            }
+        })
+        .catch(function(error) {
+            console.error('ERROR: Unable to fetch subject areas: ' + error);
         });
 
     viewUtils.setUserLabel();
