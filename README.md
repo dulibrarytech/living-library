@@ -47,7 +47,7 @@ define the API route in your .env file (see API_ROUTE variable)
 create a mysql database named "livinglibrary" (or whatever value you give to the DB_NAME variable in your .env file)
 import livinglibrary.sql (schema only, no content; for schema & example content, see livinglibrary_with_example_content.sql)
 run "node living-library.js"
-http://localhost:8000/[API_ROUTE]?api_key=[API_KEY]
+http://localhost:8000/API_ROUTE?api_key=API_KEY
 (where API_ROUTE and API_KEY are defined in your .env file)
 ```
 
