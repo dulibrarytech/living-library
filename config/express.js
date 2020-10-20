@@ -18,7 +18,8 @@
 
 'use strict';
 
-const HTTP = require('http'),
+const HTTPS = require('https'),
+    FS = require('fs'),
     EXPRESS = require('express'),
     CONFIG = require('../config/config'),
     COMPRESS = require('compression'),
@@ -31,7 +32,10 @@ const HTTP = require('http'),
 module.exports = function() {
 
     const APP = EXPRESS(),
-        SERVER = HTTP.createServer(APP);
+        SERVER = HTTPS.createServer({
+            key: FS.readFileSync(CONFIG.sslKey),
+            cert: FS.readFileSync(CONFIG.sslCertificate)
+        }, APP);
 
     SERVER.listen(process.env.APP_PORT);
 

@@ -24,6 +24,8 @@ module.exports = {
     apiKey: process.env.API_KEY,
     corsAllowedOrigin: process.env.CORS_ALLOWED_ORIGIN,
     ldap: process.env.LDAP_URL,
+    sslKey: process.env.SSL_KEY,
+    sslCertificate: process.env.SSL_CERTIFICATE,
     dbHost: process.env.DB_HOST,
     dbUser: process.env.DB_USER,
     dbPassword: process.env.DB_PASSWORD,
