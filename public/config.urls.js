@@ -11,8 +11,8 @@
 var pathArray = window.location.href.split( '/' );
 var baseUrl = "";
 if(pathArray[2] == "localhost") {
-
-	baseUrl     = "http://" + document.domain + "/donordb/";
+	// baseUrl     = "http://" + document.domain + "/donordb/";
+	baseUrl     = "https://" + document.domain + "/donordb/";
 }
 else {
 
