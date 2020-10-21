@@ -26,5 +26,5 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 const express = require('./config/express');
 const app = express();
 
-console.log('Living Library application running at http://' + process.env.APP_HOST + ':' + process.env.APP_PORT + ' in ' + process.env.NODE_ENV + ' mode.');
+console.log('Living Library application running at https://' + process.env.APP_HOST + ':' + process.env.APP_PORT + ' in ' + process.env.NODE_ENV + ' mode.');
 module.exports = app;
