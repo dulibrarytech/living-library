@@ -242,6 +242,39 @@ const living_library_helper = (function () {
     };
 
     /**
+     * Pings the Living Library API (by making a HEAD request). Times out if no
+     * response is received by the specified timeout length (25 seconds by
+     * default).
+     * @param   {number}  timeout  The number of milliseconds before the request
+     *                             times out.
+     * @returns {Promise}          A promise that is rejected or resolved
+     *                             based on the fetch response.
+     * Adapted from:
+     * https://davidwalsh.name/fetch-timeout
+     */
+    obj.ping_api_with_timeout = function (timeout = 25000) {
+        return new Promise( (resolve, reject) => {
+            let timer = setTimeout(
+                () => reject(new Error('Ping timed out')),
+                timeout
+            );
+
+            fetch(living_library_api_url, {
+        	       method: 'HEAD',
+                 mode: 'cors'
+            })
+                .then(
+                    response => resolve(response),
+                    error => {
+                        console.log("Rejecting ping_with_timeout promise");
+                        reject(error);
+                    }
+                )
+                .finally( () => clearTimeout(timer) );
+        });
+    };
+
+    /**
      * Populates dropdown menu(s) by fetching values from the specified lookup
      * table
      * @param {string}  table_name   the lookup table whose values will populate

@@ -31,19 +31,6 @@ const create_donation = function () {
         page_label_element.innerHTML = 'Living Library: Donation Form';
     }
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
-        .then(function () {
-            console.log('HEAD request succeeded');
-        })
-        .catch(function (error) {
-            console.error('ERROR: HEAD request failed: ' + error);
-            living_library_helper
-            .insert_error_message('Error loading page', true);
-        });
-
     let form_html = '<form id="donation-form" method="post" '
                     + 'onsubmit="save_donation(event);">';
 
@@ -388,86 +375,96 @@ const create_donation = function () {
         form_content_element.innerHTML = form_html;
     }
 
+    living_library_helper.ping_api_with_timeout()
+        .then(function () {
+            console.log('HEAD request succeeded');
+
+            // Populate Title dropdown menus
+            let titles_url = living_library_api_url +
+                             '&tbl=' + living_library_config.get_titles_table() +
+                             '&is_active=true';
+            living_library_helper.
+            populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
+                                   document.getElementsByClassName('title_dropdown'),
+                                   '--Select a title--');
+
+            // Populate State dropdown menus
+            let states_url = living_library_api_url +
+                             '&tbl=' + living_library_config.get_states_table() +
+                             '&is_active=true';
+            living_library_helper.
+            populate_dropdown_menu(living_library_config.get_states_table(), states_url,
+                                   document.getElementsByClassName('state_dropdown'),
+                                   '--Select a state--');
+
+            // Populate Relation to Donor dropdown menu
+            let relationships_url = living_library_api_url + '&tbl=' +
+                                    living_library_config.get_relationships_table() +
+                                    '&is_active=true';
+            living_library_helper.
+            populate_dropdown_menu(living_library_config.get_relationships_table(),
+                                   relationships_url,
+                                   document
+                                   .getElementsByClassName('relationship_dropdown'),
+                                   '--Select a relation to donor--');
+
+            // Add Subject Area checkboxes
+            fetch(living_library_api_url +
+                  '&tbl=' + living_library_config.get_subject_areas_table() +
+                  '&is_active=true')
+                .then(function(response) {
+                    console.log("Inside subject areas fetch");
+                    if (response.status !== 200) {
+                        throw 'Status Code ' + response.status;
+                    }
+
+                    return response.json();
+                })
+                .then(function(data) {
+                    let table = document.querySelector('#subject_areas');
+
+                    if (data.length === 0) {
+                        let row = table.insertRow();
+                        let cell = row.insertCell();
+                        cell.colSpan = SUBJECT_AREA_COLS;
+                        cell.innerHTML = 'No subject areas found.';
+                        return;
+                    }
+
+                    for (let i = 0; i < data.length; i++) {
+                        let checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'checkbox_' + i;
+                        checkbox.name = 'donor_subject_areas';
+                        checkbox.value = data[i].term;
+
+                        let label = document.createElement('label');
+                        label.htmlFor = checkbox.id;
+                        label.className = 'checkbox inline';
+                        label.innerHTML = checkbox.value;
+                        label.insertBefore(checkbox, label.childNodes[0]);
+
+                        // decide where to insert cell
+                        let row = i % SUBJECT_AREA_COLS == 0
+                                  ? table.insertRow()
+                                  : table.rows[table.rows.length - 1];
+                        row.insertCell().appendChild(label);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('ERROR: Unable to fetch subject areas: ' + error);
+                });
+        })
+        .catch(function (error) {
+            console.error('ERROR: HEAD request failed: ' + error);
+            living_library_helper
+            .insert_error_message('Error loading page', true);
+        });
+
     // Set required fields
     living_library_helper
     .update_required_fields_in_form(living_library_config
                                     .get_donation_form_info());
-
-    // Populate Title dropdown menus
-    let titles_url = living_library_api_url +
-                     '&tbl=' + living_library_config.get_titles_table() +
-                     '&is_active=true';
-    living_library_helper.
-    populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
-                           document.getElementsByClassName('title_dropdown'),
-                           '--Select a title--');
-
-    // Populate State dropdown menus
-    let states_url = living_library_api_url +
-                     '&tbl=' + living_library_config.get_states_table() +
-                     '&is_active=true';
-    living_library_helper.
-    populate_dropdown_menu(living_library_config.get_states_table(), states_url,
-                           document.getElementsByClassName('state_dropdown'),
-                           '--Select a state--');
-
-    // Populate Relation to Donor dropdown menu
-    let relationships_url = living_library_api_url + '&tbl=' +
-                            living_library_config.get_relationships_table() +
-                            '&is_active=true';
-    living_library_helper.
-    populate_dropdown_menu(living_library_config.get_relationships_table(),
-                           relationships_url,
-                           document
-                           .getElementsByClassName('relationship_dropdown'),
-                           '--Select a relation to donor--');
-
-    // Add Subject Area checkboxes
-    fetch(living_library_api_url +
-          '&tbl=' + living_library_config.get_subject_areas_table() +
-          '&is_active=true')
-        .then(function(response) {
-            console.log("Inside subject areas fetch");
-            if (response.status !== 200) {
-                throw 'Status Code ' + response.status;
-            }
-
-            return response.json();
-        })
-        .then(function(data) {
-            let table = document.querySelector('#subject_areas');
-
-            if (data.length === 0) {
-                let row = table.insertRow();
-                let cell = row.insertCell();
-                cell.colSpan = SUBJECT_AREA_COLS;
-                cell.innerHTML = 'No subject areas found.';
-                return;
-            }
-
-            for (let i = 0; i < data.length; i++) {
-                let checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = 'checkbox_' + i;
-                checkbox.name = 'donor_subject_areas';
-                checkbox.value = data[i].term;
-
-                let label = document.createElement('label');
-                label.htmlFor = checkbox.id;
-                label.className = 'checkbox inline';
-                label.innerHTML = checkbox.value;
-                label.insertBefore(checkbox, label.childNodes[0]);
-
-                // decide where to insert cell
-                let row = i % SUBJECT_AREA_COLS == 0
-                          ? table.insertRow()
-                          : table.rows[table.rows.length - 1];
-                row.insertCell().appendChild(label);
-            }
-        })
-        .catch(function(error) {
-            console.error('ERROR: Unable to fetch subject areas: ' + error);
-        });
 
     viewUtils.setUserLabel();
 };
