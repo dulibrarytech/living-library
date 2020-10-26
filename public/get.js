@@ -607,10 +607,7 @@ const get_donations = function (is_completed) {
                           ? "Living Library: Completed Donations"
                           : "Living Library: Donation Queue");
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
+    living_library_helper.ping_api_with_timeout()
         .then(function () {
             fetch(living_library_api_url + '&is_completed=' + is_completed)
                 .then(response => {
@@ -884,10 +881,7 @@ const get_donation = function (is_completed, id) {
 const get_completed_donation = function (url) {
     $("#page-label").html('Living Library: Donation Record');
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
+    living_library_helper.ping_api_with_timeout()
         .then(function () {
             fetch(url)
                 .then(response => {
@@ -1180,10 +1174,7 @@ const get_queued_donation = function (url) {
 
     $("#page-label").html('Living Library: Book Plate Form');
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
+    living_library_helper.ping_api_with_timeout()
         .then(function () {
             fetch(url)
                 .then(response => {
@@ -1544,10 +1535,7 @@ const get_menu_choices = function (table) {
         return false;
     }
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
+    living_library_helper.ping_api_with_timeout()
         .then(function () {
             // Add menu choice form
             let html = '<form id="add-menu-choice-form" method="post" ' +
@@ -1725,10 +1713,7 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
         return false;
     }
 
-    fetch(living_library_api_url, {
-	       method: 'HEAD',
-         mode: 'cors'
-    })
+    living_library_helper.ping_api_with_timeout()
         .then(function () {
             // 'Update menu choice' form
             let html = '<form id="update-menu-choice-form" method="post" ' +

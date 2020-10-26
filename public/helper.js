@@ -266,7 +266,7 @@ const living_library_helper = (function () {
                 .then(
                     response => resolve(response),
                     error => {
-                        console.log("Rejecting ping_with_timeout promise");
+                        console.log("Rejecting ping_api_with_timeout promise");
                         reject(error);
                     }
                 )
