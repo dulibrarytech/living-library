@@ -242,36 +242,37 @@ const living_library_helper = (function () {
     };
 
     /**
-     * Pings the Living Library API (by making a HEAD request). Times out if no
-     * response is received by the specified timeout length (25 seconds by
-     * default).
+     * Makes the fetch request specified by the url and options parameters.
+     * Times out and aborts request if no response is received by the specified
+     * timeout length (25 seconds by default).
+     * @param   {string}  url      The URL of the resource to be fetched
+     * @param   {Object}  options  An object containing the settings to apply
+     *                             to the request (optional)
      * @param   {number}  timeout  The number of milliseconds before the request
-     *                             times out.
-     * @returns {Promise}          A promise that is rejected or resolved
-     *                             based on the fetch response.
+     *                             times out (optional; defaults to 25000)
+     * @returns {Promise}          The promise returned by the Fetch request
+     *
      * Adapted from:
-     * https://davidwalsh.name/fetch-timeout
+     * https://lowmess.com/blog/fetch-with-timeout
      */
-    obj.ping_api_with_timeout = function (timeout = 25000) {
-        return new Promise( (resolve, reject) => {
-            let timer = setTimeout(
-                () => reject(new Error('Ping timed out')),
-                timeout
-            );
+    obj.fetch_with_timeout = function (url, options = {}, timeout = 25000) {
+        const controller = new AbortController();
+        const config = { ...options, signal: controller.signal };
 
-            fetch(living_library_api_url, {
-        	       method: 'HEAD',
-                 mode: 'cors'
-            })
-                .then(
-                    response => resolve(response),
-                    error => {
-                        console.log("Rejecting ping_api_with_timeout promise");
-                        reject(error);
-                    }
-                )
-                .finally( () => clearTimeout(timer) );
-        });
+        const timer = setTimeout(
+            () => { controller.abort(); },
+            timeout
+        );
+
+        return fetch(url, config)
+            .then(response => response)
+            .catch( (error) => {
+                if (error.name === 'AbortError') {
+                    throw new Error('Response timed out');
+                }
+
+                throw new Error(error.message);
+            });
     };
 
     /**
@@ -420,23 +421,23 @@ const living_library_helper = (function () {
      *                      false otherwise
      */
     obj.validate_is_completed_parameter = function (is_completed) {
-       console.log("before switch, is_completed = " + is_completed);
-       switch (typeof is_completed) {
-           case 'boolean':
-               break;
-           case 'number':
-               is_completed = is_completed == 1;
-               break;
-           case 'string':
-               is_completed = is_completed.toLowerCase() == 'true' ||
-                              is_completed == '1';
-               break;
-           default:
-               is_completed = false;
-       }
-       console.log("after switch, is_completed = " + is_completed);
-       return is_completed;
-   }
+        console.log("before switch, is_completed = " + is_completed);
+        switch (typeof is_completed) {
+            case 'boolean':
+                break;
+            case 'number':
+                is_completed = is_completed == 1;
+                break;
+            case 'string':
+                is_completed = is_completed.toLowerCase() == 'true' ||
+                               is_completed == '1';
+                break;
+            default:
+                is_completed = false;
+        }
+        console.log("after switch, is_completed = " + is_completed);
+        return is_completed;
+    }
 
     return obj;
 

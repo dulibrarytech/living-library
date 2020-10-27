@@ -375,7 +375,10 @@ const create_donation = function () {
         form_content_element.innerHTML = form_html;
     }
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             console.log('HEAD request succeeded');
 
@@ -607,7 +610,10 @@ const get_donations = function (is_completed) {
                           ? "Living Library: Completed Donations"
                           : "Living Library: Donation Queue");
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             fetch(living_library_api_url + '&is_completed=' + is_completed)
                 .then(response => {
@@ -881,7 +887,10 @@ const get_donation = function (is_completed, id) {
 const get_completed_donation = function (url) {
     $("#page-label").html('Living Library: Donation Record');
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             fetch(url)
                 .then(response => {
@@ -1174,7 +1183,10 @@ const get_queued_donation = function (url) {
 
     $("#page-label").html('Living Library: Book Plate Form');
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             fetch(url)
                 .then(response => {
@@ -1535,7 +1547,10 @@ const get_menu_choices = function (table) {
         return false;
     }
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             // Add menu choice form
             let html = '<form id="add-menu-choice-form" method="post" ' +
@@ -1713,7 +1728,10 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
         return false;
     }
 
-    living_library_helper.ping_api_with_timeout()
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
+        method: 'HEAD',
+        mode: 'cors'
+    })
         .then(function () {
             // 'Update menu choice' form
             let html = '<form id="update-menu-choice-form" method="post" ' +
