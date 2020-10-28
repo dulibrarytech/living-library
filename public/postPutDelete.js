@@ -70,7 +70,7 @@ const save_donation = function (event) {
     let confirmation_div_element =
         document.getElementById('donation-form-confirmation');
 
-    fetch(living_library_api_url, {
+    living_library_helper.fetch_with_timeout(living_library_api_url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -154,7 +154,8 @@ const save_book_plate = function (event) {
     let confirmation_div_element =
         document.getElementById('book-plate-form-confirmation');
 
-    fetch(living_library_api_url + '&id=' + form_data.donation_id.value, {
+    living_library_helper.fetch_with_timeout(
+        living_library_api_url + '&id=' + form_data.donation_id.value, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -227,7 +228,8 @@ const delete_donation = function (event, id) {
     console.log("id = " + id);
 
     if (confirm("Delete Donation " + id + "?")) {
-        fetch(living_library_api_url + '&id=' + id, {
+        living_library_helper.fetch_with_timeout(
+            living_library_api_url + '&id=' + id, {
             method: 'DELETE',
             mode: 'cors'
         })
@@ -296,7 +298,8 @@ const add_menu_choice = function (event, table) {
     let confirmation_div_element =
         document.getElementById('add-menu-choice-form-confirmation');
 
-    fetch(living_library_api_url + '&tbl=' + table, {
+    living_library_helper.fetch_with_timeout(
+        living_library_api_url + '&tbl=' + table, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -392,8 +395,8 @@ const update_menu_choice = function (event, table, id) {
     let confirmation_div_element =
         document.getElementById('update-menu-choice-form-confirmation');
 
-    fetch(living_library_api_url + '&tbl=' + table + '&id=' + id +
-          '&is_active=true', {
+    living_library_helper.fetch_with_timeout(living_library_api_url + '&tbl=' +
+        table + '&id=' + id + '&is_active=true', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -455,8 +458,8 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
     let confirmation_div_element =
         document.getElementById('delete-menu-choice-form-confirmation');
 
-    fetch(living_library_api_url + '&tbl=' + table + '&id=' + id +
-          '&is_active=true', {
+    living_library_helper.fetch_with_timeout(living_library_api_url + '&tbl=' +
+        table + '&id=' + id + '&is_active=true', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

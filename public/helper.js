@@ -31,6 +31,40 @@ const living_library_helper = (function () {
     };
 
     /**
+     * Makes the fetch request specified by the url and options parameters.
+     * Times out and aborts request if no response is received by the specified
+     * timeout length (25 seconds by default).
+     * @param   {string}  url      The URL of the resource to be fetched
+     * @param   {Object}  options  An object containing the settings to apply
+     *                             to the request (optional)
+     * @param   {number}  timeout  The number of milliseconds before the request
+     *                             times out (optional; defaults to 25000)
+     * @returns {Promise}          The promise returned by the Fetch request
+     *
+     * Adapted from:
+     * https://lowmess.com/blog/fetch-with-timeout
+     */
+    obj.fetch_with_timeout = function (url, options = {}, timeout = 25000) {
+        const controller = new AbortController();
+        const config = { ...options, signal: controller.signal };
+
+        const timer = setTimeout(
+            () => { controller.abort(); },
+            timeout
+        );
+
+        return fetch(url, config)
+            .then(response => response)
+            .catch( (error) => {
+                if (error.name === 'AbortError') {
+                    throw new Error('Response timed out');
+                }
+
+                throw new Error(error.message);
+            });
+    };
+
+    /**
      * Retrieves input data from a form and returns it as a JSON object.
      * @param   {Array}           expected_form_fields  the form fields that
      *                                                  will be matched
@@ -239,40 +273,6 @@ const living_library_helper = (function () {
     obj.is_valid_value = function (element) {
         return (!['checkbox', 'radio'].includes(element.type) ||
                 element.checked);
-    };
-
-    /**
-     * Makes the fetch request specified by the url and options parameters.
-     * Times out and aborts request if no response is received by the specified
-     * timeout length (25 seconds by default).
-     * @param   {string}  url      The URL of the resource to be fetched
-     * @param   {Object}  options  An object containing the settings to apply
-     *                             to the request (optional)
-     * @param   {number}  timeout  The number of milliseconds before the request
-     *                             times out (optional; defaults to 25000)
-     * @returns {Promise}          The promise returned by the Fetch request
-     *
-     * Adapted from:
-     * https://lowmess.com/blog/fetch-with-timeout
-     */
-    obj.fetch_with_timeout = function (url, options = {}, timeout = 25000) {
-        const controller = new AbortController();
-        const config = { ...options, signal: controller.signal };
-
-        const timer = setTimeout(
-            () => { controller.abort(); },
-            timeout
-        );
-
-        return fetch(url, config)
-            .then(response => response)
-            .catch( (error) => {
-                if (error.name === 'AbortError') {
-                    throw new Error('Response timed out');
-                }
-
-                throw new Error(error.message);
-            });
     };
 
     /**
