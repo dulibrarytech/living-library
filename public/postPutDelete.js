@@ -33,7 +33,8 @@ const save_donation = function (event) {
     console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
 
     let notify_data_as_JSON = [],
-        notify_persons_data = document.getElementsByClassName('notify_person_1'),
+        notify_persons_data =
+            document.getElementsByClassName('notify_person_1'),
         i = 1;
     while(notify_persons_data.length !== 0) {
         if (living_library_helper
@@ -118,8 +119,8 @@ const save_donation = function (event) {
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [save_donation] An error occurred during or '
-                        + 'after POST request: ' + error);
+            console.error('ERROR: [save_donation] An error occurred during or '
+                          + 'after POST request: ' + error);
 
             living_library_helper
             .insert_form_confirmation(confirmation_div_element, false,
@@ -205,8 +206,8 @@ const save_book_plate = function (event) {
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [save_book_plate] An error occurred during or '
-                        + 'after PUT request: ' + error);
+            console.error('ERROR: [save_book_plate] An error occurred during '
+                          + 'or after PUT request: ' + error);
 
             living_library_helper
             .insert_form_confirmation(confirmation_div_element, false,
@@ -262,8 +263,8 @@ const delete_donation = function (event, id) {
                 location.reload(true);
             })
             .catch(function (error) {
-                console.log('ERROR: [delete_donation] An error occurred during '
-                            + 'or after DELETE request: ' + error);
+                console.error('ERROR: [delete_donation] An error occurred '
+                              + 'during or after DELETE request: ' + error);
 
                 alert('Error -- Unable to delete Donation ' + id);
             });
@@ -319,8 +320,8 @@ const add_menu_choice = function (event, table) {
                     ok: response.ok
                 }))
                 .catch(error => {
-                    console.log('ERROR: [add_menu_choice] Response does not ' +
-                                'contain JSON body content: ' + error);
+                    console.error('ERROR: [add_menu_choice] Response does ' +
+                                  'not contain JSON body content: ' + error);
 
                     return ({
                         status: response.status,
@@ -354,8 +355,8 @@ const add_menu_choice = function (event, table) {
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [add_menu_choice] An error occurred during or '
-                        + 'after PUT request: ' + error);
+            console.error('ERROR: [add_menu_choice] An error occurred during '
+                          + 'or after PUT request: ' + error);
 
             living_library_helper
             .insert_form_confirmation(confirmation_div_element, false,
@@ -426,8 +427,8 @@ const update_menu_choice = function (event, table, id) {
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [update_menu_choice] An error occurred during '
-                        + 'or after PUT request: ' + error);
+            console.error('ERROR: [update_menu_choice] An error occurred '
+                          + 'during or after PUT request: ' + error);
 
             living_library_helper
             .insert_form_confirmation(confirmation_div_element, false,
@@ -493,8 +494,8 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
             }
         })
         .catch(function (error) {
-            console.log('ERROR: [delete_menu_choice] An error occurred during '
-                        + 'or after PUT request: ' + error);
+            console.error('ERROR: [delete_menu_choice] An error occurred '
+                          + 'during or after PUT request: ' + error);
 
             living_library_helper
             .insert_form_confirmation(confirmation_div_element, false,

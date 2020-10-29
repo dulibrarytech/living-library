@@ -843,8 +843,8 @@ const get_donations = function (is_completed) {
                 })
                 .catch((error) => {
                     console.log('In the catch block');
-                    console.log('Error with fetch request of get_donations ' +
-                                'function: ' + error);
+                    console.error('Error with fetch request of get_donations ' +
+                                  'function: ' + error);
                 });
         })
         .catch(function (error) {
@@ -1160,8 +1160,8 @@ const get_completed_donation = function (url) {
                 })
                 .catch((error) => {
                     console.log('In the catch block');
-                    console.log('Error with fetch request of get_completed_donation ' +
-                                'function: ' + error);
+                    console.error('Error with fetch request of get_completed_donation ' +
+                                  'function: ' + error);
                 });
         })
         .catch(function (error) {
@@ -1480,8 +1480,8 @@ const get_queued_donation = function (url) {
                 })
                 .catch((error) => {
                     console.log('In the catch block');
-                    console.log('Error with fetch request of get_queued_donation ' +
-                                'function: ' + error);
+                    console.error('Error with fetch request of get_queued_donation ' +
+                                  'function: ' + error);
                 });
         })
         .catch(function (error) {
@@ -1661,8 +1661,8 @@ const get_menu_choices = function (table) {
                     });
                 })
                 .catch(function(error) {
-                    console.log('FATAL: [get_menu_choices] Unable to fetch ' + table +
-                                ': ' + error);
+                    console.error('ERROR: [get_menu_choices] Unable to fetch ' + table +
+                                  ': ' + error);
                 });
         })
         .catch(function (error) {
@@ -1853,8 +1853,8 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
                     });
                 })
                 .catch(function(error) {
-                    console.log('FATAL: [edit_menu_choice] Unable to fetch ' + table
-                                + ' with id = ' + menu_choice_id + ': ' + error);
+                    console.error('ERROR: [edit_menu_choice] Unable to fetch ' + table
+                                  + ' with id = ' + menu_choice_id + ': ' + error);
                 });
         })
         .catch(function (error) {
