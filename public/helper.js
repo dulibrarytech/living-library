@@ -113,12 +113,12 @@ const living_library_helper = (function () {
                               : property;
 
             if (Array.isArray(object[property])) {
-                console.log('Error in donation record field: ' + field_label +
-                            ' is an array: [' + object[property].join(', ') +
-                            ']');
+                console.warn('Error in donation record field: ' + field_label +
+                             ' is an array: [' + object[property].join(', ') +
+                             ']');
             } else {
-                console.log('Error in donation record field: ' + field_label +
-                            ' = ' + object[property]);
+                console.warn('Error in donation record field: ' + field_label +
+                             ' = ' + object[property]);
             }
         }
 
@@ -134,33 +134,23 @@ const living_library_helper = (function () {
      *                                'undefined'
      */
     obj.get_valid_json = function (object, property) {
-        console.log('Inside get_valid_json function');
-
-        console.log('object = ');
-        console.log(object);
-        console.log('property = ' + property);
-
         let field;
 
         if (typeof object === 'undefined' || object === null) {
-            console.log("Error: donation record is " + object);
+            console.error("Error: donation record is " + object);
         } else if (object.hasOwnProperty(property)) {
             try {
                 field = JSON.parse(object[property]);
             } catch (error) {
-                console.log('Error parsing JSON for donation id ' +
-                            object.id + ': ' + error + ':\n' +
-                            'donation_' + object.id + '.' + property +
-                            ' = ' + object[property]);
+                console.error('Error parsing JSON for donation id ' +
+                              object.id + ': ' + error + ':\n' +
+                              'donation_' + object.id + '.' + property +
+                              ' = ' + object[property]);
             }
         } else {
-            console.log(`Error: Cannot find '${property}' field in donation `
-                        + 'record with id = ');
-            console.log(object.id);
+            console.error(`Error: Cannot find '${property}' field in donation `
+                          + 'record with id = ' + object.id);
         }
-
-        console.log("get_valid_json function is returning:");
-        console.log(field);
 
         return field;
     };
@@ -220,8 +210,6 @@ const living_library_helper = (function () {
      */
     obj.insert_form_confirmation = function (element, is_success, message,
                                              callback) {
-        console.log('Inside insert_form_confirmation function');
-
         if (element) {
             element.innerHTML = message;
 
@@ -310,7 +298,6 @@ const living_library_helper = (function () {
         // Fetch dropdown menu options from database and add to <select> element
         fetch(url)
             .then(function(response) {
-                console.log("Inside " + table_name + " fetch");
                 if (response.status !== 200) {
                     console.error('ERROR: Unable to fetch ' + table_name +
                                   '. Status Code: ' + response.status);
@@ -351,8 +338,6 @@ const living_library_helper = (function () {
                     }
 
                     node.parentNode.replaceChild(select_copy, node);
-                    console.log("Just replaced dropdown menu:");
-                    console.log(select_copy);
                 }
             })
             .catch(function(error) {
@@ -373,8 +358,6 @@ const living_library_helper = (function () {
      *                                     elements that need to be updated
      */
     obj.update_required_fields_in_form = function (required_fields) {
-        console.log("Inside update_required_fields_in_form");
-
         for (let element of required_fields.required_label_for_attributes) {
             let label_element = document
                                 .querySelector(`label[for="${element}"]`);
@@ -421,7 +404,6 @@ const living_library_helper = (function () {
      *                      false otherwise
      */
     obj.validate_is_completed_parameter = function (is_completed) {
-        console.log("before switch, is_completed = " + is_completed);
         switch (typeof is_completed) {
             case 'boolean':
                 break;
@@ -435,7 +417,7 @@ const living_library_helper = (function () {
             default:
                 is_completed = false;
         }
-        console.log("after switch, is_completed = " + is_completed);
+
         return is_completed;
     }
 
