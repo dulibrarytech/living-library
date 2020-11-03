@@ -18,8 +18,6 @@
 const save_donation = function (event) {
     event.preventDefault();
 
-    console.log("Inside save_donation function");
-
     let form_data = document.getElementById('donation-form').elements;
 
     let donor_data_as_JSON = living_library_helper
@@ -30,7 +28,6 @@ const save_donation = function (event) {
     if (typeof donor_data_as_JSON.donor_subject_areas === 'undefined') {
         donor_data_as_JSON.donor_subject_areas = [];
     }
-    console.log("donor_data_as_JSON = " + JSON.stringify(donor_data_as_JSON));
 
     let notify_data_as_JSON = [],
         notify_persons_data =
@@ -48,25 +45,18 @@ const save_donation = function (event) {
         notify_persons_data = document.getElementsByClassName('notify_person_'
                                                               + (++i));
     }
-    console.log("notify_data_as_JSON = " + JSON.stringify(notify_data_as_JSON));
 
     let recipient_data_as_JSON = living_library_helper
                                  .form_to_json(living_library_config
                                                .get_donation_form_info()
                                                .recipient_fields,
                                                form_data);
-    console.log("recipient_data_as_JSON = "
-                + JSON.stringify(recipient_data_as_JSON));
 
     let donation_data = {
         donor: JSON.stringify(donor_data_as_JSON),
         who_to_notify: JSON.stringify(notify_data_as_JSON),
         recipient: JSON.stringify(recipient_data_as_JSON)
-    }
-
-    console.log("donation_data = ");
-    console.log(donation_data);
-    console.log("fetch url = " + living_library_api_url);
+    };
 
     let confirmation_div_element =
         document.getElementById('donation-form-confirmation');
@@ -80,10 +70,6 @@ const save_donation = function (event) {
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside save_donation fetch: first "then" function');
-            console.log('response = ');
-            console.log(response);
-
             if (response.ok) {
                 return response.json().then(data => ({
                     data: data,
@@ -98,10 +84,6 @@ const save_donation = function (event) {
             }
         })
         .then(function (response) {
-            console.log('Inside second "then" function');
-            console.log('response = ');
-            console.log(response);
-
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
@@ -136,21 +118,14 @@ const save_donation = function (event) {
 const save_book_plate = function (event) {
     event.preventDefault();
 
-    console.log("Inside save_book_plate function");
-
     let form_data = document.getElementById('book-plate-form').elements;
 
     let form_as_JSON = living_library_helper
                        .form_to_json(living_library_config
                                      .get_book_plate_form_info().book_fields,
                                      form_data);
-    console.log("form_as_JSON = " + JSON.stringify(form_as_JSON));
 
     let book_plate_data = { book: JSON.stringify(form_as_JSON) };
-    console.log("book_plate_data = ");
-    console.log(book_plate_data);
-    console.log("book_plate_data.book = " + book_plate_data.book);
-    console.log("typeof book_plate_data.book = " + typeof book_plate_data.book);
 
     let confirmation_div_element =
         document.getElementById('book-plate-form-confirmation');
@@ -165,10 +140,6 @@ const save_book_plate = function (event) {
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside save_book_plate fetch: "then" function');
-            console.log('response = ');
-            console.log(response);
-
             let completed_donation_url = baseUrl + _getCompletedDonationUrl +
                                          form_data.donation_id.value;
 
@@ -225,9 +196,6 @@ const save_book_plate = function (event) {
 const delete_donation = function (event, id) {
     event.preventDefault();
 
-    console.log("Inside delete_donation function");
-    console.log("id = " + id);
-
     if (confirm("Delete Donation " + id + "?")) {
         living_library_helper.fetch_with_timeout(
             living_library_api_url + '&id=' + id, {
@@ -235,10 +203,6 @@ const delete_donation = function (event, id) {
             mode: 'cors'
         })
             .then(function (response) {
-                console.log('Inside delete_donation fetch "then" function');
-                console.log('response = ');
-                console.log(response);
-
                 if (response.ok) {
                     alert('Donation ' + id + ' deleted.');
                 } else {
@@ -281,20 +245,10 @@ const delete_donation = function (event, id) {
 const add_menu_choice = function (event, table) {
     event.preventDefault();
 
-    console.log("Inside add_menu_choice function");
-
-    console.log("table = " + table);
-
     let form_data = document.getElementById('add-menu-choice-form').elements;
-
-    for (let element of form_data) {
-        console.log(element.name + ' = ' + element.value);
-    }
 
     let form_as_JSON = living_library_helper
                        .form_to_json(['new_menu_choice'], form_data);
-    console.log('form_as_JSON = ');
-    console.log(form_as_JSON);
 
     let confirmation_div_element =
         document.getElementById('add-menu-choice-form-confirmation');
@@ -309,10 +263,6 @@ const add_menu_choice = function (event, table) {
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside add_menu_choice fetch: first "then" function');
-            console.log('response = ');
-            console.log(response);
-
             return response.json()
                 .then(data => ({
                     data: data,
@@ -330,10 +280,6 @@ const add_menu_choice = function (event, table) {
                 });
         })
         .then(function (response) {
-            console.log('Inside add_menu_choice fetch: second "then" function');
-            console.log('new response obj = ');
-            console.log(response);
-
             if (response.ok && response.data.length === 1) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
@@ -377,21 +323,10 @@ const add_menu_choice = function (event, table) {
 const update_menu_choice = function (event, table, id) {
     event.preventDefault();
 
-    console.log("Inside update_menu_choice function");
-
-    console.log("table = " + table);
-    console.log("id = " + id);
-
     let form_data = document.getElementById('update-menu-choice-form').elements;
-
-    for (let element of form_data) {
-        console.log(element.name + ' = ' + element.value);
-    }
 
     let form_as_JSON = living_library_helper
                        .form_to_json(['updated_menu_choice'], form_data);
-    console.log('form_as_JSON = ');
-    console.log(form_as_JSON);
 
     let confirmation_div_element =
         document.getElementById('update-menu-choice-form-confirmation');
@@ -406,10 +341,6 @@ const update_menu_choice = function (event, table, id) {
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside update_menu_choice fetch "then" function');
-            console.log('response = ');
-            console.log(response);
-
             if (response.ok) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
@@ -451,11 +382,6 @@ const update_menu_choice = function (event, table, id) {
 const delete_menu_choice = function (event, table, id, table_link_text) {
     event.preventDefault();
 
-    console.log("Inside delete_menu_choice function");
-
-    console.log("table = " + table);
-    console.log("id = " + id);
-
     let confirmation_div_element =
         document.getElementById('delete-menu-choice-form-confirmation');
 
@@ -471,10 +397,6 @@ const delete_menu_choice = function (event, table, id, table_link_text) {
         mode: 'cors'
     })
         .then(function (response) {
-            console.log('Inside delete_menu_choice fetch "then" function');
-            console.log('response = ');
-            console.log(response);
-
             if (response.ok) {
                 living_library_helper
                 .insert_form_confirmation(confirmation_div_element, true,
