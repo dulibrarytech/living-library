@@ -51,21 +51,13 @@ const do_not_respond_email_text = '**Please do not respond to this email**',
  * @param  {Object}  id        the id of the relevant donation record
  */
 const send_email = function (message, id) {
-    console.log('Inside send_email helper function');
-
     transporter.sendMail(message, function(error, info) {
         if (error) {
             LOGGER.module().error('ERROR: [/living-library/model module ' +
                                   '(send_email)] Unable to send notification ' +
                                   'email for record with donation id ' + id +
                                   ': ' + error);
-        } else {
-            console.log('Notification email sent successfully for record ' +
-                        'with donation id ' + id + ":");
-            console.log(info.envelope);
         }
-
-        console.log('=====================\n');
     });
 };
 
@@ -75,22 +67,13 @@ const send_email = function (message, id) {
  * @param  {Function}  callback  the callback function
  */
 exports.create = function (req, callback) {
-    console.log("Before req.body is decoded:");
-    console.log("req.body = ");
-    console.log(req.body);
-    console.log("typeof req.body = " + typeof req.body);
     let request_body = decode_HTML(req.body);
-    console.log("After req.body is decoded:");
-    console.log("request_body = ");
-    console.log(request_body);
-    console.log("typeof request_body = " + typeof request_body);
 
     let tbl = get_empty_or_lowercase_string(req.query.tbl),
         table_name = get_table_name(tbl);
 
-    // If there's no tbl parameter, default to querying donations table
-
     switch(table_name) {
+        // If there's no tbl parameter, default to querying donations table
         case "": {
             /* Validate request_body */
 
@@ -115,9 +98,6 @@ exports.create = function (req, callback) {
 
             // Check for expected fields in request_body
             let donation_keys = Object.keys(request_body);
-            console.log("donation_keys = ");
-            console.log(donation_keys);
-            console.log("donation_keys.length = " + donation_keys.length);
 
             if (!arrays_match(donation_keys, donation_fields)) {
                 LOGGER.module().fatal('FATAL: [/living-library/model module ' +
@@ -153,8 +133,6 @@ exports.create = function (req, callback) {
 
                     return false;
                 }
-                console.log(key + " = ");
-                console.log(json_field);
 
                 let json_field_keys;
                 let has_more_elements_to_validate = true;
@@ -171,11 +149,6 @@ exports.create = function (req, callback) {
 
                 let i = 0;
                 while (has_more_elements_to_validate) {
-                    console.log(key + " keys = ");
-                    console.log(json_field_keys);
-                    console.log(key + " keys length = " +
-                                json_field_keys.length);
-
                     if (!arrays_match(json_field_keys,
                                       donation_field_keys[key])) {
                         LOGGER.module().fatal('FATAL: [/living-library/model ' +
@@ -211,7 +184,6 @@ exports.create = function (req, callback) {
                 DB(CONFIG.dbDonationsTable)
                     .insert(request_body)
                     .then(function (data) {
-                        console.log("Added donation record with id " + data);
                         obj.id = data;
                         callback(null, obj);
                         return false;
@@ -232,7 +204,6 @@ exports.create = function (req, callback) {
                         id: obj.id
                     })
                     .then(function (data) {
-                        console.log("Inside select_new_donation");
                         obj.data = data;
                         callback(null, obj);
                         return false;
@@ -247,7 +218,6 @@ exports.create = function (req, callback) {
 
             // 3.)
             function send_email_notification(obj, callback) {
-                console.log("Inside send_email_notification");
                 try {
                     send_email({
                         to: CONFIG.emailLibrarian,
@@ -273,9 +243,9 @@ exports.create = function (req, callback) {
                 } catch (error) {
                     LOGGER.module().error('ERROR: [/living-library/model ' +
                                           'module (create/' +
-                                          'send_email_notification)]: ' + error);
+                                          'send_email_notification)]: ' +
+                                          error);
                 } finally {
-                    console.log('Inside "finally" block');
                     callback(null, obj);
                     return false;
                 }
@@ -286,17 +256,12 @@ exports.create = function (req, callback) {
                select_new_donation,
                send_email_notification
             ], function (error, results) {
-                console.log("Inside waterfall function");
-
                 if (error) {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (create/async.waterfall)] ' +
                                           'Error creating or retrieving new ' +
                                           'donation record: ' + error);
                 }
-
-                console.log("\nEnd of CREATE query from model\n" +
-                            "=====================\n");
 
                 callback({
                     status: 201,
@@ -317,9 +282,6 @@ exports.create = function (req, callback) {
                                   'string'
                                   ? request_body.new_menu_choice.trim()
                                   : '';
-
-            console.log('new_menu_choice = ' + new_menu_choice);
-            console.log('new_menu_choice.length = ' + new_menu_choice.length);
 
             if (new_menu_choice === '' || new_menu_choice.length >
                 table_field_names.display_field_char_limit) {
@@ -346,8 +308,6 @@ exports.create = function (req, callback) {
 
             // 1.)
             function search_db_for_menu_choice(callback) {
-                console.log("Inside search_db_for_menu_choice");
-
                 let obj = {};
 
                 DB(table_name)
@@ -357,18 +317,11 @@ exports.create = function (req, callback) {
                     .orderBy(table_field_names.sort)
                     .where(table_field_names.display, new_menu_choice)
                     .then(function (data) {
-                        console.log("Searching " + table_name + " for " +
-                                    table_field_names.display + " = " +
-                                    new_menu_choice + "\n" + data.length +
-                                    " choice(s) found.");
-
                         obj.data = data;
                         callback(null, obj);
                         return false;
                     })
                     .catch(function (error) {
-                        console.log('Inside catch function of lookup table ' +
-                                    'case');
                         LOGGER.module().fatal('FATAL [/living-library/model ' +
                                               'module (create/' +
                                               'search_db_for_menu_choice)] ' +
@@ -381,8 +334,6 @@ exports.create = function (req, callback) {
 
             // 2.)
             function update_db(obj, callback) {
-                console.log("Inside update_db");
-
                 if (!Array.isArray(obj.data)) {
                     LOGGER.module().fatal('FATAL [/living-library/model ' +
                                           'module (create/update_db)] ' +
@@ -390,17 +341,12 @@ exports.create = function (req, callback) {
                                           'query did not return an array: ' +
                                           obj.data);
                 } else if (obj.data.length === 0) {
-                    console.log('No match found for ' + new_menu_choice);
-
                     let new_record = {};
                     new_record[table_field_names.display] = new_menu_choice;
 
                     DB(table_name)
                         .insert(new_record)
                         .then(function (data) {
-                            console.log('Added record with id ' + data + ' to '
-                                        + table_name);
-
                             obj.id = data,
                             obj.status = 201,
                             obj.message = 'Record created.';
@@ -416,9 +362,6 @@ exports.create = function (req, callback) {
                                                   table_name + ': ' + error);
                         });
                 } else if (obj.data.length > 0) {
-                    console.log('Found ' + obj.data.length + ' record(s) '+
-                                'matching ' + new_menu_choice);
-
                     /*
                      * Check whether all records have is_active = 0. If so,
                      * update the first record to have is_active = 1.
@@ -427,9 +370,6 @@ exports.create = function (req, callback) {
                         index_to_update = 0;
 
                     for (let i = 0; i < obj.data.length; i++) {
-                        console.log('\nobj.data[' + i + '] = ');
-                        console.log(obj.data[i]);
-
                         if (obj.data[i].is_active) {
                             LOGGER.module().error('ERROR: [/living-library/' +
                                                   'model module (create/' +
@@ -451,28 +391,14 @@ exports.create = function (req, callback) {
                         } else {
                             /*
                              * Ensure that index_to_update contains the
-                             * first index where is_active = false
+                             * first index where is_active = 0
                              */
                             if (!found_first_inactive_record) {
-                                console.log('Found first inactive record ' +
-                                            'at index ' + i);
                                 index_to_update = i;
                                 found_first_inactive_record = true;
-                            } else {
-                                console.log('Found another inactive ' +
-                                            'record at index ' + i);
                             }
                         }
-                        console.log('After iteration ' + i + ' of for loop, ' +
-                                    'index_to_update = ' + index_to_update);
                     } // end of for loop
-
-                    console.log('\nRecord with id ' +
-                                obj.data[index_to_update].id + ' exists with ' +
-                                table_field_names.display + ' = ' +
-                                obj.data[index_to_update].term +
-                                '\nBut is_active = ' +
-                                obj.data[index_to_update].is_active);
 
                     obj.id = obj.data[index_to_update].id;
 
@@ -484,10 +410,6 @@ exports.create = function (req, callback) {
                         })
                         .then(function (data) {
                             if (data === 1) {
-                                console.log("Updated " + table_name +
-                                            " record with id " +
-                                            obj.data[index_to_update].id + ".");
-
                                 obj.status = 200,
                                 obj.message = 'Record updated.';
                             } else {
@@ -537,8 +459,6 @@ exports.create = function (req, callback) {
 
             // 3.)
             function select_new_menu_choice(obj, callback) {
-                console.log("Inside select_new_menu_choice");
-
                 if (obj.status === 409) {
                     callback(null, obj);
                     return false;
@@ -567,23 +487,12 @@ exports.create = function (req, callback) {
                update_db,
                select_new_menu_choice
             ], function (error, results) {
-                console.log("Inside waterfall function");
-
                 if (error) {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (create/async.waterfall)] ' +
                                           'Error adding menu choice to ' +
                                           table_name + ': ' + error);
                 }
-
-                console.log("Results object = ");
-                console.log(results);
-
-                console.log("results.status = " + results.status);
-                console.log("typeof results.status = " + typeof results.status);
-
-                console.log("\nEnd of CREATE query from model\n" +
-                            "=====================\n");
 
                 callback({
                     status: results.status,
@@ -631,13 +540,7 @@ exports.read = function (req, callback) {
                         'is_completed')
                 .orderBy('created', 'desc')
                 .modify(function(query_builder) {
-                    console.log('Before converting to boolean, is_completed' +
-                                ' = ' + is_completed + ", with type = " +
-                                typeof is_completed);
                     is_completed = convert_to_boolean(is_completed);
-                    console.log('After converting to boolean, is_completed' +
-                                ' = ' + is_completed + ", with type = " +
-                                typeof is_completed);
 
                     modify_query_if_needed(is_completed !== null,
                                            'is_completed', is_completed,
@@ -648,10 +551,6 @@ exports.read = function (req, callback) {
                                            query_builder);
                 })
                 .then(function (data) {
-                    console.log("Found " + data.length + " record(s).");
-                    console.log("End of READ query from model" +
-                                "\n=====================\n");
-
                     if (data.length > 0) {
                         callback({
                             status: 200,
@@ -667,7 +566,6 @@ exports.read = function (req, callback) {
                     }
                 })
                 .catch(function (error) {
-                    console.log('Inside catch function of donations table case');
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (read)] Unable to read ' +
                                           'donation record(s): ' + error +
@@ -695,13 +593,7 @@ exports.read = function (req, callback) {
                     }
                 })
                 .modify(function(query_builder) {
-                    console.log('Before converting to boolean, is_active' +
-                                ' = ' + is_active + ", with type = " +
-                                typeof is_active);
                     is_active = convert_to_boolean(is_active);
-                    console.log('After converting to boolean, is_active' +
-                                ' = ' + is_active + ", with type = " +
-                                typeof is_active);
 
                     modify_query_if_needed(is_active !== null, 'is_active',
                                            is_active, query_builder);
@@ -712,11 +604,6 @@ exports.read = function (req, callback) {
                                            query_builder);
                 })
                 .then(function (data) {
-                    console.log("Populating " + table_field_names.display +
-                                " choices. " + data.length + " choice(s) found.");
-                    console.log("\nEnd of READ query from model" +
-                                "\n=====================\n");
-
                     if (data.length > 0) {
                         callback({
                             status: 200,
@@ -732,7 +619,6 @@ exports.read = function (req, callback) {
                     }
                 })
                 .catch(function (error) {
-                    console.log('Inside catch function of lookup table case');
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (read)] Unable to read ' +
                                           table_field_names.display +
@@ -764,7 +650,7 @@ exports.read = function (req, callback) {
  */
 exports.update = function (req, callback) {
     let id = req.query.id;
-    console.log("id = " + id);
+
     if (typeof id === 'undefined') {
         LOGGER.module().fatal('FATAL: [/living-library/model module ' +
                               '(update)] Invalid request: id ' +
@@ -778,15 +664,7 @@ exports.update = function (req, callback) {
         return false;
     }
 
-    console.log("Before req.body is decoded:");
-    console.log("req.body = ");
-    console.log(req.body);
-    console.log("typeof req.body = " + typeof req.body);
     let request_body = decode_HTML(req.body);
-    console.log("After req.body is decoded:");
-    console.log("request_body = ");
-    console.log(request_body);
-    console.log("typeof request_body = " + typeof request_body);
 
     let tbl = get_empty_or_lowercase_string(req.query.tbl),
         table_name = get_table_name(tbl);
@@ -799,7 +677,6 @@ exports.update = function (req, callback) {
              */
 
             let book = request_body.book;
-            console.log("\ntypeof book = " + typeof book);
 
             // Check for book field
             if (typeof book === 'undefined') {
@@ -838,9 +715,7 @@ exports.update = function (req, callback) {
                                  'book_call_number'];
 
             let book_keys = Object.keys(book);
-            console.log("book_keys = ");
-            console.log(book_keys);
-            console.log("book_keys.length = " + book_keys.length);
+
             if (!arrays_match(book_keys, book_fields)) {
                 LOGGER.module().fatal('FATAL: [/living-library/model module ' +
                                       '(update)] Request body is valid JSON, ' +
@@ -857,36 +732,21 @@ exports.update = function (req, callback) {
             }
 
             // Add fields to book object
-            console.log("\nbook before adding fields: ");
-            console.log(book);
-
-            console.log("typeof book = " + typeof book);
 
             /**
-             * These are legacy fields from original living library implementation
-             * and thus have empty values for new book plate records.
+             * These are legacy fields from original living library implementa-
+             * tion and thus have empty values for new book plate records.
              */
             book.book_publisher = "";
             book.book_date_published = "";
 
-            /**
-             * This creates a non-ISO-8601-compliant timestamp in local time:
-             * book.book_timestamp = MOMENT().format("YYYY-MM-DD HH:mm:ss");
-             */
-
             // Create ISO 8601-compliant timestamp in UTC time
             book.book_timestamp = MOMENT().toISOString();
-            console.log("\nbook_timestamp = " + book.book_timestamp);
 
             book = JSON.stringify(book);
-            console.log("\nbook after adding fields: ");
-            console.log(book);
-            console.log("=====================\n");
 
             // 1.)
             function confirm_donation_is_in_the_queue(callback) {
-                console.log("Inside confirm_donation_is_in_the_queue");
-
                 let obj = {};
 
                 DB(CONFIG.dbDonationsTable)
@@ -935,8 +795,6 @@ exports.update = function (req, callback) {
 
             // 2.)
             function update_donation_in_db(obj, callback) {
-                console.log("Inside update_donation_in_db");
-
                 if (obj.status === 409 || obj.status === 404) {
                     callback(null, obj);
                     return false;
@@ -952,8 +810,6 @@ exports.update = function (req, callback) {
                     })
                     .then(function (data) {
                         if (data === 1) {
-                            console.log('Updated donation record with id ' + id);
-
                             obj.status = 200,
                             obj.message = 'Record updated.';
 
@@ -985,8 +841,6 @@ exports.update = function (req, callback) {
 
             // 3.)
             function select_updated_donation(obj, callback) {
-                console.log("Inside select_updated_donation");
-
                 if (obj.status !== 200) {
                     callback(null, obj);
                     return false;
@@ -1013,10 +867,7 @@ exports.update = function (req, callback) {
 
             // 4.)
             function send_email_notification_about_completed_donation(obj,
-                                                                      callback) {
-                console.log("Inside " +
-                            "send_email_notification_about_completed_donation");
-
+                callback) {
                 if (obj.status !== 200) {
                     callback(null, obj);
                     return false;
@@ -1048,8 +899,6 @@ exports.update = function (req, callback) {
                                             obj.data[0].donor);
                         }
                     }
-                    console.log('donor = ');
-                    console.log(donor);
 
                     if (typeof obj.data[0].book !== 'undefined') {
                         try {
@@ -1069,8 +918,6 @@ exports.update = function (req, callback) {
                                             obj.data[0].book);
                         }
                     }
-                    console.log('book = ');
-                    console.log(book);
                 }
 
                 const donation_is_complete_msg = 'The record for the donation '
@@ -1101,7 +948,6 @@ exports.update = function (req, callback) {
                                           'with donation id ' + id + ': ' +
                                           error);
                 } finally {
-                    console.log('Inside "finally" block');
                     callback(null, obj);
                     return false;
                 }
@@ -1113,17 +959,12 @@ exports.update = function (req, callback) {
                 select_updated_donation,
                 send_email_notification_about_completed_donation
             ], function (error, results) {
-                console.log("Inside waterfall function");
-
                 if (error) {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
                                           'module (update/async.waterfall)] ' +
                                           'Error updating or retrieving ' +
                                           'donation record: ' + error);
                 }
-
-                console.log("\nEnd of UPDATE query from model\n" +
-                            "=====================\n");
 
                 callback({
                     status: results.status,
@@ -1145,14 +986,8 @@ exports.update = function (req, callback) {
             DB(table_name)
                 .where(table_field_names.id, id)
                 .modify(function(query_builder) {
-                    console.log('Before converting to boolean, is_active_' +
-                                'from_query = ' + is_active_from_query +
-                                ", with type = " + typeof is_active_from_query);
                     is_active_from_query =
                         convert_to_boolean(is_active_from_query);
-                    console.log('After converting to boolean, is_active_' +
-                                'from_query = ' + is_active_from_query +
-                                ", with type = " + typeof is_active_from_query);
 
                     modify_query_if_needed(is_active_from_query !== null,
                                            'is_active', is_active_from_query,
@@ -1168,9 +1003,6 @@ exports.update = function (req, callback) {
                                               ? request_body
                                                 .updated_menu_choice.trim()
                                               : '';
-
-                    console.log('updated_menu_choice.length = ' +
-                                updated_menu_choice.length);
 
                     if (updated_menu_choice.length >
                         table_field_names.display_field_char_limit) {
@@ -1195,16 +1027,8 @@ exports.update = function (req, callback) {
                     }
 
                     if (updated_menu_choice !== '') {
-                        console.log('updated_menu_choice = ' +
-                                    updated_menu_choice +
-                                    ', so adding to SQL query\n');
-
                         data_to_update[table_field_names.display] =
                             updated_menu_choice;
-                    } else {
-                        console.log('updated_menu_choice = ' +
-                                    updated_menu_choice +
-                                    ', so no adjustment to SQL query\n');
                     }
 
                     // Check request body for valid is_active property
@@ -1214,24 +1038,11 @@ exports.update = function (req, callback) {
                         is_active = is_active.toLowerCase();
                     }
 
-                    console.log('Before converting to boolean, is_active ' +
-                                '(from request body) = ' + is_active +
-                                ", with type = " + typeof is_active);
                     is_active = convert_to_boolean(is_active);
-                    console.log('After converting to boolean, is_active ' +
-                                '(from request body) = ' + is_active +
-                                ", with type = " + typeof is_active);
 
                     if (is_active !== null) {
-                        console.log('is_active (from request body) = ' +
-                                    is_active + ', so adding to SQL query\n');
-
                         data_to_update.is_active = is_active;
                     } else {
-                        console.log('is_active (from request body) = ' +
-                                    is_active + ', so no adjustment to SQL ' +
-                                    'query\n');
-
                         if (updated_menu_choice === '') {
                             let error_msg = "Request body is invalid: Must " +
                                             "contain (a) a property named " +
@@ -1256,14 +1067,10 @@ exports.update = function (req, callback) {
                         }
                     }
 
-                    console.log('data_to_update = ');
-                    console.log(data_to_update);
                     query_builder.update(data_to_update);
                 })
                 .then(function (data) {
                     if (data === 1) {
-                        console.log('Updated ' + tbl + ' record with id ' + id);
-
                         callback({
                             status: 200,
                             message: 'Record updated.'
@@ -1284,9 +1091,6 @@ exports.update = function (req, callback) {
                             message: 'Record not found.'
                         });
                     }
-
-                    console.log("\nEnd of UPDATE query from model\n" +
-                                "=====================\n");
                 })
                 .catch(function (error) {
                     LOGGER.module().fatal('FATAL: [/living-library/model ' +
@@ -1323,8 +1127,6 @@ exports.update = function (req, callback) {
  */
 exports.delete = function (req, callback) {
     let id = req.query.id;
-    console.log('id = ' + id);
-    console.log('typeof id = ' + typeof id);
 
     if ((typeof id !== 'string' && typeof id !== 'number') || isNaN(id) ||
         isNaN(parseInt(id, 10))) {
@@ -1337,16 +1139,11 @@ exports.delete = function (req, callback) {
             message: 'Request query does not contain a valid id parameter.'
         });
 
-        console.log("\nEnd of DELETE query from model\n" +
-                    "=====================\n");
-
         return false;
     }
 
     // 1.)
     function confirm_donation_is_in_the_queue(callback) {
-        console.log("Inside confirm_donation_is_in_the_queue");
-
         let obj = {};
 
         DB(CONFIG.dbDonationsTable)
@@ -1362,10 +1159,12 @@ exports.delete = function (req, callback) {
                                      "(delete/confirm_donation_is_in_the" +
                                      "_queue)] Cannot delete because " +
                                      "donation record with id " +
-                                     parseInt(id, 10) + " is already completed.");
+                                     parseInt(id, 10) + " is already " +
+                                     "completed.");
 
                         obj.status = 409,
-                        obj.message = 'Record already completed. Cannot delete.';
+                        obj.message = 'Record already completed. ' +
+                                      'Cannot delete.';
                     }
 
                     obj.id = data[0].id;
@@ -1393,8 +1192,6 @@ exports.delete = function (req, callback) {
 
     // 2.)
     function delete_donation_in_db(obj, callback) {
-        console.log("Inside delete_donation_in_db");
-
         if (obj.status === 409 || obj.status === 404) {
             callback(null, obj);
             return false;
@@ -1419,15 +1216,11 @@ exports.delete = function (req, callback) {
 
                         break;
                     case 1:
-                        console.log('Deleted record with id ' + obj.id);
-
                         obj.status = 204,
                         obj.message = 'Record deleted.';
 
                         break;
                     default:
-                        console.log('Deleted ' + count + ' records.');
-
                         obj.status = 204,
                         obj.message = 'Records deleted.';
                 }
@@ -1447,16 +1240,11 @@ exports.delete = function (req, callback) {
        confirm_donation_is_in_the_queue,
        delete_donation_in_db
     ], function (error, results) {
-        console.log("Inside waterfall function");
-
         if (error) {
             LOGGER.module().fatal('FATAL: [/living-library/model module ' +
                                   '(delete)] Error deleting donation record ' +
                                   'with id ' + results.id + ': ' + error);
         }
-
-        console.log("\nEnd of DELETE query from model\n" +
-                    "=====================\n");
 
         callback({
             status: results.status,
@@ -1513,8 +1301,6 @@ const convert_to_boolean = function (value) {
  * https://gomakethings.com/decoding-html-entities-with-vanilla-javascript/
  */
 const decode_HTML = function (obj) {
-    console.log("Inside decode_HTML function");
-
     for (const [key, value] of Object.entries(obj)) {
         if (typeof value === 'string') {
             let txt = WINDOW.document.createElement('textarea');
@@ -1617,11 +1403,7 @@ const get_table_field_names = function (table_name) {
  */
 const modify_query_if_needed = function (requires_modification, field, value,
                                          query_builder) {
-    console.log(field + ' = ' + value);
     if (requires_modification) {
-        console.log('... so adding to SQL query\n');
         query_builder.where(field, value);
-    } else {
-        console.log('... so no adjustment to SQL query\n');
     }
 };
