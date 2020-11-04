@@ -329,7 +329,8 @@ const living_library_helper = (function () {
                      */
                     let select_copy = select.cloneNode(true);
 
-                    select_copy.setAttribute('class', node.getAttribute('class'));
+                    select_copy.setAttribute('class',
+                                             node.getAttribute('class'));
                     select_copy.setAttribute('id', node.getAttribute('id'));
                     select_copy.setAttribute('name', node.getAttribute('name'));
 

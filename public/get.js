@@ -315,7 +315,8 @@ const create_donation = function () {
                  + '<label for="donor_amount_of_donation_input_box" '
                  + 'class="form-label-text">Amount of Donation (e.g. 1500.00):'
                  + '</label>'
-                 + '<input type="number" id="donor_amount_of_donation_input_box" '
+                 + '<input type="number" '
+                 + 'id="donor_amount_of_donation_input_box" '
                  + 'class="input_form-default" name="donor_amount_of_donation" '
                  + living_library_config.get_form_validation_rules()
                                         .dollar_amount_validation + ' />'
@@ -381,33 +382,41 @@ const create_donation = function () {
     })
         .then(function () {
             // Populate Title dropdown menus
-            let titles_url = living_library_api_url +
-                             '&tbl=' + living_library_config.get_titles_table() +
+            let titles_url = living_library_api_url + '&tbl=' +
+                             living_library_config.get_titles_table() +
                              '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_titles_table(), titles_url,
-                                   document.getElementsByClassName('title_dropdown'),
-                                   '--Select a title--');
+
+            living_library_helper.populate_dropdown_menu(
+                living_library_config.get_titles_table(),
+                titles_url,
+                document.getElementsByClassName('title_dropdown'),
+                '--Select a title--'
+            );
 
             // Populate State dropdown menus
-            let states_url = living_library_api_url +
-                             '&tbl=' + living_library_config.get_states_table() +
+            let states_url = living_library_api_url + '&tbl=' +
+                             living_library_config.get_states_table() +
                              '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_states_table(), states_url,
-                                   document.getElementsByClassName('state_dropdown'),
-                                   '--Select a state--');
+
+            living_library_helper.populate_dropdown_menu(
+                living_library_config.get_states_table(),
+                states_url,
+                document.getElementsByClassName('state_dropdown'),
+                '--Select a state--'
+            );
 
             // Populate Relation to Donor dropdown menu
             let relationships_url = living_library_api_url + '&tbl=' +
-                                    living_library_config.get_relationships_table() +
+                                    living_library_config
+                                    .get_relationships_table() +
                                     '&is_active=true';
-            living_library_helper.
-            populate_dropdown_menu(living_library_config.get_relationships_table(),
-                                   relationships_url,
-                                   document
-                                   .getElementsByClassName('relationship_dropdown'),
-                                   '--Select a relation to donor--');
+
+            living_library_helper.populate_dropdown_menu(
+                living_library_config.get_relationships_table(),
+                relationships_url,
+                document.getElementsByClassName('relationship_dropdown'),
+                '--Select a relation to donor--'
+            );
 
             // Add Subject Area checkboxes
             fetch(living_library_api_url +
@@ -452,7 +461,8 @@ const create_donation = function () {
                     }
                 })
                 .catch(function(error) {
-                    console.error('ERROR: Unable to fetch subject areas: ' + error);
+                    console.error('ERROR: Unable to fetch subject areas: ' +
+                                  error);
                 });
         })
         .catch(function (error) {
@@ -569,7 +579,8 @@ const get_donations = function (is_completed) {
                     let html = '';
 
                     if (data.length === 0) {
-                        html += '<table class="table table-bordered table-striped">'
+                        html += '<table class="table table-bordered '
+                                + 'table-striped">'
                                 + '<tr>'
                                 + '<td>No donation records found.</td>'
                                 + '</tr>'
@@ -605,7 +616,8 @@ const get_donations = function (is_completed) {
                         html += '<thead>'
                                 + '<tr>'
                                 + '<th>'
-                                + (is_completed ? 'Full Record' : 'Book Plate Form')
+                                + (is_completed ? 'Full Record'
+                                                : 'Book Plate Form')
                                 + '</th> '
                                 + '<th>ID</th> '
                                 + '<th>Donor Name</th> '
@@ -623,7 +635,8 @@ const get_donations = function (is_completed) {
                             const donor = living_library_helper
                                           .get_valid_json(data[i], 'donor'),
                                   recipient = living_library_helper
-                                              .get_valid_json(data[i], 'recipient');
+                                              .get_valid_json(data[i],
+                                                              'recipient');
 
                             let donation_id = living_library_helper
                                               .get_field_value(data[i], 'id');
@@ -637,8 +650,8 @@ const get_donations = function (is_completed) {
                             html += '<td style="text-align: center;">';
                             if (typeof donation_id === 'number') {
                                 html += '<a href="' + baseUrl + _getDonationUrl
-                                        + donation_status + '/' + donation_id + '" '
-                                        + 'title='
+                                        + donation_status + '/' + donation_id
+                                        + '" title='
                                         + (data[i].is_completed
                                            ? '"Full Record">'
                                            : '"Book Plate Form">')
@@ -657,15 +670,18 @@ const get_donations = function (is_completed) {
                                     + '</td>';
 
                             html += '<td>';
-                            if (living_library_helper.is_non_null_object(donor)) {
+                            if (living_library_helper
+                                .is_non_null_object(donor)) {
                                 html += living_library_helper
                                         .get_field_value(donor, 'donor_title')
                                         + ' ' +
                                         living_library_helper
-                                        .get_field_value(donor, 'donor_first_name')
+                                        .get_field_value(donor,
+                                                         'donor_first_name')
                                         + ' ' +
                                         living_library_helper
-                                        .get_field_value(donor, 'donor_last_name');
+                                        .get_field_value(donor,
+                                                         'donor_last_name');
                             } else {
                                 html += living_library_config
                                         .get_error_text_for_invalid_json();
@@ -673,9 +689,11 @@ const get_donations = function (is_completed) {
                             html += '</td>';
 
                             html += '<td>';
-                            if (living_library_helper.is_non_null_object(recipient)) {
+                            if (living_library_helper
+                                .is_non_null_object(recipient)) {
                                 html += living_library_helper
-                                        .get_field_value(recipient, 'recipient_title')
+                                        .get_field_value(recipient,
+                                                         'recipient_title')
                                         + ' ' +
                                         living_library_helper
                                         .get_field_value(recipient,
@@ -691,10 +709,11 @@ const get_donations = function (is_completed) {
                             html += '</td>';
 
                             html += '<td>';
-                            if (living_library_helper.is_non_null_object(donor)) {
-                                html += living_library_helper
-                                        .get_field_value(donor,
-                                                         'donor_amount_of_donation');
+                            if (living_library_helper
+                                .is_non_null_object(donor)) {
+                                html += living_library_helper.get_field_value(
+                                            donor, 'donor_amount_of_donation'
+                                        );
                             } else {
                                 html += living_library_config
                                         .get_error_text_for_invalid_json();
@@ -702,10 +721,11 @@ const get_donations = function (is_completed) {
                             html += '</td>';
 
                             html += '<td style="text-align: center;">';
-                            if (living_library_helper.is_non_null_object(donor)) {
-                                html += living_library_helper
-                                        .get_field_value(donor,
-                                                         'donor_date_of_donation');
+                            if (living_library_helper
+                                .is_non_null_object(donor)) {
+                                html += living_library_helper.get_field_value(
+                                            donor, 'donor_date_of_donation'
+                                        );
                             } else {
                                 html += living_library_config
                                         .get_error_text_for_invalid_json();
@@ -728,8 +748,8 @@ const get_donations = function (is_completed) {
                         html += '</table>';
                     }
 
-                    let table_content_element = document
-                                                .querySelector('#table-content');
+                    let table_content_element =
+                        document.querySelector('#table-content');
 
                     if (table_content_element) {
                         table_content_element.innerHTML = html;
@@ -737,7 +757,8 @@ const get_donations = function (is_completed) {
 
                     // Apply DataTables plugin to donations table
                     $(document).ready( function () {
-                        let cols_not_to_be_searched = is_completed ? [ 0 ] : [ 0, 6 ];
+                        let cols_not_to_be_searched = is_completed ? [ 0 ]
+                                                                   : [ 0, 6 ];
 
                         let donations_table = $('#donations').DataTable( {
                             dom: 'Blfrtip',
@@ -765,7 +786,10 @@ const get_donations = function (is_completed) {
                             ]
                         });
 
-                        // Add event listeners to the two date range filtering inputs
+                        /*
+                         * Add event listeners to the two date range filtering
+                         * inputs
+                         */
                         $('#start_date_input_box').keyup( function() {
                             donations_table.draw();
                         });
@@ -830,15 +854,17 @@ const get_completed_donation = function (url) {
                     if (data.length > 0) {
                         let is_completed =
                             living_library_helper
-                            .validate_is_completed_parameter(data[0].is_completed);
+                            .validate_is_completed_parameter(data[0]
+                                                             .is_completed);
 
                         if (!is_completed) {
                             living_library_helper
-                            .insert_error_message('Donation not yet completed. ' +
-                                                  '<a href="' + baseUrl +
-                                                  _getDonationUrl + 'queued/' +
-                                                  data[0].id + '">' +
-                                                  'View Book Plate Form</a>.', false);
+                            .insert_error_message('Donation not yet completed. '
+                                                  + '<a href="' + baseUrl
+                                                  + _getDonationUrl + 'queued/'
+                                                  + data[0].id + '">'
+                                                  + 'View Book Plate Form</a>.',
+                                                  false);
 
                             return false;
                         }
@@ -846,7 +872,8 @@ const get_completed_donation = function (url) {
                         const donor = living_library_helper
                                       .get_valid_json(data[0], 'donor'),
                               who_to_notify = living_library_helper
-                                              .get_valid_json(data[0], 'who_to_notify'),
+                                              .get_valid_json(data[0],
+                                                              'who_to_notify'),
                               recipient = living_library_helper
                                           .get_valid_json(data[0], 'recipient'),
                               book = living_library_helper
@@ -944,7 +971,7 @@ const get_completed_donation = function (url) {
                                         + '<dd>' +
                                         living_library_helper
                                         .get_field_value(who_to_notify[i],
-                                                         'notify_relation_to_donor')
+                                            'notify_relation_to_donor')
                                         + '</dd>';
                                 html += '</dl>';
                             }
@@ -960,17 +987,20 @@ const get_completed_donation = function (url) {
                         html += '<dt>First Name: </dt>'
                                 + '<dd>' +
                                 living_library_helper
-                                .get_field_value(recipient, 'recipient_first_name')
+                                .get_field_value(recipient,
+                                                 'recipient_first_name')
                                 + '</dd>';
                         html += '<dt>Last Name: </dt>'
                                 + '<dd>' +
                                 living_library_helper
-                                .get_field_value(recipient, 'recipient_last_name')
+                                .get_field_value(recipient,
+                                                 'recipient_last_name')
                                 + '</dd>';
                         html += '<dt>Donation Type: </dt>'
                                 + '<dd>' +
                                 living_library_helper
-                                .get_field_value(recipient, 'recipient_donation_type')
+                                .get_field_value(recipient,
+                                                 'recipient_donation_type')
                                 + '</dd>';
                         html += '</dl>';
 
@@ -985,7 +1015,8 @@ const get_completed_donation = function (url) {
                                               }).format(donation_amount);
                         } else {
                             console.warn('Error in donation record field: ' +
-                                         'donor_amount_of_donation is not a number.');
+                                         'donor_amount_of_donation is not a ' +
+                                         'number.');
                         }
                         html += '<h4>Donation Information</h4>';
                         html += '<dl>';
@@ -994,7 +1025,8 @@ const get_completed_donation = function (url) {
                         html += '<dt>Date of Donation: </dt>'
                                 + '<dd>' +
                                 living_library_helper
-                                .get_field_value(donor, 'donor_date_of_donation')
+                                .get_field_value(donor,
+                                                 'donor_date_of_donation')
                                 + '</dd>';
                         html += '</dl>';
 
@@ -1003,10 +1035,12 @@ const get_completed_donation = function (url) {
                         if (living_library_helper.is_non_null_object(donor) &&
                             Array.isArray(donor.donor_subject_areas) &&
                             donor.donor_subject_areas.length > 0) {
-                            for (let i = 0; i < donor.donor_subject_areas.length; i++) {
+                            for (let i = 0;
+                                 i < donor.donor_subject_areas.length; i++) {
                                 let subject =
-                                    living_library_helper
-                                    .get_field_value(donor.donor_subject_areas, i);
+                                    living_library_helper.get_field_value(
+                                        donor.donor_subject_areas, i
+                                    );
                                 if (subject !== '') {
                                     subject_areas.push(subject);
                                 }
@@ -1033,7 +1067,8 @@ const get_completed_donation = function (url) {
                         html += '<dt>Bibliographic Number: </dt>'
                                 + '<dd>' +
                                 living_library_helper
-                                .get_field_value(book, 'book_bibliographic_number')
+                                .get_field_value(book,
+                                                 'book_bibliographic_number')
                                 + '</dd>';
                         html += '<dt>Call Number: </dt>'
                                 + '<dd>' +
@@ -1049,20 +1084,21 @@ const get_completed_donation = function (url) {
                                 + (notes === '' ? 'None' : notes)
                                 + '</p>';
 
-                        let record_content_element = document
-                                                     .querySelector('#record-content');
+                        let record_content_element =
+                            document.querySelector('#record-content');
 
                         if (record_content_element) {
                             record_content_element.innerHTML = html;
                         }
                     } else {
-                        living_library_helper
-                        .insert_error_message('Error: No donation record found.', true);
+                        living_library_helper.insert_error_message(
+                            'Error: No donation record found.', true
+                        );
                     }
                 })
                 .catch((error) => {
-                    console.error('Error with fetch request of get_completed_donation ' +
-                                  'function: ' + error);
+                    console.error('Error with fetch request of ' +
+                                  'get_completed_donation function: ' + error);
                 });
         })
         .catch(function (error) {
@@ -1097,15 +1133,17 @@ const get_queued_donation = function (url) {
                     if (data.length > 0) {
                         let is_completed =
                             living_library_helper
-                            .validate_is_completed_parameter(data[0].is_completed);
+                            .validate_is_completed_parameter(data[0]
+                                                             .is_completed);
 
                         if (is_completed) {
                             living_library_helper
-                            .insert_error_message('Donation already completed. ' +
-                                                  '<a href="' + baseUrl +
-                                                  _getDonationUrl + 'completed/' +
-                                                  data[0].id + '">' +
-                                                  'View full record</a>.', false);
+                            .insert_error_message('Donation already completed. '
+                                                  + '<a href="' + baseUrl
+                                                  + _getDonationUrl
+                                                  + 'completed/' + data[0].id
+                                                  + '">View full record</a>.',
+                                                  false);
 
                             has_required_input_boxes = false;
 
@@ -1115,7 +1153,8 @@ const get_queued_donation = function (url) {
                         const donor = living_library_helper
                                       .get_valid_json(data[0], 'donor'),
                               who_to_notify = living_library_helper
-                                              .get_valid_json(data[0], 'who_to_notify'),
+                                              .get_valid_json(data[0],
+                                                              'who_to_notify'),
                               recipient = living_library_helper
                                           .get_valid_json(data[0], 'recipient');
 
@@ -1150,18 +1189,21 @@ const get_queued_donation = function (url) {
                         }
                         html += '</dd>';
 
-                        html += '<dt>Person(s) to be notified of donation: </dt>'
+                        html += '<dt>Person(s) to be notified of donation: '
+                                + '</dt>'
                                 + '<dd>';
-                        if (Array.isArray(who_to_notify) && who_to_notify.length > 0) {
+                        if (Array.isArray(who_to_notify) &&
+                            who_to_notify.length > 0) {
                             let persons_to_be_notified = [];
                             for (let i = 0; i < who_to_notify.length; i++) {
                                 if (living_library_helper
                                     .is_non_null_object(who_to_notify[i])) {
                                     let person = [];
 
-                                    let notify_title = living_library_helper
-                                                       .get_field_value(who_to_notify[i],
-                                                                        'notify_title');
+                                    let notify_title =
+                                        living_library_helper.get_field_value(
+                                            who_to_notify[i], 'notify_title'
+                                        );
                                     if (notify_title !== '') {
                                         person.push(notify_title);
                                     }
@@ -1183,7 +1225,8 @@ const get_queued_donation = function (url) {
                                     }
 
                                     if (person.length > 0) {
-                                        persons_to_be_notified.push(person.join(' '));
+                                        persons_to_be_notified
+                                        .push(person.join(' '));
                                     }
                                 }
                             }
@@ -1196,15 +1239,19 @@ const get_queued_donation = function (url) {
 
                         html += '<dt>Person receiving donation: </dt>'
                                 + '<dd><span class="collapse-whitespace">';
-                        if (living_library_helper.is_non_null_object(recipient)) {
+                        if (living_library_helper
+                            .is_non_null_object(recipient)) {
                             html += living_library_helper
-                                    .get_field_value(recipient, 'recipient_title')
+                                    .get_field_value(recipient,
+                                                     'recipient_title')
                                     + ' ' +
                                     living_library_helper
-                                    .get_field_value(recipient, 'recipient_first_name')
+                                    .get_field_value(recipient,
+                                                     'recipient_first_name')
                                     + ' ' +
                                     living_library_helper
-                                    .get_field_value(recipient, 'recipient_last_name')
+                                    .get_field_value(recipient,
+                                                     'recipient_last_name')
                                     + ' (' +
                                     living_library_helper
                                     .get_field_value(recipient,
@@ -1219,8 +1266,9 @@ const get_queued_donation = function (url) {
                         html += '<dt>Date of donation: </dt>'
                                 + '<dd>';
                         if (living_library_helper.is_non_null_object(donor)) {
-                            html += living_library_helper
-                                    .get_field_value(donor, 'donor_date_of_donation');
+                            html += living_library_helper.get_field_value(
+                                        donor, 'donor_date_of_donation'
+                                    );
                         } else {
                             html += living_library_config
                                     .get_error_text_for_invalid_json();
@@ -1233,10 +1281,12 @@ const get_queued_donation = function (url) {
                             Array.isArray(donor.donor_subject_areas) &&
                             donor.donor_subject_areas.length > 0) {
                             let subject_areas = [];
-                            for (let i = 0; i < donor.donor_subject_areas.length; i++) {
+                            for (let i = 0;
+                                 i < donor.donor_subject_areas.length; i++) {
                                 let subject =
-                                    living_library_helper
-                                    .get_field_value(donor.donor_subject_areas, i);
+                                    living_library_helper.get_field_value(
+                                        donor.donor_subject_areas, i
+                                    );
                                 if (subject !== '') {
                                     subject_areas.push(subject);
                                 }
@@ -1248,15 +1298,16 @@ const get_queued_donation = function (url) {
 
                         html += '</dl>';
 
-                        let record_content_element = document
-                                                     .querySelector('#record-content');
+                        let record_content_element =
+                            document.querySelector('#record-content');
 
                         if (record_content_element) {
                             record_content_element.innerHTML = html;
                         }
 
                         /* Add book plate form */
-                        let form_html = '<form id="book-plate-form" method="post" '
+                        let form_html = '<form id="book-plate-form" '
+                                        + 'method="post" '
                                         + 'onsubmit="save_book_plate(event);">';
 
                         form_html += '<table class="table">';
@@ -1276,8 +1327,8 @@ const get_queued_donation = function (url) {
 
                         form_html += '<tr>';
                         form_html += '<td>'
-                                     + '<label for="book_author_name_input_box" '
-                                     + 'class="form-label-text">Author Name:'
+                                     + '<label for="book_author_name_input_box"'
+                                     + ' class="form-label-text">Author Name:'
                                      + '</label>'
                                      + '<input type="text" '
                                      + 'id="book_author_name_input_box" '
@@ -1289,25 +1340,30 @@ const get_queued_donation = function (url) {
                                      + '<label for="book_title_input_box" '
                                      + 'class="form-label-text">Book Title:'
                                      + '</label>'
-                                     + '<input type="text" id="book_title_input_box" '
-                                     + 'class="input_form-default" name="book_title"/>'
+                                     + '<input type="text" '
+                                     + 'id="book_title_input_box" '
+                                     + 'class="input_form-default" '
+                                     + 'name="book_title"/>'
                                      + '</td>';
                         form_html += '</tr>';
 
                         form_html += '<tr>';
                         form_html += '<td>'
-                                     + '<label '
-                                     + 'for="book_bibliographic_number_input_box" '
-                                     + 'class="form-label-text">Bibliographic Number:'
+                                     + '<label for='
+                                     + '"book_bibliographic_number_input_box" '
+                                     + 'class="form-label-text">'
+                                     + 'Bibliographic Number:'
                                      + '</label>'
                                      + '<input type="text" '
-                                     + 'id="book_bibliographic_number_input_box" '
+                                     + 'id='
+                                     + '"book_bibliographic_number_input_box" '
                                      + 'class="input_form-default" '
                                      + 'name="book_bibliographic_number"/>'
                                      + '</td>';
 
                         form_html += '<td>'
-                                     + '<label for="book_call_number_input_box" '
+                                     + '<label for='
+                                     + '"book_call_number_input_box" '
                                      + 'class="form-label-text">Call Number:'
                                      + '</label>'
                                      + '<input type="text" '
@@ -1317,16 +1373,18 @@ const get_queued_donation = function (url) {
                                      + '</td>';
                         form_html += '</tr>';
 
-                        form_html += '</table>'; // close table with text input boxes
+                        form_html += '</table>';
 
-                        form_html += '<input type="hidden" id="donation_id_hidden_box" '
+                        form_html += '<input type="hidden" '
+                                     + 'id="donation_id_hidden_box" '
                                      + 'name="donation_id" value=""/>';
 
                         form_html += '<table class="table lower_controls">'
                                      + '<tr>'
                                      + '<td>'
                                      + '<button type="submit" '
-                                     + 'class="btn-grey" id="save_book_plate_button">'
+                                     + 'class="btn-grey" '
+                                     + 'id="save_book_plate_button">'
                                      + 'Save Book Plate'
                                      + '</button>'
                                      + '<div id="book-plate-form-confirmation">'
@@ -1337,8 +1395,8 @@ const get_queued_donation = function (url) {
 
                         form_html += '</form>';
 
-                        let form_content_element = document
-                                                   .querySelector('#form-content');
+                        let form_content_element =
+                            document.querySelector('#form-content');
 
                         if (form_content_element) {
                             form_content_element.innerHTML = form_html;
@@ -1348,25 +1406,27 @@ const get_queued_donation = function (url) {
                             document.querySelector('#donation_id_hidden_box');
 
                         if (donation_id_hidden_box) {
-                            donation_id_hidden_box.setAttribute('value', data[0].id);
+                            donation_id_hidden_box.setAttribute('value',
+                                                                data[0].id);
                         }
                     } else {
-                        living_library_helper
-                        .insert_error_message('Error: No donation record found.', true);
+                        living_library_helper.insert_error_message(
+                            'Error: No donation record found.', true
+                        );
 
                         has_required_input_boxes = false;
                     }
                 })
                 .then(() => {
                     if (has_required_input_boxes) {
-                        living_library_helper
-                        .update_required_fields_in_form(living_library_config
-                                                        .get_book_plate_form_info());
+                        living_library_helper.update_required_fields_in_form(
+                            living_library_config.get_book_plate_form_info()
+                        );
                     }
                 })
                 .catch((error) => {
-                    console.error('Error with fetch request of get_queued_donation ' +
-                                  'function: ' + error);
+                    console.error('Error with fetch request of ' +
+                                  'get_queued_donation function: ' + error);
                 });
         })
         .catch(function (error) {
@@ -1508,18 +1568,21 @@ const get_menu_choices = function (table) {
                 .then(function(response) {
                     if (response.status !== 200) {
                         console.error('Looks like there was a problem fetching '
-                                      + table + '. Status Code: ' + response.status);
+                                      + table + '. Status Code: '
+                                      + response.status);
                         return false;
                     }
 
                     response.json().then(function(data) {
-                        let table_element = document.querySelector('#menu_choices');
+                        let table_element =
+                            document.querySelector('#menu_choices');
 
                         if (data.length === 0) {
                             let row = table_element.insertRow();
                             let cell = row.insertCell();
                             cell.colSpan = MENU_CHOICE_COLS;
-                            cell.innerHTML = 'No ' + label.toLowerCase() + 's found.';
+                            cell.innerHTML = 'No ' + label.toLowerCase() +
+                                             's found.';
                             return;
                         }
 
@@ -1533,14 +1596,15 @@ const get_menu_choices = function (table) {
                             // decide where to insert cell
                             let row = i % MENU_CHOICE_COLS == 0
                                       ? table_element.insertRow()
-                                      : table_element.rows[table_element.rows.length - 1];
+                                      : table_element.rows[table_element
+                                                           .rows.length - 1];
                             row.insertCell().appendChild(anchor_element);
                         }
                     });
                 })
                 .catch(function(error) {
-                    console.error('ERROR: [get_menu_choices] Unable to fetch ' + table +
-                                  ': ' + error);
+                    console.error('ERROR: [get_menu_choices] Unable to fetch ' +
+                                  table + ': ' + error);
                 });
         })
         .catch(function (error) {
@@ -1684,32 +1748,33 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
                 form_content_element.innerHTML = html;
             }
 
-            living_library_helper
-            .update_required_fields_in_form(living_library_config
-                                            .get_update_menu_choice_form_info());
+            living_library_helper.update_required_fields_in_form(
+                living_library_config.get_update_menu_choice_form_info()
+            );
 
             // Populate menu choice term
             fetch(living_library_api_url + '&tbl=' + table + '&is_active=true' +
                   '&id=' + menu_choice_id)
                 .then(function(response) {
                     if (response.status !== 200) {
-                        console.error('Looks like there was a problem fetching ' + table
-                                      + ' with id = ' + menu_choice_id
+                        console.error('Looks like there was a problem fetching '
+                                      + table + ' with id = ' + menu_choice_id
                                       + '. Status Code: ' + response.status);
 
                         living_library_helper
-                        .insert_error_message('Error: No ' + label.toLowerCase() +
-                                              ' record found.', true);
+                        .insert_error_message('Error: No ' + label.toLowerCase()
+                                              + ' record found.', true);
 
                         return false;
                     }
 
                     response.json().then(function(data) {
-                        let span_elements = document
-                                            .getElementsByClassName('menu-choice-term');
+                        let span_elements =
+                            document.getElementsByClassName('menu-choice-term');
 
                         if (data.length === 0) {
-                            console.error('Error: No ' + label.toLowerCase() + 's found.');
+                            console.error('Error: No ' + label.toLowerCase() +
+                                          's found.');
                         } else if (data.length === 1) {
                             for (let element of span_elements) {
                                 element.innerHTML = data[0].term;
@@ -1722,8 +1787,9 @@ const edit_menu_choice = function (table, menu_choice_id, table_link_text) {
                     });
                 })
                 .catch(function(error) {
-                    console.error('ERROR: [edit_menu_choice] Unable to fetch ' + table
-                                  + ' with id = ' + menu_choice_id + ': ' + error);
+                    console.error('ERROR: [edit_menu_choice] Unable to fetch ' +
+                                  table + ' with id = ' + menu_choice_id +
+                                  ': ' + error);
                 });
         })
         .catch(function (error) {
