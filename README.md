@@ -85,8 +85,7 @@ All other content is released under [CC-BY-4.0](https://creativecommons.org/lice
 @freyesdulib, @jrynhart, @kimpham54
 
 ## Releases
-* v0.1.0-beta [release]() [notes]()
-
+* [v1.0.0](https://github.com/dulibrarytech/living-library/releases/tag/v1.0.0)
 
 ## Contact
 
