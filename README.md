@@ -76,6 +76,12 @@ All other content is released under [CC-BY-4.0](https://creativecommons.org/lice
   (i.e. `HOST + API_ROUTE + "?api_key=" + API_KEY`), where `HOST`, `API_ROUTE`,
   and `API_KEY` are defined in your `.env` file
 
+### Frontend Example
+
+Here is an example of [code that integrates with this API](https://github.com/dulibrarytech/donordb/tree/master/libs/livingLibrary).
+
+In particular, see `get.js` and `postPutDelete.js` from above link.
+
 ### Maintainers
 
 @scottsalvaggio
