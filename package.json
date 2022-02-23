@@ -27,13 +27,12 @@
     "jsdom": "^16.2.2",
     "knex": "^0.95.13",
     "lodash": "^4.17.19",
-    "log4js": "^4.5.1",
+    "log4js": "^6.4.1",
     "method-override": "^2.3.10",
     "moment": "^2.24.0",
     "mysql2": "^1.7.0",
     "node-uuid": "^1.4.8",
     "nodemailer": "^6.7.0",
-    "request": "^2.88.2",
     "utf-8-validate": "^5.0.7",
     "xmldoc": "^1.1.2"
   }
