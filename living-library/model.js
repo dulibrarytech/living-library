@@ -30,11 +30,13 @@ const LOGGER = require('../libs/log4'),
 // Configures email sending
 const transporter = NODEMAILER.createTransport({
     host: CONFIG.emailHost,
-    port: CONFIG.emailPort
+    port: CONFIG.emailPort,
     /*
     debug: true,
     logger: true
     */
+    secure: false,
+    ignoreTLS: true
 },
 {
     from: CONFIG.emailFromAddress
