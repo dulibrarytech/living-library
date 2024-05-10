@@ -50,6 +50,7 @@ module.exports = function() {
     /////
     // http server
     /////
+    const APP = EXPRESS();
     HTTP.createServer(APP).listen(process.env.APP_PORT, () => {
         console.log(`http server running on port: ${process.env.APP_PORT}`);
     });
