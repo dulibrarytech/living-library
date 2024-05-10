@@ -19,6 +19,7 @@
 'use strict';
 
 const HTTPS = require('https'),
+    HTTP = require('http'),       
     FS = require('fs'),
     EXPRESS = require('express'),
     CONFIG = require('../config/config'),
@@ -31,13 +32,30 @@ const HTTPS = require('https'),
 
 module.exports = function() {
 
-    const APP = EXPRESS(),
-        SERVER = HTTPS.createServer({
-            key: FS.readFileSync(CONFIG.sslKey),
-            cert: FS.readFileSync(CONFIG.sslCertificate)
-        }, APP);
+    /////
+    // https server
+    /////
+    // const APP = EXPRESS(),
+    //     SERVER = HTTPS.createServer({
+    //         key: FS.readFileSync(CONFIG.sslKey),
+    //         cert: FS.readFileSync(CONFIG.sslCertificate)
+    //     }, APP);
+    // SERVER.listen(process.env.APP_PORT, () => {
+    //     console.log(`https server running on port: ${process.env.APP_PORT}`);
+    // });
+    /////
+    // end https server
+    /////
 
-    SERVER.listen(process.env.APP_PORT);
+    /////
+    // http server
+    /////
+    HTTP.createServer(APP).listen(process.env.APP_PORT, () => {
+        console.log(`http server running on port: ${process.env.APP_PORT}`);
+    });
+    /////
+    // end http server
+    /////
 
     if (process.env.NODE_ENV === 'development') {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
